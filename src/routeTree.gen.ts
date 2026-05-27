@@ -21,6 +21,7 @@ import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.inde
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
+import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
@@ -85,6 +86,11 @@ const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AppWhatsappRoute,
 } as any)
+const AppMetaAdsCampaignsRoute = AppMetaAdsCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
+  getParentRoute: () => AppMetaAdsRoute,
+} as any)
 const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
   path: '/leads/kanban',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
+    | '/app/meta-ads/campaigns'
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app'
     | '/app/leads/kanban'
+    | '/app/meta-ads/campaigns'
     | '/app/whatsapp/chat'
     | '/app/leads'
     | '/app/meta-ads'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
+    | '/app/meta-ads/campaigns'
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -298,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappChatRouteImport
       parentRoute: typeof AppWhatsappRoute
     }
+    '/app/meta-ads/campaigns': {
+      id: '/app/meta-ads/campaigns'
+      path: '/campaigns'
+      fullPath: '/app/meta-ads/campaigns'
+      preLoaderRoute: typeof AppMetaAdsCampaignsRouteImport
+      parentRoute: typeof AppMetaAdsRoute
+    }
     '/app/leads/kanban': {
       id: '/app/leads/kanban'
       path: '/leads/kanban'
@@ -323,10 +342,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppMetaAdsRouteChildren {
+  AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsIndexRoute: typeof AppMetaAdsIndexRoute
 }
 
 const AppMetaAdsRouteChildren: AppMetaAdsRouteChildren = {
+  AppMetaAdsCampaignsRoute: AppMetaAdsCampaignsRoute,
   AppMetaAdsIndexRoute: AppMetaAdsIndexRoute,
 }
 
