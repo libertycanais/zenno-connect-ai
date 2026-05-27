@@ -98,7 +98,7 @@ export const syncGoogleAdsCampaigns = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ accountId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const acc = await ensureAccessToken(supabase as never, data.accountId);
+    const acc = await ensureAccessToken(supabase, data.accountId);
 
     const query = `SELECT campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type, campaign.start_date, campaign.end_date FROM campaign LIMIT 200`;
     const url = `https://googleads.googleapis.com/v17/customers/${acc.customer_id}/googleAds:searchStream`;
@@ -168,7 +168,7 @@ export const uploadOfflineConversion = createServerFn({ method: "POST" })
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const acc = await ensureAccessToken(supabase as never, data.accountId);
+    const acc = await ensureAccessToken(supabase, data.accountId);
 
     const { data: logRow } = await supabase.from("google_ads_conversions").insert({
       organization_id: acc.organization_id as string,
