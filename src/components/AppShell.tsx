@@ -14,7 +14,7 @@ const nav = [
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
   { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone },
   { to: "/app/google-ads", label: "Google Ads", icon: Search },
-  { to: "/app/sigma", label: "Sigma", icon: Server, soon: true },
+  { to: "/app/sigma", label: "Sigma", icon: Server },
   { to: "/app/financeiro", label: "Financeiro", icon: DollarSign },
   { to: "/app/automacoes", label: "Automações", icon: Zap },
   { to: "/app/ia", label: "IA", icon: Bot },
