@@ -93,6 +93,14 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")
             },
             { onConflict: "instance_id,external_id", ignoreDuplicates: true },
           );
+          if (!fromMe) {
+            const { dispatchEvent } = await import("@/lib/automations.functions");
+            dispatchEvent({
+              organizationId: inst.organization_id,
+              triggerType: "whatsapp.message_received",
+              payload: { chat_id: chat.id, phone, text, message_type: msgType },
+            }).catch((e) => console.error("dispatch wa msg", e));
+          }
         }
         return new Response("ok");
       },
