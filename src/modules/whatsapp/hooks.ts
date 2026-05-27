@@ -42,15 +42,12 @@ export type WAMessage = {
 };
 
 export function useInstances() {
+  const fn = useServerFn(listInstances);
   return useQuery({
     queryKey: ["wa-instances"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("whatsapp_instances")
-        .select("id, name, base_url, status, phone_number, qr_code, webhook_secret, created_at")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as WAInstance[];
+      const { instances } = await fn();
+      return instances as WAInstance[];
     },
   });
 }
