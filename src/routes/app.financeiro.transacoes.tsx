@@ -43,7 +43,7 @@ function TransactionsPage() {
   };
 
   const mutCreate = useMutation({
-    mutationFn: (input: Parameters<typeof createFn>[0]["data"]) => createFn({ data: input }),
+    mutationFn: (input: NewTxInput) => createFn({ data: input }),
     onSuccess: () => { toast.success("Transação criada."); refresh(); },
     onError: (e: Error) => toast.error(e.message),
   });
