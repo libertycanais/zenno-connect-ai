@@ -17,15 +17,20 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
+import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
+import { Route as AppGoogleAdsConversionsRouteImport } from './routes/app.google-ads.conversions'
+import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-ads.campaigns'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
+import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -67,6 +72,11 @@ const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   path: '/meta-ads',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGoogleAdsRoute = AppGoogleAdsRouteImport.update({
+  id: '/google-ads',
+  path: '/google-ads',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -81,6 +91,11 @@ const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   id: '/leads/',
   path: '/leads/',
   getParentRoute: () => AppRoute,
+} as any)
+const AppGoogleAdsIndexRoute = AppGoogleAdsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppGoogleAdsRoute,
 } as any)
 const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   id: '/chat',
@@ -102,6 +117,16 @@ const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   path: '/leads/kanban',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGoogleAdsConversionsRoute = AppGoogleAdsConversionsRouteImport.update({
+  id: '/conversions',
+  path: '/conversions',
+  getParentRoute: () => AppGoogleAdsRoute,
+} as any)
+const AppGoogleAdsCampaignsRoute = AppGoogleAdsCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
+  getParentRoute: () => AppGoogleAdsRoute,
+} as any)
 const ApiPublicWhatsappWebhookInstanceIdRoute =
   ApiPublicWhatsappWebhookInstanceIdRouteImport.update({
     id: '/api/public/whatsapp/webhook/$instanceId',
@@ -114,23 +139,34 @@ const ApiPublicMetaOauthCallbackRoute =
     path: '/api/public/meta/oauth/callback',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicGoogleAdsOauthCallbackRoute =
+  ApiPublicGoogleAdsOauthCallbackRouteImport.update({
+    id: '/api/public/google-ads/oauth/callback',
+    path: '/api/public/google-ads/oauth/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
+  '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -140,13 +176,17 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
+  '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
+  '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/google-ads': typeof AppGoogleAdsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -156,17 +196,22 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
+  '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -177,17 +222,22 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/whatsapp'
     | '/app/'
+    | '/app/google-ads/campaigns'
+    | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/whatsapp/'
+    | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesByTo: FileRoutesByTo
@@ -197,13 +247,17 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/settings'
     | '/app'
+    | '/app/google-ads/campaigns'
+    | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/google-ads'
     | '/app/leads'
     | '/app/meta-ads'
     | '/app/whatsapp'
+    | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   id:
@@ -212,17 +266,22 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/whatsapp'
     | '/app/'
+    | '/app/google-ads/campaigns'
+    | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/whatsapp/'
+    | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesById: FileRoutesById
@@ -232,6 +291,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -294,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMetaAdsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/google-ads': {
+      id: '/app/google-ads'
+      path: '/google-ads'
+      fullPath: '/app/google-ads'
+      preLoaderRoute: typeof AppGoogleAdsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/whatsapp/': {
       id: '/app/whatsapp/'
       path: '/'
@@ -314,6 +381,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/leads/'
       preLoaderRoute: typeof AppLeadsIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/google-ads/': {
+      id: '/app/google-ads/'
+      path: '/'
+      fullPath: '/app/google-ads/'
+      preLoaderRoute: typeof AppGoogleAdsIndexRouteImport
+      parentRoute: typeof AppGoogleAdsRoute
     }
     '/app/whatsapp/chat': {
       id: '/app/whatsapp/chat'
@@ -343,6 +417,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsKanbanRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/google-ads/conversions': {
+      id: '/app/google-ads/conversions'
+      path: '/conversions'
+      fullPath: '/app/google-ads/conversions'
+      preLoaderRoute: typeof AppGoogleAdsConversionsRouteImport
+      parentRoute: typeof AppGoogleAdsRoute
+    }
+    '/app/google-ads/campaigns': {
+      id: '/app/google-ads/campaigns'
+      path: '/campaigns'
+      fullPath: '/app/google-ads/campaigns'
+      preLoaderRoute: typeof AppGoogleAdsCampaignsRouteImport
+      parentRoute: typeof AppGoogleAdsRoute
+    }
     '/api/public/whatsapp/webhook/$instanceId': {
       id: '/api/public/whatsapp/webhook/$instanceId'
       path: '/api/public/whatsapp/webhook/$instanceId'
@@ -357,8 +445,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaOauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/google-ads/oauth/callback': {
+      id: '/api/public/google-ads/oauth/callback'
+      path: '/api/public/google-ads/oauth/callback'
+      fullPath: '/api/public/google-ads/oauth/callback'
+      preLoaderRoute: typeof ApiPublicGoogleAdsOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface AppGoogleAdsRouteChildren {
+  AppGoogleAdsCampaignsRoute: typeof AppGoogleAdsCampaignsRoute
+  AppGoogleAdsConversionsRoute: typeof AppGoogleAdsConversionsRoute
+  AppGoogleAdsIndexRoute: typeof AppGoogleAdsIndexRoute
+}
+
+const AppGoogleAdsRouteChildren: AppGoogleAdsRouteChildren = {
+  AppGoogleAdsCampaignsRoute: AppGoogleAdsCampaignsRoute,
+  AppGoogleAdsConversionsRoute: AppGoogleAdsConversionsRoute,
+  AppGoogleAdsIndexRoute: AppGoogleAdsIndexRoute,
+}
+
+const AppGoogleAdsRouteWithChildren = AppGoogleAdsRoute._addFileChildren(
+  AppGoogleAdsRouteChildren,
+)
 
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
@@ -391,6 +502,7 @@ const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
@@ -400,6 +512,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
@@ -415,6 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
     ApiPublicWhatsappWebhookInstanceIdRoute,
