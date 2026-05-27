@@ -274,6 +274,209 @@ export type Database = {
           },
         ]
       }
+      whatsapp_chats: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          instance_id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          lead_id: string | null
+          name: string | null
+          organization_id: string
+          phone: string
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          instance_id: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          lead_id?: string | null
+          name?: string | null
+          organization_id: string
+          phone: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          instance_id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          lead_id?: string | null
+          name?: string | null
+          organization_id?: string
+          phone?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_chats_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_chats_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_chats_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_instances: {
+        Row: {
+          base_url: string
+          created_at: string
+          id: string
+          instance_id: string | null
+          last_sync_at: string | null
+          name: string
+          organization_id: string
+          phone_number: string | null
+          qr_code: string | null
+          status: Database["public"]["Enums"]["wa_instance_status"]
+          token: string
+          updated_at: string
+          webhook_secret: string
+        }
+        Insert: {
+          base_url: string
+          created_at?: string
+          id?: string
+          instance_id?: string | null
+          last_sync_at?: string | null
+          name: string
+          organization_id: string
+          phone_number?: string | null
+          qr_code?: string | null
+          status?: Database["public"]["Enums"]["wa_instance_status"]
+          token: string
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Update: {
+          base_url?: string
+          created_at?: string
+          id?: string
+          instance_id?: string | null
+          last_sync_at?: string | null
+          name?: string
+          organization_id?: string
+          phone_number?: string | null
+          qr_code?: string | null
+          status?: Database["public"]["Enums"]["wa_instance_status"]
+          token?: string
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_instances_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_messages: {
+        Row: {
+          chat_id: string
+          content: string | null
+          created_at: string
+          direction: Database["public"]["Enums"]["wa_message_direction"]
+          external_id: string | null
+          id: string
+          instance_id: string
+          lead_id: string | null
+          media_url: string | null
+          message_type: Database["public"]["Enums"]["wa_message_type"]
+          metadata: Json | null
+          organization_id: string
+          sent_by: string | null
+          status: Database["public"]["Enums"]["wa_message_status"]
+        }
+        Insert: {
+          chat_id: string
+          content?: string | null
+          created_at?: string
+          direction: Database["public"]["Enums"]["wa_message_direction"]
+          external_id?: string | null
+          id?: string
+          instance_id: string
+          lead_id?: string | null
+          media_url?: string | null
+          message_type?: Database["public"]["Enums"]["wa_message_type"]
+          metadata?: Json | null
+          organization_id: string
+          sent_by?: string | null
+          status?: Database["public"]["Enums"]["wa_message_status"]
+        }
+        Update: {
+          chat_id?: string
+          content?: string | null
+          created_at?: string
+          direction?: Database["public"]["Enums"]["wa_message_direction"]
+          external_id?: string | null
+          id?: string
+          instance_id?: string
+          lead_id?: string | null
+          media_url?: string | null
+          message_type?: Database["public"]["Enums"]["wa_message_type"]
+          metadata?: Json | null
+          organization_id?: string
+          sent_by?: string | null
+          status?: Database["public"]["Enums"]["wa_message_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_chats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -307,6 +510,19 @@ export type Database = {
         | "cliente"
         | "renovacao"
         | "cancelado"
+      wa_instance_status: "disconnected" | "connecting" | "connected" | "error"
+      wa_message_direction: "in" | "out"
+      wa_message_status: "pending" | "sent" | "delivered" | "read" | "failed"
+      wa_message_type:
+        | "text"
+        | "image"
+        | "audio"
+        | "video"
+        | "document"
+        | "sticker"
+        | "location"
+        | "contact"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -443,6 +659,20 @@ export const Constants = {
         "cliente",
         "renovacao",
         "cancelado",
+      ],
+      wa_instance_status: ["disconnected", "connecting", "connected", "error"],
+      wa_message_direction: ["in", "out"],
+      wa_message_status: ["pending", "sent", "delivered", "read", "failed"],
+      wa_message_type: [
+        "text",
+        "image",
+        "audio",
+        "video",
+        "document",
+        "sticker",
+        "location",
+        "contact",
+        "other",
       ],
     },
   },
