@@ -70,7 +70,7 @@ export const listTransactions = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("finance_transactions")
-      .select("*, finance_categories(name,color)")
+      .select("*")
       .order("due_date", { ascending: false })
       .limit(500);
     if (data.status) q = q.eq("status", data.status);
