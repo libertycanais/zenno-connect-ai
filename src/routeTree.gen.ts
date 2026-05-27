@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
@@ -50,6 +51,11 @@ import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -259,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/admin': typeof AppAdminRouteWithChildren
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
@@ -334,6 +342,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/admin': typeof AppAdminRouteWithChildren
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
@@ -378,6 +387,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/sitemap.xml'
     | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
@@ -419,6 +429,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/sitemap.xml'
     | '/app/settings'
     | '/app'
     | '/app/automacoes/execucoes'
@@ -452,6 +463,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/sitemap.xml'
     | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
@@ -495,6 +507,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -502,6 +515,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -952,6 +972,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:

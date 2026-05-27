@@ -113,7 +113,7 @@ function AccountCard({ acc, onSavePixel, onDelete }: { acc: Acc; onSavePixel: (p
         <div className="flex items-center gap-2">
           <Badge variant={acc.status === "active" ? "default" : "secondary"}>{acc.status}</Badge>
           {expSoon ? <Badge variant="destructive">token expira em breve</Badge> : null}
-          <Button size="icon" variant="ghost" onClick={onDelete}><Trash2 size={14} /></Button>
+          <Button size="icon" variant="ghost" aria-label="Remover conta Meta Ads" onClick={onDelete}><Trash2 size={14} /></Button>
         </div>
       </CardHeader>
       <CardContent className="flex items-end gap-2">

@@ -10,7 +10,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/signup")({ component: SignupPage });
+export const Route = createFileRoute("/signup")({
+  head: () => ({
+    meta: [
+      { title: "Criar conta — ZENNO CRM AI" },
+      { name: "description", content: "Crie sua conta ZENNO CRM AI grátis e organize leads, WhatsApp e campanhas Meta/Google Ads em uma única plataforma." },
+      { property: "og:title", content: "Criar conta — ZENNO CRM AI" },
+      { property: "og:description", content: "Crie sua conta ZENNO CRM AI grátis e organize leads, WhatsApp e campanhas Meta/Google Ads em uma única plataforma." },
+      { property: "og:url", content: "https://zenno-connect-ai.lovable.app/signup" },
+    ],
+    links: [{ rel: "canonical", href: "https://zenno-connect-ai.lovable.app/signup" }],
+  }),
+  component: SignupPage,
+});
 
 const schema = z.object({
   full_name: z.string().trim().min(2, "Nome obrigatório").max(120),
@@ -59,7 +71,8 @@ function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center gap-2 mb-2 text-primary font-bold"><Sparkles size={18} /> ZENNO CRM AI</div>
-          <CardTitle>Criar conta</CardTitle>
+          <h1 className="text-2xl font-semibold">Criar sua conta</h1>
+          <CardTitle className="sr-only">Criar conta</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button onClick={handleGoogle} variant="outline" className="w-full">Cadastrar com Google</Button>

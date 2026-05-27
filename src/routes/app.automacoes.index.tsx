@@ -79,13 +79,13 @@ function AutomationsList() {
                     <Switch checked={a.is_active} onCheckedChange={(v) =>
                       toggle({ data: { id: a.id, is_active: v } }).then(refresh).catch((e: Error) => toast.error(e.message))
                     } />
-                    <Button size="icon" variant="ghost" title="Disparar agora"
+                    <Button size="icon" variant="ghost" aria-label="Disparar automação agora" title="Disparar agora"
                       onClick={() => runFn({ data: { id: a.id, payload: {} } })
                         .then((r) => toast.success(`Disparada (${r.results.filter((x) => x.ok).length}/${r.results.length} ok)`))
                         .catch((e: Error) => toast.error(e.message))}>
                       <Play size={14} />
                     </Button>
-                    <Button size="icon" variant="ghost" title="Excluir"
+                    <Button size="icon" variant="ghost" aria-label="Excluir automação" title="Excluir"
                       onClick={() => del({ data: { id: a.id } }).then(() => { toast.success("Excluída"); refresh(); })
                         .catch((e: Error) => toast.error(e.message))}>
                       <Trash2 size={14} />
@@ -194,7 +194,7 @@ function AutomationDialog({ onSaved }: { onSaved: () => void }) {
                 <Card key={i}><CardContent className="pt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Badge>{a.type}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => setActions((arr) => arr.filter((_, idx) => idx !== i))}>
+                    <Button size="icon" variant="ghost" aria-label="Remover ação" onClick={() => setActions((arr) => arr.filter((_, idx) => idx !== i))}>
                       <Trash2 size={14} />
                     </Button>
                   </div>

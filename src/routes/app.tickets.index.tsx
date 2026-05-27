@@ -110,6 +110,7 @@ function TicketsPage() {
             <Button
               variant="ghost"
               size="icon"
+              aria-label="Remover ticket"
               onClick={() => {
                 if (confirm("Remover ticket?")) deleteMut.mutate(t.id);
               }}

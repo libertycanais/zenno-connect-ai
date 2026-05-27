@@ -71,7 +71,7 @@ function GoogleAdsAccountsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={a.status === "active" ? "default" : "secondary"}>{a.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => del.mutate(a.id)}><Trash2 size={14} /></Button>
+                  <Button size="icon" variant="ghost" aria-label="Remover conta Google Ads" onClick={() => del.mutate(a.id)}><Trash2 size={14} /></Button>
                 </div>
               </CardHeader>
               <CardContent className="text-xs text-muted-foreground">

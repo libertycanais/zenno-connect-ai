@@ -1,0 +1,11 @@
+# ZENNO CRM AI
+
+> Plataforma SaaS multiempresa de CRM com WhatsApp, Meta Ads, Google Ads, automações e IA integrada.
+
+ZENNO CRM AI centraliza gestão de leads, atendimento via WhatsApp, captação de dados de campanhas pagas (Meta Ads e Google Ads), financeiro, automações e qualificação por IA em um único painel.
+
+## Pages
+
+- [Início](/): Visão geral da plataforma e principais recursos.
+- [Entrar](/login): Acesso à conta.
+- [Criar conta](/signup): Cadastro de nova organização.

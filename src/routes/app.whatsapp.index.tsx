@@ -66,7 +66,7 @@ function InstancesPage() {
               {i.qr_code && (
                 <div className="bg-white p-3 rounded-md inline-block">
                   {i.qr_code.startsWith("data:") ? (
-                    <img src={i.qr_code} alt="QR" width={180} height={180} />
+                    <img src={i.qr_code} alt={`QR Code de conexão WhatsApp da instância ${i.name}`} width={180} height={180} />
                   ) : (
                     <pre className="text-[6px] leading-[6px]">{i.qr_code}</pre>
                   )}
