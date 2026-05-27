@@ -22,7 +22,9 @@ async function uazapiFetch(baseUrl: string, token: string, path: string, init?: 
   return data as Record<string, unknown> | null;
 }
 
-async function getInstance(supabase: ReturnType<typeof requireSupabaseAuth> extends never ? never : any, id: string) {
+type AnyRec = Record<string, any>;
+
+async function getInstance(supabase: any, id: string) {
   const { data, error } = await supabase
     .from("whatsapp_instances")
     .select("id, base_url, token, organization_id")
