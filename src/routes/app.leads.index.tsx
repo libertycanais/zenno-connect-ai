@@ -63,7 +63,7 @@ function LeadsList() {
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">{new Date(l.created_at).toLocaleDateString("pt-BR")}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon" onClick={async () => {
+                  <Button variant="ghost" size="icon" aria-label="Excluir lead" onClick={async () => {
                     if (!confirm("Excluir este lead?")) return;
                     try { await del.mutateAsync(l.id); toast.success("Lead excluído"); }
                     catch (e: any) { toast.error(e.message); }

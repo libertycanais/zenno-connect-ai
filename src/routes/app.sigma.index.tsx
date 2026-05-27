@@ -76,7 +76,7 @@ function SigmaIntegrationsPage() {
             >
               {i.status === "active" ? "Pausar" : "Ativar"}
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => { if (confirm("Remover?")) deleteMut.mutate(i.id); }}>
+            <Button variant="ghost" size="icon" aria-label="Remover integração Sigma" onClick={() => { if (confirm("Remover?")) deleteMut.mutate(i.id); }}>
               <Trash2 size={14} className="text-destructive" />
             </Button>
           </Card>

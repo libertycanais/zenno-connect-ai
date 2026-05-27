@@ -194,7 +194,7 @@ function AutomationDialog({ onSaved }: { onSaved: () => void }) {
                 <Card key={i}><CardContent className="pt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Badge>{a.type}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => setActions((arr) => arr.filter((_, idx) => idx !== i))}>
+                    <Button size="icon" variant="ghost" aria-label="Remover ação" onClick={() => setActions((arr) => arr.filter((_, idx) => idx !== i))}>
                       <Trash2 size={14} />
                     </Button>
                   </div>
