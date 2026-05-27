@@ -1,9 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 // Thin proxy to Uazapi (or any compatible WhatsApp HTTP API).
-// All credentials live in the DB row (RLS-scoped per organization).
+// Credentials (token, webhook_secret) live in the DB row and are read
+// server-side only via the admin client, scoped to the caller's organization.
 
 async function uazapiFetch(baseUrl: string, token: string, path: string, init?: RequestInit) {
   const url = new URL(path.replace(/^\//, ""), baseUrl.endsWith("/") ? baseUrl : baseUrl + "/");
@@ -24,22 +26,46 @@ async function uazapiFetch(baseUrl: string, token: string, path: string, init?: 
 
 type AnyRec = Record<string, any>;
 
-async function getInstance(supabase: any, id: string) {
-  const { data, error } = await supabase
+async function getOrgId(supabase: any, userId: string) {
+  const { data } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
+  if (!data) throw new Error("Perfil não encontrado");
+  return data.organization_id as string;
+}
+
+async function getInstance(supabase: any, userId: string, id: string) {
+  const organization_id = await getOrgId(supabase, userId);
+  // Read via admin client (RLS restricts direct SELECT to admins) but scope by caller's org
+  const { data, error } = await supabaseAdmin
     .from("whatsapp_instances")
     .select("id, base_url, token, organization_id")
     .eq("id", id)
+    .eq("organization_id", organization_id)
     .single();
   if (error || !data) throw new Error("Instância não encontrada");
   return data as { id: string; base_url: string; token: string; organization_id: string };
 }
+
+// Safe list for any org member (excludes token + webhook_secret)
+export const listInstances = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const organization_id = await getOrgId(supabase, userId);
+    const { data, error } = await supabaseAdmin
+      .from("whatsapp_instances")
+      .select("id, name, base_url, status, phone_number, qr_code, created_at")
+      .eq("organization_id", organization_id)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return { instances: data ?? [] };
+  });
 
 export const connectInstance = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     const r = await uazapiFetch(inst.base_url, inst.token, "/instance/connect", { method: "POST" });
     const qr = (r?.qrcode ?? r?.qrCode ?? r?.qr ?? null) as string | null;
     await supabase
@@ -54,7 +80,7 @@ export const refreshInstanceStatus = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     const r = await uazapiFetch(inst.base_url, inst.token, "/instance/status", { method: "GET" });
     const connected = Boolean(r?.connected ?? r?.instance?.["connected"]);
     const phone = (r?.phone ?? r?.instance?.["wid"] ?? null) as string | null;
@@ -75,7 +101,7 @@ export const disconnectInstance = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     try { await uazapiFetch(inst.base_url, inst.token, "/instance/disconnect", { method: "POST" }); } catch { /* noop */ }
     await supabase.from("whatsapp_instances").update({ status: "disconnected", qr_code: null }).eq("id", data.instanceId);
     return { ok: true };
@@ -92,7 +118,7 @@ export const sendWhatsAppMessage = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
 
     // Upsert chat
     const { data: chat } = await supabase
@@ -123,4 +149,30 @@ export const sendWhatsAppMessage = createServerFn({ method: "POST" })
       sent_by: userId,
     });
     return { ok: true, externalId };
+  });
+
+// Admin-only: return the webhook secret for an instance (used to build the webhook URL in the UI)
+export const getInstanceWebhookSecret = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const organization_id = await getOrgId(supabase, userId);
+    const { data: roles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("organization_id", organization_id);
+    const rs = (roles ?? []).map((r: any) => r.role);
+    if (!rs.some((r: string) => r === "owner" || r === "admin")) {
+      throw new Error("Apenas owner/admin podem visualizar o segredo do webhook");
+    }
+    const { data: row, error } = await supabaseAdmin
+      .from("whatsapp_instances")
+      .select("webhook_secret")
+      .eq("id", data.instanceId)
+      .eq("organization_id", organization_id)
+      .single();
+    if (error || !row) throw new Error("Instância não encontrada");
+    return { secret: row.webhook_secret as string };
   });
