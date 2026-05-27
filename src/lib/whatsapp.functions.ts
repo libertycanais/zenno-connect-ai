@@ -65,7 +65,7 @@ export const connectInstance = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     const r = await uazapiFetch(inst.base_url, inst.token, "/instance/connect", { method: "POST" });
     const qr = (r?.qrcode ?? r?.qrCode ?? r?.qr ?? null) as string | null;
     await supabase
@@ -80,7 +80,7 @@ export const refreshInstanceStatus = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     const r = await uazapiFetch(inst.base_url, inst.token, "/instance/status", { method: "GET" });
     const connected = Boolean(r?.connected ?? r?.instance?.["connected"]);
     const phone = (r?.phone ?? r?.instance?.["wid"] ?? null) as string | null;
@@ -101,7 +101,7 @@ export const disconnectInstance = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
     try { await uazapiFetch(inst.base_url, inst.token, "/instance/disconnect", { method: "POST" }); } catch { /* noop */ }
     await supabase.from("whatsapp_instances").update({ status: "disconnected", qr_code: null }).eq("id", data.instanceId);
     return { ok: true };
@@ -118,7 +118,7 @@ export const sendWhatsAppMessage = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const inst = await getInstance(supabase, data.instanceId);
+    const inst = await getInstance(supabase, context.userId, data.instanceId);
 
     // Upsert chat
     const { data: chat } = await supabase
