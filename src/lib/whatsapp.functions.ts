@@ -1,9 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 // Thin proxy to Uazapi (or any compatible WhatsApp HTTP API).
-// All credentials live in the DB row (RLS-scoped per organization).
+// Credentials (token, webhook_secret) live in the DB row and are read
+// server-side only via the admin client, scoped to the caller's organization.
 
 async function uazapiFetch(baseUrl: string, token: string, path: string, init?: RequestInit) {
   const url = new URL(path.replace(/^\//, ""), baseUrl.endsWith("/") ? baseUrl : baseUrl + "/");
@@ -24,15 +26,39 @@ async function uazapiFetch(baseUrl: string, token: string, path: string, init?: 
 
 type AnyRec = Record<string, any>;
 
-async function getInstance(supabase: any, id: string) {
-  const { data, error } = await supabase
+async function getOrgId(supabase: any, userId: string) {
+  const { data } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
+  if (!data) throw new Error("Perfil não encontrado");
+  return data.organization_id as string;
+}
+
+async function getInstance(supabase: any, userId: string, id: string) {
+  const organization_id = await getOrgId(supabase, userId);
+  // Read via admin client (RLS restricts direct SELECT to admins) but scope by caller's org
+  const { data, error } = await supabaseAdmin
     .from("whatsapp_instances")
     .select("id, base_url, token, organization_id")
     .eq("id", id)
+    .eq("organization_id", organization_id)
     .single();
   if (error || !data) throw new Error("Instância não encontrada");
   return data as { id: string; base_url: string; token: string; organization_id: string };
 }
+
+// Safe list for any org member (excludes token + webhook_secret)
+export const listInstances = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const organization_id = await getOrgId(supabase, userId);
+    const { data, error } = await supabaseAdmin
+      .from("whatsapp_instances")
+      .select("id, name, base_url, status, phone_number, qr_code, created_at")
+      .eq("organization_id", organization_id)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return { instances: data ?? [] };
+  });
 
 export const connectInstance = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
