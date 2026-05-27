@@ -16,10 +16,10 @@ async function uazapiFetch(baseUrl: string, token: string, path: string, init?: 
     },
   });
   const text = await res.text();
-  let data: unknown;
+  let data: any;
   try { data = text ? JSON.parse(text) : null; } catch { data = text; }
   if (!res.ok) throw new Error(`Uazapi ${res.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
-  return data as Record<string, unknown> | null;
+  return data as any;
 }
 
 type AnyRec = Record<string, any>;
