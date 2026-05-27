@@ -82,7 +82,7 @@ function InstancesPage() {
                 <Button size="sm" variant="ghost" onClick={() => disconnect.mutate(i.id)} disabled={disconnect.isPending}>
                   <Power size={14} className="mr-1" /> Desconectar
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => copyWebhook(i.id, i.webhook_secret)}>
+                <Button size="sm" variant="ghost" onClick={() => copyWebhook(i.id)}>
                   <Copy size={14} className="mr-1" /> Webhook
                 </Button>
                 <Button size="sm" variant="ghost" className="text-red-400" onClick={() => { if (confirm("Excluir instância?")) del.mutate(i.id); }}>
