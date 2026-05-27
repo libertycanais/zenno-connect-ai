@@ -15,12 +15,14 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
+import { Route as AppTicketsRouteImport } from './routes/app.tickets'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
+import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
@@ -69,6 +71,11 @@ const AppWhatsappRoute = AppWhatsappRouteImport.update({
   path: '/whatsapp',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTicketsRoute = AppTicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -98,6 +105,11 @@ const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppWhatsappRoute,
+} as any)
+const AppTicketsIndexRoute = AppTicketsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTicketsRoute,
 } as any)
 const AppMetaAdsIndexRoute = AppMetaAdsIndexRouteImport.update({
   id: '/',
@@ -198,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
@@ -214,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
+  '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -239,6 +253,7 @@ export interface FileRoutesByTo {
   '/app/google-ads': typeof AppGoogleAdsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
+  '/app/tickets': typeof AppTicketsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -255,6 +270,7 @@ export interface FileRoutesById {
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
@@ -271,6 +287,7 @@ export interface FileRoutesById {
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
+  '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -288,6 +305,7 @@ export interface FileRouteTypes {
     | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
+    | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
     | '/app/automacoes/execucoes'
@@ -304,6 +322,7 @@ export interface FileRouteTypes {
     | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
+    | '/app/tickets/'
     | '/app/whatsapp/'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -329,6 +348,7 @@ export interface FileRouteTypes {
     | '/app/google-ads'
     | '/app/leads'
     | '/app/meta-ads'
+    | '/app/tickets'
     | '/app/whatsapp'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -344,6 +364,7 @@ export interface FileRouteTypes {
     | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
+    | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
     | '/app/automacoes/execucoes'
@@ -360,6 +381,7 @@ export interface FileRouteTypes {
     | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
+    | '/app/tickets/'
     | '/app/whatsapp/'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -420,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/tickets': {
+      id: '/app/tickets'
+      path: '/tickets'
+      fullPath: '/app/tickets'
+      preLoaderRoute: typeof AppTicketsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -461,6 +490,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/whatsapp/'
       preLoaderRoute: typeof AppWhatsappIndexRouteImport
       parentRoute: typeof AppWhatsappRoute
+    }
+    '/app/tickets/': {
+      id: '/app/tickets/'
+      path: '/'
+      fullPath: '/app/tickets/'
+      preLoaderRoute: typeof AppTicketsIndexRouteImport
+      parentRoute: typeof AppTicketsRoute
     }
     '/app/meta-ads/': {
       id: '/app/meta-ads/'
@@ -646,6 +682,18 @@ const AppMetaAdsRouteWithChildren = AppMetaAdsRoute._addFileChildren(
   AppMetaAdsRouteChildren,
 )
 
+interface AppTicketsRouteChildren {
+  AppTicketsIndexRoute: typeof AppTicketsIndexRoute
+}
+
+const AppTicketsRouteChildren: AppTicketsRouteChildren = {
+  AppTicketsIndexRoute: AppTicketsIndexRoute,
+}
+
+const AppTicketsRouteWithChildren = AppTicketsRoute._addFileChildren(
+  AppTicketsRouteChildren,
+)
+
 interface AppWhatsappRouteChildren {
   AppWhatsappChatRoute: typeof AppWhatsappChatRoute
   AppWhatsappIndexRoute: typeof AppWhatsappIndexRoute
@@ -666,6 +714,7 @@ interface AppRouteChildren {
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
+  AppTicketsRoute: typeof AppTicketsRouteWithChildren
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppLeadsKanbanRoute: typeof AppLeadsKanbanRoute
@@ -678,6 +727,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
+  AppTicketsRoute: AppTicketsRouteWithChildren,
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppLeadsKanbanRoute: AppLeadsKanbanRoute,
