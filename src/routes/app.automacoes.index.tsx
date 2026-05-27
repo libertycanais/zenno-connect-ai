@@ -79,13 +79,13 @@ function AutomationsList() {
                     <Switch checked={a.is_active} onCheckedChange={(v) =>
                       toggle({ data: { id: a.id, is_active: v } }).then(refresh).catch((e: Error) => toast.error(e.message))
                     } />
-                    <Button size="icon" variant="ghost" title="Disparar agora"
+                    <Button size="icon" variant="ghost" aria-label="Disparar automação agora" title="Disparar agora"
                       onClick={() => runFn({ data: { id: a.id, payload: {} } })
                         .then((r) => toast.success(`Disparada (${r.results.filter((x) => x.ok).length}/${r.results.length} ok)`))
                         .catch((e: Error) => toast.error(e.message))}>
                       <Play size={14} />
                     </Button>
-                    <Button size="icon" variant="ghost" title="Excluir"
+                    <Button size="icon" variant="ghost" aria-label="Excluir automação" title="Excluir"
                       onClick={() => del({ data: { id: a.id } }).then(() => { toast.success("Excluída"); refresh(); })
                         .catch((e: Error) => toast.error(e.message))}>
                       <Trash2 size={14} />

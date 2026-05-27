@@ -110,11 +110,11 @@ function TransactionsPage() {
                     <td className="px-3 py-2 text-right">
                       <div className="flex gap-1 justify-end">
                         {t.status !== "paid" ? (
-                          <Button size="icon" variant="ghost" title="Marcar pago" onClick={() => mutStatus.mutate({ id: t.id, status: "paid" })}><Check size={14} /></Button>
+                          <Button size="icon" variant="ghost" aria-label="Marcar como pago" title="Marcar pago" onClick={() => mutStatus.mutate({ id: t.id, status: "paid" })}><Check size={14} /></Button>
                         ) : (
-                          <Button size="icon" variant="ghost" title="Reabrir" onClick={() => mutStatus.mutate({ id: t.id, status: "pending" })}><RotateCcw size={14} /></Button>
+                          <Button size="icon" variant="ghost" aria-label="Reabrir transação" title="Reabrir" onClick={() => mutStatus.mutate({ id: t.id, status: "pending" })}><RotateCcw size={14} /></Button>
                         )}
-                        <Button size="icon" variant="ghost" title="Excluir" onClick={() => mutDel.mutate(t.id)}><Trash2 size={14} /></Button>
+                        <Button size="icon" variant="ghost" aria-label="Excluir transação" title="Excluir" onClick={() => mutDel.mutate(t.id)}><Trash2 size={14} /></Button>
                       </div>
                     </td>
                   </tr>

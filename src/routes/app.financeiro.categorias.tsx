@@ -76,7 +76,7 @@ function CategoriesPage() {
                       <span className="inline-flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full" style={{ background: c.color }} />{c.name}
                       </span>
-                      <Button size="icon" variant="ghost" onClick={() => del.mutate(c.id)}><Trash2 size={14} /></Button>
+                      <Button size="icon" variant="ghost" aria-label="Excluir categoria" onClick={() => del.mutate(c.id)}><Trash2 size={14} /></Button>
                     </li>
                   ))}
                 </ul>
