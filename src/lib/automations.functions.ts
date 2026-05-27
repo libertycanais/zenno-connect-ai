@@ -253,10 +253,31 @@ async function runAction(action: AutomationAction, orgId: string, ctx: Record<st
       return;
     }
     case "webhook": {
+      // Defense in depth: re-validate URL at execution (DNS rebinding not covered, but blocks naive SSRF)
+      let parsed: URL;
+      try { parsed = new URL(action.url); } catch { throw new Error("URL inválida"); }
+      if (parsed.protocol !== "https:") throw new Error("Webhook deve usar HTTPS");
+      const host = parsed.hostname.toLowerCase();
+      const blocked = ["localhost", "0.0.0.0", "::", "::1"].includes(host)
+        || host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")
+        || host.startsWith("[");
+      const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      let blockedIp = false;
+      if (m) {
+        const a = parseInt(m[1]), b = parseInt(m[2]);
+        blockedIp = a === 10 || a === 127 || a === 0
+          || (a === 169 && b === 254)
+          || (a === 172 && b >= 16 && b <= 31)
+          || (a === 192 && b === 168)
+          || (a === 100 && b >= 64 && b <= 127)
+          || a >= 224;
+      }
+      if (blocked || blockedIp) throw new Error("Destino de webhook bloqueado (interno/privado)");
       const res = await fetch(action.url, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(action.headers ?? {}) },
         body: JSON.stringify({ event_payload: ctx, source: "zenno-automations" }),
+        redirect: "manual",
       });
       if (!res.ok) throw new Error(`webhook ${res.status}`);
       return;
