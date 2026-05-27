@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
+import logo from "@/assets/zenno-logo.png";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -55,8 +55,8 @@ function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center gap-2 mb-2 text-primary font-bold"><Sparkles size={18} /> ZENNO CRM AI</div>
+        <CardHeader className="items-center text-center">
+          <img src={logo} alt="ZENNO CRM AI" className="h-28 w-auto object-contain mb-2 drop-shadow-[0_0_18px_oklch(0.72_0.18_235/0.45)]" />
           <h1 className="text-2xl font-semibold">Entrar na sua conta</h1>
           <CardTitle className="sr-only">Entrar</CardTitle>
         </CardHeader>
