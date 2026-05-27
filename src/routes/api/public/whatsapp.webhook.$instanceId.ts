@@ -73,10 +73,10 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")
 
         if (chat) {
           if (!fromMe) {
-            await supabaseAdmin.rpc("noop").catch(() => {}); // placeholder; unread bump via update below
+            const { data: cur } = await supabaseAdmin.from("whatsapp_chats").select("unread_count").eq("id", chat.id).single();
             await supabaseAdmin
               .from("whatsapp_chats")
-              .update({ unread_count: (await supabaseAdmin.from("whatsapp_chats").select("unread_count").eq("id", chat.id).single()).data?.unread_count ?? 0 })
+              .update({ unread_count: (cur?.unread_count ?? 0) + 1 })
               .eq("id", chat.id);
           }
           await supabaseAdmin.from("whatsapp_messages").upsert(
