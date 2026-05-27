@@ -174,8 +174,8 @@ export const sendConversionEvent = createServerFn({ method: "POST" })
       event_name: data.eventName,
       event_id,
       event_source_url: data.eventSourceUrl ?? null,
-      user_data,
-      custom_data,
+      user_data: user_data as Record<string, string>,
+      custom_data: custom_data as Record<string, unknown> as never,
       test_event_code: data.testEventCode ?? null,
       status: "pending",
     }).select("id").single();
