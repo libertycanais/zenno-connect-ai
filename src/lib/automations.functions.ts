@@ -270,3 +270,22 @@ export const runAutomationManually = createServerFn({ method: "POST" })
     });
     return { results };
   });
+
+// Despacho a partir do cliente (autenticado): usa org do perfil
+export const dispatchAutomationEvent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      trigger_type: TriggerType,
+      payload: z.record(z.string(), z.unknown()).default({}),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: prof } = await context.supabase.from("profiles").select("organization_id").eq("id", context.userId).single();
+    if (!prof) throw new Error("Perfil não encontrado");
+    return dispatchEvent({
+      organizationId: prof.organization_id,
+      triggerType: data.trigger_type,
+      payload: data.payload,
+    });
+  });
