@@ -20,6 +20,7 @@ import { Route as AppTicketsRouteImport } from './routes/app.tickets'
 import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
@@ -104,6 +105,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
 const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   id: '/meta-ads',
   path: '/meta-ads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIntegracoesRoute = AppIntegracoesRouteImport.update({
+  id: '/integracoes',
+  path: '/integracoes',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIaRoute = AppIaRouteImport.update({
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
+  '/app/integracoes': typeof AppIntegracoesRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/sigma': typeof AppSigmaRouteWithChildren
@@ -308,6 +315,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/integracoes': typeof AppIntegracoesRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
@@ -348,6 +356,7 @@ export interface FileRoutesById {
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
+  '/app/integracoes': typeof AppIntegracoesRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/sigma': typeof AppSigmaRouteWithChildren
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
+    | '/app/integracoes'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/sigma'
@@ -430,6 +440,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/sitemap.xml'
+    | '/app/integracoes'
     | '/app/settings'
     | '/app'
     | '/app/automacoes/execucoes'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
+    | '/app/integracoes'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/sigma'
@@ -590,6 +602,13 @@ declare module '@tanstack/react-router' {
       path: '/meta-ads'
       fullPath: '/app/meta-ads'
       preLoaderRoute: typeof AppMetaAdsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/integracoes': {
+      id: '/app/integracoes'
+      path: '/integracoes'
+      fullPath: '/app/integracoes'
+      preLoaderRoute: typeof AppIntegracoesRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/ia': {
@@ -939,6 +958,7 @@ interface AppRouteChildren {
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppIaRoute: typeof AppIaRouteWithChildren
+  AppIntegracoesRoute: typeof AppIntegracoesRoute
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
   AppSigmaRoute: typeof AppSigmaRouteWithChildren
@@ -955,6 +975,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppIaRoute: AppIaRouteWithChildren,
+  AppIntegracoesRoute: AppIntegracoesRoute,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
   AppSigmaRoute: AppSigmaRouteWithChildren,

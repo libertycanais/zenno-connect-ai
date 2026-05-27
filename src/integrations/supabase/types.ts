@@ -933,6 +933,48 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_integrations: {
+        Row: {
+          api_key: string
+          created_at: string
+          created_by: string | null
+          environment: string
+          id: string
+          last_checked_at: string | null
+          last_error: string | null
+          organization_id: string
+          provider: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          created_by?: string | null
+          environment?: string
+          id?: string
+          last_checked_at?: string | null
+          last_error?: string | null
+          organization_id: string
+          provider: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          created_by?: string | null
+          environment?: string
+          id?: string
+          last_checked_at?: string | null
+          last_error?: string | null
+          organization_id?: string
+          provider?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
