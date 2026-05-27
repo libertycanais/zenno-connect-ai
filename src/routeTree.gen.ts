@@ -21,6 +21,7 @@ import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
+import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -83,6 +84,12 @@ const ApiPublicWhatsappWebhookInstanceIdRoute =
     path: '/api/public/whatsapp/webhook/$instanceId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMetaOauthCallbackRoute =
+  ApiPublicMetaOauthCallbackRouteImport.update({
+    id: '/api/public/meta/oauth/callback',
+    path: '/api/public/meta/oauth/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRoutesByTo {
@@ -108,6 +116,7 @@ export interface FileRoutesByTo {
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRoutesById {
@@ -123,6 +132,7 @@ export interface FileRoutesById {
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRouteTypes {
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/whatsapp/'
+    | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp/chat'
     | '/app/leads'
     | '/app/whatsapp'
+    | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   id:
     | '__root__'
@@ -165,6 +177,7 @@ export interface FileRouteTypes {
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/whatsapp/'
+    | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesById: FileRoutesById
 }
@@ -173,6 +186,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 
@@ -262,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappWebhookInstanceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/meta/oauth/callback': {
+      id: '/api/public/meta/oauth/callback'
+      path: '/api/public/meta/oauth/callback'
+      fullPath: '/api/public/meta/oauth/callback'
+      preLoaderRoute: typeof ApiPublicMetaOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -302,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
     ApiPublicWhatsappWebhookInstanceIdRoute,
 }
