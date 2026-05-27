@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      automation_runs: {
+        Row: {
+          actions_result: Json | null
+          automation_id: string
+          created_at: string
+          error: string | null
+          id: string
+          organization_id: string
+          status: string
+          trigger_payload: Json | null
+        }
+        Insert: {
+          actions_result?: Json | null
+          automation_id: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          organization_id: string
+          status: string
+          trigger_payload?: Json | null
+        }
+        Update: {
+          actions_result?: Json | null
+          automation_id?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          organization_id?: string
+          status?: string
+          trigger_payload?: Json | null
+        }
+        Relationships: []
+      }
+      automations: {
+        Row: {
+          actions: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          organization_id: string
+          trigger_config: Json
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          actions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          organization_id: string
+          trigger_config?: Json
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          actions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          organization_id?: string
+          trigger_config?: Json
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       finance_categories: {
         Row: {
           color: string
