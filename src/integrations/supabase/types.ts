@@ -941,6 +941,96 @@ export type Database = {
           },
         ]
       }
+      sigma_integrations: {
+        Row: {
+          auth_token: string | null
+          auth_type: string
+          base_url: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          headers: Json
+          id: string
+          name: string
+          organization_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          auth_token?: string | null
+          auth_type?: string
+          base_url: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          headers?: Json
+          id?: string
+          name: string
+          organization_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          auth_token?: string | null
+          auth_type?: string
+          base_url?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          headers?: Json
+          id?: string
+          name?: string
+          organization_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sigma_requests: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          endpoint: string
+          error: string | null
+          id: string
+          integration_id: string
+          method: string
+          organization_id: string
+          request_body: Json | null
+          response_body: Json | null
+          response_status: number | null
+          triggered_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          endpoint: string
+          error?: string | null
+          id?: string
+          integration_id: string
+          method: string
+          organization_id: string
+          request_body?: Json | null
+          response_body?: Json | null
+          response_status?: number | null
+          triggered_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          endpoint?: string
+          error?: string | null
+          id?: string
+          integration_id?: string
+          method?: string
+          organization_id?: string
+          request_body?: Json | null
+          response_body?: Json | null
+          response_status?: number | null
+          triggered_by?: string | null
+        }
+        Relationships: []
+      }
       ticket_messages: {
         Row: {
           attachments: Json | null
