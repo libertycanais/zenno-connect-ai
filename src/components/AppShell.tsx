@@ -17,7 +17,7 @@ const nav = [
   { to: "/app/sigma", label: "Sigma", icon: Server, soon: true },
   { to: "/app/financeiro", label: "Financeiro", icon: DollarSign },
   { to: "/app/automacoes", label: "Automações", icon: Zap },
-  { to: "/app/ia", label: "IA", icon: Bot, soon: true },
+  { to: "/app/ia", label: "IA", icon: Bot },
   { to: "/app/tickets", label: "Tickets", icon: Ticket },
   { to: "/app/settings", label: "Configurações", icon: Settings },
 ];
