@@ -3,9 +3,11 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, KanbanSquare, MessageSquare, Megaphone,
-  Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, Sparkles, ShieldCheck,
+  Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, ShieldCheck,
+  Menu, X,
 } from "lucide-react";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import logo from "@/assets/zenno-logo.png";
 
 const nav = [
   { to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -23,10 +25,26 @@ const nav = [
   { to: "/app/settings", label: "Configurações", icon: Settings },
 ];
 
+const STORAGE_KEY = "zenno.sidebar.open";
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const loc = useLocation();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const v = localStorage.getItem(STORAGE_KEY);
+    setOpen(v === null ? true : v === "1");
+  }, []);
+
+  function toggle() {
+    setOpen((o) => {
+      const next = !o;
+      localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
+      return next;
+    });
+  }
 
   async function handleLogout() {
     await signOut();
@@ -34,12 +52,35 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-background text-foreground">
-      <aside className="w-64 shrink-0 bg-sidebar border-r border-sidebar-border hidden md:flex flex-col">
-        <div className="px-5 py-5 flex items-center gap-2 font-bold text-lg">
-          <Sparkles className="text-primary" size={20} /> ZENNO
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Floating toggle button — always visible */}
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label={open ? "Esconder menu" : "Mostrar menu"}
+        className="fixed top-4 left-4 z-50 h-10 w-10 inline-flex items-center justify-center rounded-full bg-sidebar/90 backdrop-blur border border-sidebar-border shadow-lg shadow-primary/20 hover:bg-sidebar text-sidebar-foreground transition-colors"
+      >
+        {open ? <X size={18} /> : <Menu size={18} />}
+      </button>
+
+      {/* Backdrop on mobile when open */}
+      {open && (
+        <div
+          onClick={toggle}
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm md:hidden"
+        />
+      )}
+
+      {/* Floating sidebar */}
+      <aside
+        className={`fixed top-4 bottom-4 left-4 z-40 w-64 flex flex-col rounded-2xl bg-sidebar/95 backdrop-blur-xl border border-sidebar-border shadow-2xl shadow-primary/10 transition-all duration-300 ease-out ${
+          open ? "translate-x-0 opacity-100" : "-translate-x-[120%] opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="px-4 pt-5 pb-3 flex items-center justify-center">
+          <img src={logo} alt="ZENNO CRM AI" className="h-16 w-auto object-contain drop-shadow-[0_0_12px_oklch(0.7_0.18_230/0.4)]" />
         </div>
-        <nav className="flex-1 overflow-y-auto px-2 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto px-2 pb-2 space-y-0.5">
           {nav.map((item) => {
             const active = item.exact ? loc.pathname === item.to : loc.pathname.startsWith(item.to);
             const Icon = item.icon;
@@ -47,12 +88,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
-                  active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? "bg-gradient-to-r from-primary/25 to-accent/15 text-sidebar-accent-foreground border border-primary/30"
+                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent/40"
                 }`}
               >
                 <Icon size={16} /> <span className="flex-1">{item.label}</span>
-                {"soon" in item && (item as { soon?: boolean }).soon && <span className="text-[10px] uppercase opacity-60">soon</span>}
               </Link>
             );
           })}
@@ -64,7 +106,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Button>
         </div>
       </aside>
-      <main className="flex-1 min-w-0 overflow-x-auto">{children}</main>
+
+      <main
+        className={`min-w-0 transition-[padding] duration-300 ease-out ${
+          open ? "md:pl-72" : "pl-0"
+        }`}
+      >
+        <div className="pt-16 md:pt-4">{children}</div>
+      </main>
     </div>
   );
 }
