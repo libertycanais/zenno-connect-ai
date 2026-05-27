@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppTicketsRouteImport } from './routes/app.tickets'
+import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
 import { Route as AppIaRouteImport } from './routes/app.ia'
@@ -24,6 +25,7 @@ import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
+import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
@@ -31,6 +33,8 @@ import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.i
 import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
 import { Route as AppAutomacoesIndexRouteImport } from './routes/app.automacoes.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
+import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
+import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
@@ -79,6 +83,11 @@ const AppTicketsRoute = AppTicketsRouteImport.update({
   path: '/tickets',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSigmaRoute = AppSigmaRouteImport.update({
+  id: '/sigma',
+  path: '/sigma',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -119,6 +128,11 @@ const AppTicketsIndexRoute = AppTicketsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppTicketsRoute,
 } as any)
+const AppSigmaIndexRoute = AppSigmaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSigmaRoute,
+} as any)
 const AppMetaAdsIndexRoute = AppMetaAdsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -153,6 +167,16 @@ const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   id: '/chat',
   path: '/chat',
   getParentRoute: () => AppWhatsappRoute,
+} as any)
+const AppSigmaLogsRoute = AppSigmaLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AppSigmaRoute,
+} as any)
+const AppSigmaConsoleRoute = AppSigmaConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
+  getParentRoute: () => AppSigmaRoute,
 } as any)
 const AppMetaAdsConversionsRoute = AppMetaAdsConversionsRouteImport.update({
   id: '/conversions',
@@ -229,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
@@ -241,6 +266,8 @@ export interface FileRoutesByFullPath {
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/sigma/console': typeof AppSigmaConsoleRoute
+  '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
@@ -248,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
+  '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
@@ -269,6 +297,8 @@ export interface FileRoutesByTo {
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/sigma/console': typeof AppSigmaConsoleRoute
+  '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/automacoes': typeof AppAutomacoesIndexRoute
   '/app/financeiro': typeof AppFinanceiroIndexRoute
@@ -276,6 +306,7 @@ export interface FileRoutesByTo {
   '/app/ia': typeof AppIaIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
+  '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
@@ -294,6 +325,7 @@ export interface FileRoutesById {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
@@ -306,6 +338,8 @@ export interface FileRoutesById {
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/sigma/console': typeof AppSigmaConsoleRoute
+  '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
@@ -313,6 +347,7 @@ export interface FileRoutesById {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
+  '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
@@ -332,6 +367,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/meta-ads'
     | '/app/settings'
+    | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
@@ -344,6 +380,8 @@ export interface FileRouteTypes {
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/sigma/console'
+    | '/app/sigma/logs'
     | '/app/whatsapp/chat'
     | '/app/automacoes/'
     | '/app/financeiro/'
@@ -351,6 +389,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/leads/'
     | '/app/meta-ads/'
+    | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
     | '/api/public/google-ads/oauth/callback'
@@ -372,6 +411,8 @@ export interface FileRouteTypes {
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/sigma/console'
+    | '/app/sigma/logs'
     | '/app/whatsapp/chat'
     | '/app/automacoes'
     | '/app/financeiro'
@@ -379,6 +420,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/leads'
     | '/app/meta-ads'
+    | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
     | '/api/public/google-ads/oauth/callback'
@@ -396,6 +438,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/meta-ads'
     | '/app/settings'
+    | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
@@ -408,6 +451,8 @@ export interface FileRouteTypes {
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/sigma/console'
+    | '/app/sigma/logs'
     | '/app/whatsapp/chat'
     | '/app/automacoes/'
     | '/app/financeiro/'
@@ -415,6 +460,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/leads/'
     | '/app/meta-ads/'
+    | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
     | '/api/public/google-ads/oauth/callback'
@@ -483,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTicketsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/sigma': {
+      id: '/app/sigma'
+      path: '/sigma'
+      fullPath: '/app/sigma'
+      preLoaderRoute: typeof AppSigmaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -539,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTicketsIndexRouteImport
       parentRoute: typeof AppTicketsRoute
     }
+    '/app/sigma/': {
+      id: '/app/sigma/'
+      path: '/'
+      fullPath: '/app/sigma/'
+      preLoaderRoute: typeof AppSigmaIndexRouteImport
+      parentRoute: typeof AppSigmaRoute
+    }
     '/app/meta-ads/': {
       id: '/app/meta-ads/'
       path: '/'
@@ -587,6 +647,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/whatsapp/chat'
       preLoaderRoute: typeof AppWhatsappChatRouteImport
       parentRoute: typeof AppWhatsappRoute
+    }
+    '/app/sigma/logs': {
+      id: '/app/sigma/logs'
+      path: '/logs'
+      fullPath: '/app/sigma/logs'
+      preLoaderRoute: typeof AppSigmaLogsRouteImport
+      parentRoute: typeof AppSigmaRoute
+    }
+    '/app/sigma/console': {
+      id: '/app/sigma/console'
+      path: '/console'
+      fullPath: '/app/sigma/console'
+      preLoaderRoute: typeof AppSigmaConsoleRouteImport
+      parentRoute: typeof AppSigmaRoute
     }
     '/app/meta-ads/conversions': {
       id: '/app/meta-ads/conversions'
@@ -749,6 +823,22 @@ const AppMetaAdsRouteWithChildren = AppMetaAdsRoute._addFileChildren(
   AppMetaAdsRouteChildren,
 )
 
+interface AppSigmaRouteChildren {
+  AppSigmaConsoleRoute: typeof AppSigmaConsoleRoute
+  AppSigmaLogsRoute: typeof AppSigmaLogsRoute
+  AppSigmaIndexRoute: typeof AppSigmaIndexRoute
+}
+
+const AppSigmaRouteChildren: AppSigmaRouteChildren = {
+  AppSigmaConsoleRoute: AppSigmaConsoleRoute,
+  AppSigmaLogsRoute: AppSigmaLogsRoute,
+  AppSigmaIndexRoute: AppSigmaIndexRoute,
+}
+
+const AppSigmaRouteWithChildren = AppSigmaRoute._addFileChildren(
+  AppSigmaRouteChildren,
+)
+
 interface AppTicketsRouteChildren {
   AppTicketsIndexRoute: typeof AppTicketsIndexRoute
 }
@@ -782,6 +872,7 @@ interface AppRouteChildren {
   AppIaRoute: typeof AppIaRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
+  AppSigmaRoute: typeof AppSigmaRouteWithChildren
   AppTicketsRoute: typeof AppTicketsRouteWithChildren
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
@@ -796,6 +887,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIaRoute: AppIaRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
+  AppSigmaRoute: AppSigmaRouteWithChildren,
   AppTicketsRoute: AppTicketsRouteWithChildren,
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
   AppIndexRoute: AppIndexRoute,

@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <Icon size={16} /> <span className="flex-1">{item.label}</span>
-                {item.soon && <span className="text-[10px] uppercase opacity-60">soon</span>}
+                {"soon" in item && item.soon && <span className="text-[10px] uppercase opacity-60">soon</span>}
               </Link>
             );
           })}
