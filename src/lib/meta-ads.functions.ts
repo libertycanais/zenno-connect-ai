@@ -203,7 +203,7 @@ export const sendConversionEvent = createServerFn({ method: "POST" })
     if (logRow?.id) {
       await supabase.from("meta_conversion_events").update({
         status: res.ok ? "sent" : "error",
-        response: respJson,
+        response: JSON.parse(JSON.stringify(respJson ?? {})),
         error: res.ok ? null : `HTTP ${res.status}`,
         sent_at: new Date().toISOString(),
       }).eq("id", logRow.id);
