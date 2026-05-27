@@ -174,7 +174,7 @@ export async function dispatchEvent(opts: {
     await supabaseAdmin.from("automation_runs").insert({
       organization_id: opts.organizationId,
       automation_id: rule.id,
-      trigger_payload: opts.payload,
+      trigger_payload: opts.payload as never,
       status: runStatus,
       actions_result: results,
       error: runError,
@@ -264,7 +264,7 @@ export const runAutomationManually = createServerFn({ method: "POST" })
     await supabaseAdmin.from("automation_runs").insert({
       organization_id: prof.organization_id,
       automation_id: data.id,
-      trigger_payload: data.payload,
+      trigger_payload: data.payload as never,
       status: ok ? "success" : (results.some((r) => r.ok) ? "partial" : "error"),
       actions_result: results,
     });
