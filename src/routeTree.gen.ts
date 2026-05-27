@@ -18,16 +18,20 @@ import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
+import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
+import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppGoogleAdsConversionsRouteImport } from './routes/app.google-ads.conversions'
 import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-ads.campaigns'
+import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
+import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
@@ -77,6 +81,11 @@ const AppGoogleAdsRoute = AppGoogleAdsRouteImport.update({
   path: '/google-ads',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -96,6 +105,11 @@ const AppGoogleAdsIndexRoute = AppGoogleAdsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppGoogleAdsRoute,
+} as any)
+const AppFinanceiroIndexRoute = AppFinanceiroIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppFinanceiroRoute,
 } as any)
 const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   id: '/chat',
@@ -127,6 +141,16 @@ const AppGoogleAdsCampaignsRoute = AppGoogleAdsCampaignsRouteImport.update({
   path: '/campaigns',
   getParentRoute: () => AppGoogleAdsRoute,
 } as any)
+const AppFinanceiroTransacoesRoute = AppFinanceiroTransacoesRouteImport.update({
+  id: '/transacoes',
+  path: '/transacoes',
+  getParentRoute: () => AppFinanceiroRoute,
+} as any)
+const AppFinanceiroCategoriasRoute = AppFinanceiroCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AppFinanceiroRoute,
+} as any)
 const ApiPublicWhatsappWebhookInstanceIdRoute =
   ApiPublicWhatsappWebhookInstanceIdRouteImport.update({
     id: '/api/public/whatsapp/webhook/$instanceId',
@@ -151,17 +175,21 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
+  '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -176,12 +204,15 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
+  '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
+  '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/financeiro': typeof AppFinanceiroIndexRoute
   '/app/google-ads': typeof AppGoogleAdsIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
@@ -196,17 +227,21 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
+  '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -222,17 +257,21 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/financeiro'
     | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/whatsapp'
     | '/app/'
+    | '/app/financeiro/categorias'
+    | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/financeiro/'
     | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -247,12 +286,15 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/settings'
     | '/app'
+    | '/app/financeiro/categorias'
+    | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/financeiro'
     | '/app/google-ads'
     | '/app/leads'
     | '/app/meta-ads'
@@ -266,17 +308,21 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/financeiro'
     | '/app/google-ads'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/whatsapp'
     | '/app/'
+    | '/app/financeiro/categorias'
+    | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
+    | '/app/financeiro/'
     | '/app/google-ads/'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -361,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGoogleAdsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/financeiro': {
+      id: '/app/financeiro'
+      path: '/financeiro'
+      fullPath: '/app/financeiro'
+      preLoaderRoute: typeof AppFinanceiroRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/whatsapp/': {
       id: '/app/whatsapp/'
       path: '/'
@@ -388,6 +441,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/google-ads/'
       preLoaderRoute: typeof AppGoogleAdsIndexRouteImport
       parentRoute: typeof AppGoogleAdsRoute
+    }
+    '/app/financeiro/': {
+      id: '/app/financeiro/'
+      path: '/'
+      fullPath: '/app/financeiro/'
+      preLoaderRoute: typeof AppFinanceiroIndexRouteImport
+      parentRoute: typeof AppFinanceiroRoute
     }
     '/app/whatsapp/chat': {
       id: '/app/whatsapp/chat'
@@ -431,6 +491,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGoogleAdsCampaignsRouteImport
       parentRoute: typeof AppGoogleAdsRoute
     }
+    '/app/financeiro/transacoes': {
+      id: '/app/financeiro/transacoes'
+      path: '/transacoes'
+      fullPath: '/app/financeiro/transacoes'
+      preLoaderRoute: typeof AppFinanceiroTransacoesRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
+    '/app/financeiro/categorias': {
+      id: '/app/financeiro/categorias'
+      path: '/categorias'
+      fullPath: '/app/financeiro/categorias'
+      preLoaderRoute: typeof AppFinanceiroCategoriasRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
     '/api/public/whatsapp/webhook/$instanceId': {
       id: '/api/public/whatsapp/webhook/$instanceId'
       path: '/api/public/whatsapp/webhook/$instanceId'
@@ -454,6 +528,22 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppFinanceiroRouteChildren {
+  AppFinanceiroCategoriasRoute: typeof AppFinanceiroCategoriasRoute
+  AppFinanceiroTransacoesRoute: typeof AppFinanceiroTransacoesRoute
+  AppFinanceiroIndexRoute: typeof AppFinanceiroIndexRoute
+}
+
+const AppFinanceiroRouteChildren: AppFinanceiroRouteChildren = {
+  AppFinanceiroCategoriasRoute: AppFinanceiroCategoriasRoute,
+  AppFinanceiroTransacoesRoute: AppFinanceiroTransacoesRoute,
+  AppFinanceiroIndexRoute: AppFinanceiroIndexRoute,
+}
+
+const AppFinanceiroRouteWithChildren = AppFinanceiroRoute._addFileChildren(
+  AppFinanceiroRouteChildren,
+)
 
 interface AppGoogleAdsRouteChildren {
   AppGoogleAdsCampaignsRoute: typeof AppGoogleAdsCampaignsRoute
@@ -502,6 +592,7 @@ const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
@@ -512,6 +603,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,

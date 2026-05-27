@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      finance_categories: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          organization_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          kind: string
+          name: string
+          organization_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          organization_id?: string
+        }
+        Relationships: []
+      }
+      finance_transactions: {
+        Row: {
+          amount: number
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string
+          due_date: string
+          google_account_id: string | null
+          id: string
+          kind: string
+          lead_id: string | null
+          meta_account_id: string | null
+          notes: string | null
+          organization_id: string
+          paid_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description: string
+          due_date: string
+          google_account_id?: string | null
+          id?: string
+          kind: string
+          lead_id?: string | null
+          meta_account_id?: string | null
+          notes?: string | null
+          organization_id: string
+          paid_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string
+          due_date?: string
+          google_account_id?: string | null
+          id?: string
+          kind?: string
+          lead_id?: string | null
+          meta_account_id?: string | null
+          notes?: string | null
+          organization_id?: string
+          paid_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       google_ad_accounts: {
         Row: {
           access_token: string | null
