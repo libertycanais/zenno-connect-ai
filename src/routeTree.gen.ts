@@ -23,6 +23,7 @@ import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
@@ -32,6 +33,7 @@ import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
 import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
 import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
 import { Route as AppAutomacoesIndexRouteImport } from './routes/app.automacoes.index'
+import { Route as AppAdminIndexRouteImport } from './routes/app.admin.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
 import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
@@ -118,6 +120,11 @@ const AppAutomacoesRoute = AppAutomacoesRouteImport.update({
   path: '/automacoes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -162,6 +169,11 @@ const AppAutomacoesIndexRoute = AppAutomacoesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppAutomacoesRoute,
+} as any)
+const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAdminRoute,
 } as any)
 const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   id: '/chat',
@@ -247,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
@@ -269,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/admin/': typeof AppAdminIndexRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
@@ -300,6 +314,7 @@ export interface FileRoutesByTo {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/admin': typeof AppAdminIndexRoute
   '/app/automacoes': typeof AppAutomacoesIndexRoute
   '/app/financeiro': typeof AppFinanceiroIndexRoute
   '/app/google-ads': typeof AppGoogleAdsIndexRoute
@@ -319,6 +334,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
@@ -341,6 +357,7 @@ export interface FileRoutesById {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/admin/': typeof AppAdminIndexRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
@@ -361,6 +378,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
@@ -383,6 +401,7 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/admin/'
     | '/app/automacoes/'
     | '/app/financeiro/'
     | '/app/google-ads/'
@@ -414,6 +433,7 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
@@ -432,6 +452,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/signup'
+    | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
@@ -454,6 +475,7 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/admin/'
     | '/app/automacoes/'
     | '/app/financeiro/'
     | '/app/google-ads/'
@@ -578,6 +600,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAutomacoesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/whatsapp/': {
       id: '/app/whatsapp/'
       path: '/'
@@ -640,6 +669,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/automacoes/'
       preLoaderRoute: typeof AppAutomacoesIndexRouteImport
       parentRoute: typeof AppAutomacoesRoute
+    }
+    '/app/admin/': {
+      id: '/app/admin/'
+      path: '/'
+      fullPath: '/app/admin/'
+      preLoaderRoute: typeof AppAdminIndexRouteImport
+      parentRoute: typeof AppAdminRoute
     }
     '/app/whatsapp/chat': {
       id: '/app/whatsapp/chat'
@@ -748,6 +784,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppAdminRouteChildren {
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
+}
+
+const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminIndexRoute: AppAdminIndexRoute,
+}
+
+const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
+  AppAdminRouteChildren,
+)
 
 interface AppAutomacoesRouteChildren {
   AppAutomacoesExecucoesRoute: typeof AppAutomacoesExecucoesRoute
@@ -866,6 +914,7 @@ const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAutomacoesRoute: typeof AppAutomacoesRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
@@ -881,6 +930,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAdminRoute: AppAdminRouteWithChildren,
   AppAutomacoesRoute: AppAutomacoesRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,

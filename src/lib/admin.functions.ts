@@ -28,7 +28,7 @@ export const getSystemHealth = createServerFn({ method: "GET" })
     const weekAgo = new Date(now - 7 * 24 * 3600 * 1000).toISOString();
 
     const countOf = async (table: string, extra?: (q: any) => any) => {
-      let q = db.from(table).select("*", { count: "exact", head: true }).eq("organization_id", orgId);
+      let q: any = (db as any).from(table).select("*", { count: "exact", head: true }).eq("organization_id", orgId);
       if (extra) q = extra(q);
       const { count, error } = await q;
       if (error) return { count: 0, error: error.message };
