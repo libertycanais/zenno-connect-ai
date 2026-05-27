@@ -21,6 +21,7 @@ import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.inde
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
+import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
@@ -86,6 +87,11 @@ const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AppWhatsappRoute,
 } as any)
+const AppMetaAdsConversionsRoute = AppMetaAdsConversionsRouteImport.update({
+  id: '/conversions',
+  path: '/conversions',
+  getParentRoute: () => AppMetaAdsRoute,
+} as any)
 const AppMetaAdsCampaignsRoute = AppMetaAdsCampaignsRouteImport.update({
   id: '/campaigns',
   path: '/campaigns',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
+  '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
+  '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
+  '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
+    | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
+    | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
     | '/app/leads'
     | '/app/meta-ads'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
+    | '/app/meta-ads/conversions'
     | '/app/whatsapp/chat'
     | '/app/leads/'
     | '/app/meta-ads/'
@@ -310,6 +322,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWhatsappChatRouteImport
       parentRoute: typeof AppWhatsappRoute
     }
+    '/app/meta-ads/conversions': {
+      id: '/app/meta-ads/conversions'
+      path: '/conversions'
+      fullPath: '/app/meta-ads/conversions'
+      preLoaderRoute: typeof AppMetaAdsConversionsRouteImport
+      parentRoute: typeof AppMetaAdsRoute
+    }
     '/app/meta-ads/campaigns': {
       id: '/app/meta-ads/campaigns'
       path: '/campaigns'
@@ -343,11 +362,13 @@ declare module '@tanstack/react-router' {
 
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
+  AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
   AppMetaAdsIndexRoute: typeof AppMetaAdsIndexRoute
 }
 
 const AppMetaAdsRouteChildren: AppMetaAdsRouteChildren = {
   AppMetaAdsCampaignsRoute: AppMetaAdsCampaignsRoute,
+  AppMetaAdsConversionsRoute: AppMetaAdsConversionsRoute,
   AppMetaAdsIndexRoute: AppMetaAdsIndexRoute,
 }
 
