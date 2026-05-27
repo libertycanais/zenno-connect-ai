@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
@@ -44,6 +45,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWhatsappRoute = AppWhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/whatsapp': typeof AppWhatsappRoute
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/whatsapp': typeof AppWhatsappRoute
   '/app': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/leads': typeof AppLeadsIndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/whatsapp': typeof AppWhatsappRoute
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/leads/': typeof AppLeadsIndexRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/settings'
+    | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
     | '/app/leads/'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/settings'
+    | '/app/whatsapp'
     | '/app'
     | '/app/leads/kanban'
     | '/app/leads'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/settings'
+    | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
     | '/app/leads/'
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/whatsapp': {
+      id: '/app/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/app/whatsapp'
+      preLoaderRoute: typeof AppWhatsappRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -212,6 +231,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
+  AppWhatsappRoute: typeof AppWhatsappRoute
   AppIndexRoute: typeof AppIndexRoute
   AppLeadsKanbanRoute: typeof AppLeadsKanbanRoute
   AppLeadsIndexRoute: typeof AppLeadsIndexRoute
@@ -219,6 +239,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
+  AppWhatsappRoute: AppWhatsappRoute,
   AppIndexRoute: AppIndexRoute,
   AppLeadsKanbanRoute: AppLeadsKanbanRoute,
   AppLeadsIndexRoute: AppLeadsIndexRoute,
