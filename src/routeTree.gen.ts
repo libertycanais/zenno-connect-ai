@@ -25,6 +25,7 @@ import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
+import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
@@ -130,6 +131,11 @@ const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
 const AppAutomacoesRoute = AppAutomacoesRouteImport.update({
   id: '/automacoes',
   path: '/automacoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAssinaturaRoute = AppAssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAdminRoute = AppAdminRouteImport.update({
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/admin': typeof AppAdminRouteWithChildren
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
@@ -315,6 +322,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
@@ -352,6 +360,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/admin': typeof AppAdminRouteWithChildren
+  '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/app/admin'
+    | '/app/assinatura'
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
@@ -440,6 +450,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/sitemap.xml'
+    | '/app/assinatura'
     | '/app/integracoes'
     | '/app/settings'
     | '/app'
@@ -476,6 +487,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/app/admin'
+    | '/app/assinatura'
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
@@ -637,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/automacoes'
       fullPath: '/app/automacoes'
       preLoaderRoute: typeof AppAutomacoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/assinatura': {
+      id: '/app/assinatura'
+      path: '/assinatura'
+      fullPath: '/app/assinatura'
+      preLoaderRoute: typeof AppAssinaturaRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/admin': {
@@ -954,6 +973,7 @@ const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
+  AppAssinaturaRoute: typeof AppAssinaturaRoute
   AppAutomacoesRoute: typeof AppAutomacoesRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
@@ -971,6 +991,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRouteWithChildren,
+  AppAssinaturaRoute: AppAssinaturaRoute,
   AppAutomacoesRoute: AppAutomacoesRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
