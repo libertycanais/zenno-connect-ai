@@ -14,9 +14,13 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
+import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
+import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -43,21 +47,42 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWhatsappRoute = AppWhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AppRoute,
+} as any)
+const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppWhatsappRoute,
 } as any)
 const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   id: '/leads/',
   path: '/leads/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AppWhatsappRoute,
+} as any)
 const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
   path: '/leads/kanban',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicWhatsappWebhookInstanceIdRoute =
+  ApiPublicWhatsappWebhookInstanceIdRouteImport.update({
+    id: '/api/public/whatsapp/webhook/$instanceId',
+    path: '/api/public/whatsapp/webhook/$instanceId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,9 +90,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,7 +105,10 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads': typeof AppLeadsIndexRoute
+  '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,9 +117,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/whatsapp/chat': typeof AppWhatsappChatRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,9 +133,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/settings'
+    | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
+    | '/app/whatsapp/chat'
     | '/app/leads/'
+    | '/app/whatsapp/'
+    | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,7 +148,10 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app'
     | '/app/leads/kanban'
+    | '/app/whatsapp/chat'
     | '/app/leads'
+    | '/app/whatsapp'
+    | '/api/public/whatsapp/webhook/$instanceId'
   id:
     | '__root__'
     | '/'
@@ -116,9 +159,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/settings'
+    | '/app/whatsapp'
     | '/app/'
     | '/app/leads/kanban'
+    | '/app/whatsapp/chat'
     | '/app/leads/'
+    | '/app/whatsapp/'
+    | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -126,6 +173,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,12 +213,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/whatsapp': {
+      id: '/app/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/app/whatsapp'
+      preLoaderRoute: typeof AppWhatsappRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/whatsapp/': {
+      id: '/app/whatsapp/'
+      path: '/'
+      fullPath: '/app/whatsapp/'
+      preLoaderRoute: typeof AppWhatsappIndexRouteImport
+      parentRoute: typeof AppWhatsappRoute
     }
     '/app/leads/': {
       id: '/app/leads/'
@@ -179,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/whatsapp/chat': {
+      id: '/app/whatsapp/chat'
+      path: '/chat'
+      fullPath: '/app/whatsapp/chat'
+      preLoaderRoute: typeof AppWhatsappChatRouteImport
+      parentRoute: typeof AppWhatsappRoute
+    }
     '/app/leads/kanban': {
       id: '/app/leads/kanban'
       path: '/leads/kanban'
@@ -186,11 +255,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsKanbanRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/whatsapp/webhook/$instanceId': {
+      id: '/api/public/whatsapp/webhook/$instanceId'
+      path: '/api/public/whatsapp/webhook/$instanceId'
+      fullPath: '/api/public/whatsapp/webhook/$instanceId'
+      preLoaderRoute: typeof ApiPublicWhatsappWebhookInstanceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AppWhatsappRouteChildren {
+  AppWhatsappChatRoute: typeof AppWhatsappChatRoute
+  AppWhatsappIndexRoute: typeof AppWhatsappIndexRoute
+}
+
+const AppWhatsappRouteChildren: AppWhatsappRouteChildren = {
+  AppWhatsappChatRoute: AppWhatsappChatRoute,
+  AppWhatsappIndexRoute: AppWhatsappIndexRoute,
+}
+
+const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
+  AppWhatsappRouteChildren,
+)
+
 interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
+  AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppLeadsKanbanRoute: typeof AppLeadsKanbanRoute
   AppLeadsIndexRoute: typeof AppLeadsIndexRoute
@@ -198,6 +289,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
+  AppWhatsappRoute: AppWhatsappRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppLeadsKanbanRoute: AppLeadsKanbanRoute,
   AppLeadsIndexRoute: AppLeadsIndexRoute,
@@ -210,6 +302,8 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicWhatsappWebhookInstanceIdRoute:
+    ApiPublicWhatsappWebhookInstanceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
