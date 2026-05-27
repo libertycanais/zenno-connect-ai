@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, KanbanSquare, MessageSquare, Megaphone,
-  Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, Sparkles,
+  Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, Sparkles, ShieldCheck,
 } from "lucide-react";
 import { type ReactNode } from "react";
 
@@ -19,6 +19,7 @@ const nav = [
   { to: "/app/automacoes", label: "Automações", icon: Zap },
   { to: "/app/ia", label: "IA", icon: Bot },
   { to: "/app/tickets", label: "Tickets", icon: Ticket },
+  { to: "/app/admin", label: "Admin", icon: ShieldCheck },
   { to: "/app/settings", label: "Configurações", icon: Settings },
 ];
 
