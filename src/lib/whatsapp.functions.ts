@@ -150,3 +150,29 @@ export const sendWhatsAppMessage = createServerFn({ method: "POST" })
     });
     return { ok: true, externalId };
   });
+
+// Admin-only: return the webhook secret for an instance (used to build the webhook URL in the UI)
+export const getInstanceWebhookSecret = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ instanceId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const organization_id = await getOrgId(supabase, userId);
+    const { data: roles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("organization_id", organization_id);
+    const rs = (roles ?? []).map((r: any) => r.role);
+    if (!rs.some((r: string) => r === "owner" || r === "admin")) {
+      throw new Error("Apenas owner/admin podem visualizar o segredo do webhook");
+    }
+    const { data: row, error } = await supabaseAdmin
+      .from("whatsapp_instances")
+      .select("webhook_secret")
+      .eq("id", data.instanceId)
+      .eq("organization_id", organization_id)
+      .single();
+    if (error || !row) throw new Error("Instância não encontrada");
+    return { secret: row.webhook_secret as string };
+  });
