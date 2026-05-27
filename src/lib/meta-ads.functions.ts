@@ -104,7 +104,7 @@ export const syncMetaCampaigns = createServerFn({ method: "POST" })
       lifetime_budget: c.lifetime_budget ? Number(c.lifetime_budget) / 100 : null,
       start_time: c.start_time ? String(c.start_time) : null,
       stop_time: c.stop_time ? String(c.stop_time) : null,
-      raw: c,
+      raw: JSON.parse(JSON.stringify(c)),
       synced_at: new Date().toISOString(),
     }));
     if (rows.length) {
