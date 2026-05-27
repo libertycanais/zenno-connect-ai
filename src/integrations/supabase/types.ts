@@ -14,6 +14,270 @@ export type Database = {
   }
   public: {
     Tables: {
+      google_ad_accounts: {
+        Row: {
+          access_token: string | null
+          connected_by: string | null
+          created_at: string
+          currency: string | null
+          customer_id: string
+          id: string
+          manager_customer_id: string | null
+          name: string
+          organization_id: string
+          refresh_token: string | null
+          status: string
+          timezone: string | null
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          connected_by?: string | null
+          created_at?: string
+          currency?: string | null
+          customer_id: string
+          id?: string
+          manager_customer_id?: string | null
+          name: string
+          organization_id: string
+          refresh_token?: string | null
+          status?: string
+          timezone?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          connected_by?: string | null
+          created_at?: string
+          currency?: string | null
+          customer_id?: string
+          id?: string
+          manager_customer_id?: string | null
+          name?: string
+          organization_id?: string
+          refresh_token?: string | null
+          status?: string
+          timezone?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_ad_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_ads_campaigns: {
+        Row: {
+          account_id: string
+          budget_amount: number | null
+          channel_type: string | null
+          created_at: string
+          end_date: string | null
+          external_id: string
+          id: string
+          name: string
+          organization_id: string
+          raw: Json | null
+          start_date: string | null
+          status: string | null
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          budget_amount?: number | null
+          channel_type?: string | null
+          created_at?: string
+          end_date?: string | null
+          external_id: string
+          id?: string
+          name: string
+          organization_id: string
+          raw?: Json | null
+          start_date?: string | null
+          status?: string | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          budget_amount?: number | null
+          channel_type?: string | null
+          created_at?: string
+          end_date?: string | null
+          external_id?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          raw?: Json | null
+          start_date?: string | null
+          status?: string | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_ads_campaigns_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "google_ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "google_ads_campaigns_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_ads_conversions: {
+        Row: {
+          account_id: string | null
+          conversion_action: string
+          conversion_date_time: string
+          conversion_value: number | null
+          created_at: string
+          currency: string | null
+          error: string | null
+          gclid: string | null
+          id: string
+          order_id: string | null
+          organization_id: string
+          response: Json | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          account_id?: string | null
+          conversion_action: string
+          conversion_date_time?: string
+          conversion_value?: number | null
+          created_at?: string
+          currency?: string | null
+          error?: string | null
+          gclid?: string | null
+          id?: string
+          order_id?: string | null
+          organization_id: string
+          response?: Json | null
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          account_id?: string | null
+          conversion_action?: string
+          conversion_date_time?: string
+          conversion_value?: number | null
+          created_at?: string
+          currency?: string | null
+          error?: string | null
+          gclid?: string | null
+          id?: string
+          order_id?: string | null
+          organization_id?: string
+          response?: Json | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_ads_conversions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "google_ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "google_ads_conversions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_ads_insights: {
+        Row: {
+          account_id: string
+          campaign_id: string | null
+          clicks: number
+          conversions: number
+          cost: number
+          cpc: number | null
+          created_at: string
+          ctr: number | null
+          date_start: string
+          date_stop: string
+          id: string
+          impressions: number
+          organization_id: string
+          raw: Json | null
+        }
+        Insert: {
+          account_id: string
+          campaign_id?: string | null
+          clicks?: number
+          conversions?: number
+          cost?: number
+          cpc?: number | null
+          created_at?: string
+          ctr?: number | null
+          date_start: string
+          date_stop: string
+          id?: string
+          impressions?: number
+          organization_id: string
+          raw?: Json | null
+        }
+        Update: {
+          account_id?: string
+          campaign_id?: string | null
+          clicks?: number
+          conversions?: number
+          cost?: number
+          cpc?: number | null
+          created_at?: string
+          ctr?: number | null
+          date_start?: string
+          date_stop?: string
+          id?: string
+          impressions?: number
+          organization_id?: string
+          raw?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_ads_insights_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "google_ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "google_ads_insights_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "google_ads_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "google_ads_insights_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_activities: {
         Row: {
           activity_type: string
