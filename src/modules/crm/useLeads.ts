@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { dispatchAutomationEvent } from "@/lib/automations.functions";
 import type { Lead, LeadStatus } from "./leadStatus";
 
 export function useLeads() {
@@ -28,6 +29,13 @@ export function useCreateLead() {
         .select()
         .single();
       if (error) throw error;
+      // Fire-and-forget automation dispatch
+      dispatchAutomationEvent({
+        data: {
+          trigger_type: "lead.created",
+          payload: { lead_id: data.id, lead: data },
+        },
+      }).catch((e) => console.error("dispatch lead.created", e));
       return data as Lead;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["leads"] }),
@@ -38,8 +46,16 @@ export function useUpdateLeadStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: LeadStatus }) => {
+      const { data: prev } = await supabase.from("leads").select("status").eq("id", id).single();
       const { error } = await supabase.from("leads").update({ status }).eq("id", id);
       if (error) throw error;
+      const { data: lead } = await supabase.from("leads").select("*").eq("id", id).single();
+      dispatchAutomationEvent({
+        data: {
+          trigger_type: "lead.status_changed",
+          payload: { lead_id: id, from_status: prev?.status, to_status: status, lead },
+        },
+      }).catch((e) => console.error("dispatch lead.status_changed", e));
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["leads"] }),
   });
