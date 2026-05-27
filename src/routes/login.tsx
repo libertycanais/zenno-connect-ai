@@ -55,9 +55,13 @@ function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="items-center text-center">
-          <img src={logo} alt="ZENNO CRM AI" className="h-28 w-auto object-contain mb-2 drop-shadow-[0_0_18px_oklch(0.72_0.18_235/0.45)]" />
-          <h1 className="text-2xl font-semibold">Entrar na sua conta</h1>
+        <CardHeader className="flex flex-col items-center text-center gap-3">
+          <img
+            src={logo}
+            alt="ZENNO CRM AI"
+            className="mx-auto block h-32 w-auto max-w-full object-contain drop-shadow-[0_0_18px_oklch(0.72_0.18_235/0.45)]"
+          />
+          <h1 className="text-2xl font-semibold leading-tight">Entrar na sua conta</h1>
           <CardTitle className="sr-only">Entrar</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
