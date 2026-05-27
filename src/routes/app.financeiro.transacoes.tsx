@@ -91,7 +91,7 @@ function TransactionsPage() {
             </thead>
             <tbody>
               {data.transactions.map((t) => {
-                const cat = (t as { finance_categories?: { name: string; color: string } | null }).finance_categories;
+                const cat = cats?.categories.find((c) => c.id === t.category_id) ?? null;
                 return (
                   <tr key={t.id} className="border-t border-border">
                     <td className="px-3 py-2">{new Date(t.due_date).toLocaleDateString("pt-BR")}</td>
