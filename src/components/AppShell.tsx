@@ -12,7 +12,7 @@ const nav = [
   { to: "/app/leads", label: "Leads", icon: Users },
   { to: "/app/leads/kanban", label: "Pipeline", icon: KanbanSquare },
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
-  { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone, soon: true },
+  { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone },
   { to: "/app/google-ads", label: "Google Ads", icon: Search, soon: true },
   { to: "/app/sigma", label: "Sigma", icon: Server, soon: true },
   { to: "/app/financeiro", label: "Financeiro", icon: DollarSign, soon: true },
