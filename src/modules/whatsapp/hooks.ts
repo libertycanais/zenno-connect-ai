@@ -7,6 +7,7 @@ import {
   refreshInstanceStatus,
   disconnectInstance,
   sendWhatsAppMessage,
+  listInstances,
 } from "@/lib/whatsapp.functions";
 
 export type WAInstance = {
@@ -16,7 +17,6 @@ export type WAInstance = {
   status: "disconnected" | "connecting" | "connected" | "error";
   phone_number: string | null;
   qr_code: string | null;
-  webhook_secret: string;
   created_at: string;
 };
 
