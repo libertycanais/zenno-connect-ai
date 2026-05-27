@@ -18,6 +18,7 @@ import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppTicketsRouteImport } from './routes/app.tickets'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
@@ -25,6 +26,7 @@ import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.inde
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
+import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
 import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
 import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
 import { Route as AppAutomacoesIndexRouteImport } from './routes/app.automacoes.index'
@@ -32,6 +34,7 @@ import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
+import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
 import { Route as AppGoogleAdsConversionsRouteImport } from './routes/app.google-ads.conversions'
 import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-ads.campaigns'
 import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
@@ -86,6 +89,11 @@ const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   path: '/meta-ads',
   getParentRoute: () => AppRoute,
 } as any)
+const AppIaRoute = AppIaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppGoogleAdsRoute = AppGoogleAdsRouteImport.update({
   id: '/google-ads',
   path: '/google-ads',
@@ -121,6 +129,11 @@ const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   path: '/leads/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppIaIndexRoute = AppIaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppIaRoute,
+} as any)
 const AppGoogleAdsIndexRoute = AppGoogleAdsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -155,6 +168,11 @@ const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
   path: '/leads/kanban',
   getParentRoute: () => AppRoute,
+} as any)
+const AppIaQualificarRoute = AppIaQualificarRouteImport.update({
+  id: '/qualificar',
+  path: '/qualificar',
+  getParentRoute: () => AppIaRoute,
 } as any)
 const AppGoogleAdsConversionsRoute = AppGoogleAdsConversionsRouteImport.update({
   id: '/conversions',
@@ -208,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
+  '/app/ia': typeof AppIaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/tickets': typeof AppTicketsRouteWithChildren
@@ -218,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -225,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
+  '/app/ia/': typeof AppIaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -244,6 +265,7 @@ export interface FileRoutesByTo {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -251,6 +273,7 @@ export interface FileRoutesByTo {
   '/app/automacoes': typeof AppAutomacoesIndexRoute
   '/app/financeiro': typeof AppFinanceiroIndexRoute
   '/app/google-ads': typeof AppGoogleAdsIndexRoute
+  '/app/ia': typeof AppIaIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
@@ -268,6 +291,7 @@ export interface FileRoutesById {
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
+  '/app/ia': typeof AppIaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
   '/app/tickets': typeof AppTicketsRouteWithChildren
@@ -278,6 +302,7 @@ export interface FileRoutesById {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -285,6 +310,7 @@ export interface FileRoutesById {
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
+  '/app/ia/': typeof AppIaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -303,6 +329,7 @@ export interface FileRouteTypes {
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
+    | '/app/ia'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/tickets'
@@ -313,6 +340,7 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -320,6 +348,7 @@ export interface FileRouteTypes {
     | '/app/automacoes/'
     | '/app/financeiro/'
     | '/app/google-ads/'
+    | '/app/ia/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/tickets/'
@@ -339,6 +368,7 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -346,6 +376,7 @@ export interface FileRouteTypes {
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
+    | '/app/ia'
     | '/app/leads'
     | '/app/meta-ads'
     | '/app/tickets'
@@ -362,6 +393,7 @@ export interface FileRouteTypes {
     | '/app/automacoes'
     | '/app/financeiro'
     | '/app/google-ads'
+    | '/app/ia'
     | '/app/meta-ads'
     | '/app/settings'
     | '/app/tickets'
@@ -372,6 +404,7 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -379,6 +412,7 @@ export interface FileRouteTypes {
     | '/app/automacoes/'
     | '/app/financeiro/'
     | '/app/google-ads/'
+    | '/app/ia/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/tickets/'
@@ -463,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMetaAdsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ia': {
+      id: '/app/ia'
+      path: '/ia'
+      fullPath: '/app/ia'
+      preLoaderRoute: typeof AppIaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/google-ads': {
       id: '/app/google-ads'
       path: '/google-ads'
@@ -512,6 +553,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ia/': {
+      id: '/app/ia/'
+      path: '/'
+      fullPath: '/app/ia/'
+      preLoaderRoute: typeof AppIaIndexRouteImport
+      parentRoute: typeof AppIaRoute
+    }
     '/app/google-ads/': {
       id: '/app/google-ads/'
       path: '/'
@@ -560,6 +608,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/leads/kanban'
       preLoaderRoute: typeof AppLeadsKanbanRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/ia/qualificar': {
+      id: '/app/ia/qualificar'
+      path: '/qualificar'
+      fullPath: '/app/ia/qualificar'
+      preLoaderRoute: typeof AppIaQualificarRouteImport
+      parentRoute: typeof AppIaRoute
     }
     '/app/google-ads/conversions': {
       id: '/app/google-ads/conversions'
@@ -666,6 +721,18 @@ const AppGoogleAdsRouteWithChildren = AppGoogleAdsRoute._addFileChildren(
   AppGoogleAdsRouteChildren,
 )
 
+interface AppIaRouteChildren {
+  AppIaQualificarRoute: typeof AppIaQualificarRoute
+  AppIaIndexRoute: typeof AppIaIndexRoute
+}
+
+const AppIaRouteChildren: AppIaRouteChildren = {
+  AppIaQualificarRoute: AppIaQualificarRoute,
+  AppIaIndexRoute: AppIaIndexRoute,
+}
+
+const AppIaRouteWithChildren = AppIaRoute._addFileChildren(AppIaRouteChildren)
+
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
@@ -712,6 +779,7 @@ interface AppRouteChildren {
   AppAutomacoesRoute: typeof AppAutomacoesRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
+  AppIaRoute: typeof AppIaRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppSettingsRoute: typeof AppSettingsRoute
   AppTicketsRoute: typeof AppTicketsRouteWithChildren
@@ -725,6 +793,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAutomacoesRoute: AppAutomacoesRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
+  AppIaRoute: AppIaRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppSettingsRoute: AppSettingsRoute,
   AppTicketsRoute: AppTicketsRouteWithChildren,
