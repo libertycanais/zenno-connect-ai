@@ -14,7 +14,7 @@ const nav = [
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
   { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone },
   { to: "/app/google-ads", label: "Google Ads", icon: Search },
-  { to: "/app/sigma", label: "Sigma", icon: Server, soon: true },
+  { to: "/app/sigma", label: "Sigma", icon: Server },
   { to: "/app/financeiro", label: "Financeiro", icon: DollarSign },
   { to: "/app/automacoes", label: "Automações", icon: Zap },
   { to: "/app/ia", label: "IA", icon: Bot },
@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <Icon size={16} /> <span className="flex-1">{item.label}</span>
-                {item.soon && <span className="text-[10px] uppercase opacity-60">soon</span>}
+                {"soon" in item && (item as { soon?: boolean }).soon && <span className="text-[10px] uppercase opacity-60">soon</span>}
               </Link>
             );
           })}
