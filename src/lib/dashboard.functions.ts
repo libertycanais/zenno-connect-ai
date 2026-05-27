@@ -32,7 +32,7 @@ export const getDashboardStats = createServerFn({ method: "GET" })
     ] = await Promise.all([
       supabase.from("leads").select("status").eq("organization_id", orgId),
       supabase.from("leads").select("created_at,status").eq("organization_id", orgId).gte("created_at", sinceIso),
-      supabase.from("finance_transactions").select("type,amount,occurred_at").eq("organization_id", orgId).gte("occurred_at", sinceIso),
+      supabase.from("finance_transactions").select("kind,amount,due_date").eq("organization_id", orgId).gte("due_date", sinceIso.slice(0, 10)),
       supabase.from("whatsapp_instances").select("id,status").eq("organization_id", orgId),
       supabase.from("meta_ad_accounts").select("id").eq("organization_id", orgId),
       supabase.from("google_ad_accounts").select("id").eq("organization_id", orgId),
@@ -67,12 +67,12 @@ export const getDashboardStats = createServerFn({ method: "GET" })
       if (i !== undefined) days[i].leads++;
     });
     (txRes.data ?? []).forEach((t: any) => {
-      const k = (t.occurred_at as string).slice(0, 10);
+      const k = (t.due_date as string).slice(0, 10);
       const i = dayIndex.get(k);
       if (i === undefined) return;
       const amount = Number(t.amount) || 0;
-      if (t.type === "receita") days[i].receita += amount;
-      else if (t.type === "despesa") days[i].despesa += amount;
+      if (t.kind === "income") days[i].receita += amount;
+      else if (t.kind === "expense") days[i].despesa += amount;
     });
 
     const receitaTotal = days.reduce((s, d) => s + d.receita, 0);
@@ -136,7 +136,7 @@ export const getDashboardStats = createServerFn({ method: "GET" })
       integrations,
       tickets: {
         total: tickets.length,
-        abertos: tickets.filter((t: any) => t.status === "open" || t.status === "aberto").length,
+        abertos: tickets.filter((t: any) => t.status === "open").length,
       },
     };
   });
