@@ -16,7 +16,27 @@ const ActionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("send_whatsapp"), instance_id: z.string().uuid(), phone_template: z.string().min(1), message_template: z.string().min(1) }),
   z.object({ type: z.literal("create_activity"), activity_type: z.string().min(1).max(40), content_template: z.string().min(1) }),
   z.object({ type: z.literal("create_transaction"), kind: z.enum(["income", "expense"]), description_template: z.string().min(1), amount: z.number().positive(), due_days: z.number().int().min(0).max(365).default(0) }),
-  z.object({ type: z.literal("webhook"), url: z.string().url(), headers: z.record(z.string(), z.string()).optional() }),
+  z.object({ type: z.literal("webhook"), url: z.string().url().refine((u) => {
+    try {
+      const p = new URL(u);
+      if (p.protocol !== "https:") return false;
+      const host = p.hostname.toLowerCase();
+      if (["localhost", "0.0.0.0", "::", "::1"].includes(host)) return false;
+      if (host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")) return false;
+      const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      if (m) {
+        const a = parseInt(m[1]), b = parseInt(m[2]);
+        if (a === 10 || a === 127 || a === 0) return false;
+        if (a === 169 && b === 254) return false;
+        if (a === 172 && b >= 16 && b <= 31) return false;
+        if (a === 192 && b === 168) return false;
+        if (a === 100 && b >= 64 && b <= 127) return false;
+        if (a >= 224) return false;
+      }
+      if (host.startsWith("[")) return false;
+      return true;
+    } catch { return false; }
+  }, { message: "URL deve ser HTTPS pública (IPs privados/loopback bloqueados)" }), headers: z.record(z.string(), z.string()).optional() }),
 ]);
 
 const TriggerConfig = z.object({
@@ -233,10 +253,31 @@ async function runAction(action: AutomationAction, orgId: string, ctx: Record<st
       return;
     }
     case "webhook": {
+      // Defense in depth: re-validate URL at execution (DNS rebinding not covered, but blocks naive SSRF)
+      let parsed: URL;
+      try { parsed = new URL(action.url); } catch { throw new Error("URL inválida"); }
+      if (parsed.protocol !== "https:") throw new Error("Webhook deve usar HTTPS");
+      const host = parsed.hostname.toLowerCase();
+      const blocked = ["localhost", "0.0.0.0", "::", "::1"].includes(host)
+        || host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")
+        || host.startsWith("[");
+      const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      let blockedIp = false;
+      if (m) {
+        const a = parseInt(m[1]), b = parseInt(m[2]);
+        blockedIp = a === 10 || a === 127 || a === 0
+          || (a === 169 && b === 254)
+          || (a === 172 && b >= 16 && b <= 31)
+          || (a === 192 && b === 168)
+          || (a === 100 && b >= 64 && b <= 127)
+          || a >= 224;
+      }
+      if (blocked || blockedIp) throw new Error("Destino de webhook bloqueado (interno/privado)");
       const res = await fetch(action.url, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(action.headers ?? {}) },
         body: JSON.stringify({ event_payload: ctx, source: "zenno-automations" }),
+        redirect: "manual",
       });
       if (!res.ok) throw new Error(`webhook ${res.status}`);
       return;

@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { randomBytes } from "crypto";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 function appCreds() {
   const id = process.env.GOOGLE_ADS_CLIENT_ID;
@@ -33,10 +34,12 @@ export const startGoogleAdsOAuth = createServerFn({ method: "POST" })
     const { data: prof } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
     if (!prof?.organization_id) throw new Error("Organização não encontrada.");
 
-    const state = randomBytes(16).toString("hex");
-    const payload = Buffer.from(JSON.stringify({ o: prof.organization_id, u: userId, s: state })).toString("base64url");
+    const state = randomBytes(24).toString("hex");
+    await supabaseAdmin.from("oauth_states").insert({
+      state, provider: "google_ads", organization_id: prof.organization_id, user_id: userId,
+    });
     const scope = encodeURIComponent("https://www.googleapis.com/auth/adwords");
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${id}&redirect_uri=${encodeURIComponent(redirectUri())}&scope=${scope}&access_type=offline&prompt=consent&state=${payload}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${id}&redirect_uri=${encodeURIComponent(redirectUri())}&scope=${scope}&access_type=offline&prompt=consent&state=${state}`;
     return { url };
   });
 

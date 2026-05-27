@@ -12,12 +12,17 @@ export const Route = createFileRoute("/api/public/meta/oauth/callback")({
         if (errorParam) return redirectTo(`/app/meta-ads?error=${encodeURIComponent(errorParam)}`);
         if (!code || !stateRaw) return redirectTo("/app/meta-ads?error=missing_params");
 
-        let state: { o: string; u: string; s: string };
-        try {
-          state = JSON.parse(Buffer.from(stateRaw, "base64url").toString());
-        } catch {
+        // Verify + consume the server-side state nonce
+        const { data: stateRow } = await supabaseAdmin
+          .from("oauth_states")
+          .select("organization_id, user_id, expires_at, consumed_at, provider")
+          .eq("state", stateRaw)
+          .maybeSingle();
+        if (!stateRow || stateRow.provider !== "meta" || stateRow.consumed_at || new Date(stateRow.expires_at) < new Date()) {
           return redirectTo("/app/meta-ads?error=invalid_state");
         }
+        await supabaseAdmin.from("oauth_states").update({ consumed_at: new Date().toISOString() }).eq("state", stateRaw);
+        const state = { o: stateRow.organization_id, u: stateRow.user_id };
 
         const appId = process.env.META_APP_ID;
         const appSecret = process.env.META_APP_SECRET;

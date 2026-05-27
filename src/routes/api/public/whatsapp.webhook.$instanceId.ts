@@ -2,20 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 // Webhook receiver for WhatsApp/Uazapi.
-// Configure your Uazapi instance webhook to:
-//   https://<your-app>/api/public/whatsapp/webhook/<instance_id>?secret=<webhook_secret>
+// Configure your Uazapi instance webhook to POST to:
+//   https://<your-app>/api/public/whatsapp/webhook/<instance_id>
+// with header  x-webhook-secret: <webhook_secret>
 // The secret comes from whatsapp_instances.webhook_secret and is rotated per row.
 
 export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")({
   server: {
     handlers: {
       POST: async ({ request, params }) => {
-        const url = new URL(request.url);
-        const secret = url.searchParams.get("secret") ?? request.headers.get("x-webhook-secret");
+        const secret = request.headers.get("x-webhook-secret");
         const instanceId = params.instanceId;
 
         if (!instanceId || !secret) {
-          return new Response("Missing instance or secret", { status: 401 });
+          return new Response("Missing instance or secret header", { status: 401 });
         }
 
         const { data: inst, error: ierr } = await supabaseAdmin

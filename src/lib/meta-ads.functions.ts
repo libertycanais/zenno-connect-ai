@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { createHash, randomBytes } from "crypto";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const GRAPH = "https://graph.facebook.com/v20.0";
 
@@ -29,12 +30,14 @@ export const startMetaOAuth = createServerFn({ method: "POST" })
     const { data: prof } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
     if (!prof?.organization_id) throw new Error("Organização não encontrada.");
 
-    const state = randomBytes(16).toString("hex");
-    // Encode org+user+nonce. In production, persist this to verify on callback.
-    const payload = Buffer.from(JSON.stringify({ o: prof.organization_id, u: userId, s: state })).toString("base64url");
+    const state = randomBytes(24).toString("hex");
+    await supabaseAdmin.from("oauth_states").insert({
+      state, provider: "meta", organization_id: prof.organization_id, user_id: userId,
+    });
 
     const scopes = ["ads_management", "ads_read", "business_management", "pages_show_list"].join(",");
-    const url = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${id}&redirect_uri=${encodeURIComponent(redirectUri())}&state=${payload}&scope=${scopes}&response_type=code`;
+    const url = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${id}&redirect_uri=${encodeURIComponent(redirectUri())}&state=${state}&scope=${scopes}&response_type=code`;
+    return { url };
     return { url };
   });
 

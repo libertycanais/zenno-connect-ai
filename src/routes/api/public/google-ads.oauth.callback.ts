@@ -12,9 +12,16 @@ export const Route = createFileRoute("/api/public/google-ads/oauth/callback")({
         if (err) return redir(`/app/google-ads?error=${encodeURIComponent(err)}`);
         if (!code || !stateRaw) return redir("/app/google-ads?error=missing_params");
 
-        let state: { o: string; u: string; s: string };
-        try { state = JSON.parse(Buffer.from(stateRaw, "base64url").toString()); }
-        catch { return redir("/app/google-ads?error=invalid_state"); }
+        const { data: stateRow } = await supabaseAdmin
+          .from("oauth_states")
+          .select("organization_id, user_id, expires_at, consumed_at, provider")
+          .eq("state", stateRaw)
+          .maybeSingle();
+        if (!stateRow || stateRow.provider !== "google_ads" || stateRow.consumed_at || new Date(stateRow.expires_at) < new Date()) {
+          return redir("/app/google-ads?error=invalid_state");
+        }
+        await supabaseAdmin.from("oauth_states").update({ consumed_at: new Date().toISOString() }).eq("state", stateRaw);
+        const state = { o: stateRow.organization_id, u: stateRow.user_id };
 
         const clientId = process.env.GOOGLE_ADS_CLIENT_ID;
         const clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET;
