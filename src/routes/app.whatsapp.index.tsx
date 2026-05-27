@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { QrCode, RefreshCw, Power, Trash2, Copy } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { getInstanceWebhookSecret } from "@/lib/whatsapp.functions";
 
 export const Route = createFileRoute("/app/whatsapp/")({
   component: InstancesPage,
@@ -24,13 +26,20 @@ function InstancesPage() {
   const refresh = useRefreshInstance();
   const disconnect = useDisconnectInstance();
   const del = useDeleteInstance();
+  const fetchSecret = useServerFn(getInstanceWebhookSecret);
 
-  function copyWebhook(id: string, secret: string) {
-    const origin = window.location.origin;
-    const url = `${origin}/api/public/whatsapp/webhook/${id}?secret=${secret}`;
-    navigator.clipboard.writeText(url);
-    toast.success("Webhook copiado");
+  async function copyWebhook(id: string) {
+    try {
+      const { secret } = await fetchSecret({ data: { instanceId: id } });
+      const origin = window.location.origin;
+      const url = `${origin}/api/public/whatsapp/webhook/${id}`;
+      await navigator.clipboard.writeText(`${url}\nHeader: x-webhook-secret: ${secret}`);
+      toast.success("URL e segredo do webhook copiados");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha ao obter segredo");
+    }
   }
+
 
   return (
     <div className="p-6 space-y-4">
