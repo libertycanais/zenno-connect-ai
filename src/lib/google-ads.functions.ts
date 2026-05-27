@@ -76,16 +76,17 @@ async function refreshAccessToken(refreshToken: string) {
   return { token: j.access_token, expiresIn: j.expires_in ?? 3600 };
 }
 
-async function ensureAccessToken(supabase: ReturnType<typeof import("@supabase/supabase-js").createClient>, accountId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensureAccessToken(supabase: any, accountId: string): Promise<any> {
   const { data: acc, error } = await supabase
     .from("google_ad_accounts")
     .select("id, access_token, refresh_token, token_expires_at, customer_id, manager_customer_id, organization_id")
     .eq("id", accountId).single();
   if (error || !acc) throw new Error("Conta não encontrada.");
-  const exp = acc.token_expires_at ? new Date(acc.token_expires_at as string).getTime() : 0;
+  const exp = acc.token_expires_at ? new Date(acc.token_expires_at).getTime() : 0;
   if (exp - Date.now() > 60_000 && acc.access_token) return acc;
   if (!acc.refresh_token) throw new Error("Sem refresh token. Reconecte.");
-  const { token, expiresIn } = await refreshAccessToken(acc.refresh_token as string);
+  const { token, expiresIn } = await refreshAccessToken(acc.refresh_token);
   const newExp = new Date(Date.now() + expiresIn * 1000).toISOString();
   await supabase.from("google_ad_accounts").update({ access_token: token, token_expires_at: newExp }).eq("id", accountId);
   return { ...acc, access_token: token, token_expires_at: newExp };
