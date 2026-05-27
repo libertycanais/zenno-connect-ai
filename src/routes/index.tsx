@@ -3,11 +3,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sparkles, LayoutDashboard, MessageSquare, BarChart3 } from "lucide-react";
 
+const OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8b26309f-6ab7-4460-8284-486bdf725d21/id-preview-2c6d5c77--0e650211-1366-45fd-8deb-5cada506ca5c.lovable.app-1779810311108.png";
+
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     if (data.session) throw redirect({ to: "/app" });
   },
+  head: () => ({
+    meta: [
+      { title: "ZENNO CRM AI — CRM com WhatsApp, Meta Ads e Google Ads" },
+      { name: "description", content: "Centralize leads, atendimento WhatsApp, campanhas Meta Ads e Google Ads, financeiro e automações com IA em um único CRM multiempresa." },
+      { property: "og:title", content: "ZENNO CRM AI — CRM com WhatsApp, Meta Ads e Google Ads" },
+      { property: "og:description", content: "Centralize leads, atendimento WhatsApp, campanhas Meta Ads e Google Ads, financeiro e automações com IA em um único CRM multiempresa." },
+      { property: "og:url", content: "https://zenno-connect-ai.lovable.app/" },
+      { property: "og:image", content: OG_IMAGE },
+      { name: "twitter:image", content: OG_IMAGE },
+      { name: "twitter:title", content: "ZENNO CRM AI — CRM com WhatsApp, Meta Ads e Google Ads" },
+      { name: "twitter:description", content: "Centralize leads, atendimento WhatsApp, campanhas Meta Ads e Google Ads, financeiro e automações com IA em um único CRM multiempresa." },
+    ],
+    links: [{ rel: "canonical", href: "https://zenno-connect-ai.lovable.app/" }],
+  }),
   component: Landing,
 });
 
