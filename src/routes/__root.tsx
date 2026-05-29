@@ -55,6 +55,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "ZENNO CRM AI" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "google-site-verification", content: "xalsAMFdth45jfL9wHPzUHgHIUKuwulnAuvRExaTNcI" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
     scripts: [
