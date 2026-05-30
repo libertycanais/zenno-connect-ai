@@ -50,6 +50,7 @@ import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financ
 import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as AppAutomacoesExecucoesRouteImport } from './routes/app.automacoes.execucoes'
 import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/public/track.script[.]js'
+import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
@@ -260,6 +261,11 @@ const ApiPublicTrackScriptDotjsRoute =
     path: '/api/public/track/script.js',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicTrackEventRoute = ApiPublicTrackEventRouteImport.update({
+  id: '/api/public/track/event',
+  path: '/api/public/track/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWhatsappWebhookInstanceIdRoute =
   ApiPublicWhatsappWebhookInstanceIdRouteImport.update({
     id: '/api/public/whatsapp/webhook/$instanceId',
@@ -320,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
@@ -451,6 +460,7 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -487,6 +497,7 @@ export interface FileRouteTypes {
     | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
+    | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -533,6 +544,7 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
@@ -545,6 +557,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicTrackEventRoute: typeof ApiPublicTrackEventRoute
   ApiPublicTrackScriptDotjsRoute: typeof ApiPublicTrackScriptDotjsRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
@@ -840,6 +853,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTrackScriptDotjsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/track/event': {
+      id: '/api/public/track/event'
+      path: '/api/public/track/event'
+      fullPath: '/api/public/track/event'
+      preLoaderRoute: typeof ApiPublicTrackEventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/whatsapp/webhook/$instanceId': {
       id: '/api/public/whatsapp/webhook/$instanceId'
       path: '/api/public/whatsapp/webhook/$instanceId'
@@ -1036,6 +1056,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicTrackEventRoute: ApiPublicTrackEventRoute,
   ApiPublicTrackScriptDotjsRoute: ApiPublicTrackScriptDotjsRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,

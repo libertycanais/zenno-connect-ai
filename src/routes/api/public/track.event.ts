@@ -88,7 +88,7 @@ export const Route = createFileRoute("/api/public/track/event")({
           ip,
           user_agent: ua,
           country,
-          raw: json as Record<string, unknown>,
+          raw: JSON.parse(JSON.stringify(json)),
         });
 
         // upsert tracking_leads (first-touch preservada)
@@ -229,7 +229,7 @@ async function dispatchAttribution(
         user_data: JSON.parse(JSON.stringify(user_data)),
         custom_data: JSON.parse(JSON.stringify(custom_data)),
         status: res.ok ? "sent" : "error",
-        response: respJson as Record<string, unknown>,
+        response: JSON.parse(JSON.stringify(respJson ?? {})),
         error: res.ok ? null : `HTTP ${res.status}`,
         sent_at: new Date().toISOString(),
       });
