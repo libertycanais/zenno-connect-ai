@@ -40,15 +40,19 @@ import { Route as AppAdminIndexRouteImport } from './routes/app.admin.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
 import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
+import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tracking'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
+import { Route as AppGoogleAdsTrackingRouteImport } from './routes/app.google-ads.tracking'
 import { Route as AppGoogleAdsConversionsRouteImport } from './routes/app.google-ads.conversions'
 import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-ads.campaigns'
 import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
 import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as AppAutomacoesExecucoesRouteImport } from './routes/app.automacoes.execucoes'
+import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/public/track.script[.]js'
+import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
@@ -208,6 +212,11 @@ const AppSigmaConsoleRoute = AppSigmaConsoleRouteImport.update({
   path: '/console',
   getParentRoute: () => AppSigmaRoute,
 } as any)
+const AppMetaAdsTrackingRoute = AppMetaAdsTrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
+  getParentRoute: () => AppMetaAdsRoute,
+} as any)
 const AppMetaAdsConversionsRoute = AppMetaAdsConversionsRouteImport.update({
   id: '/conversions',
   path: '/conversions',
@@ -227,6 +236,11 @@ const AppIaQualificarRoute = AppIaQualificarRouteImport.update({
   id: '/qualificar',
   path: '/qualificar',
   getParentRoute: () => AppIaRoute,
+} as any)
+const AppGoogleAdsTrackingRoute = AppGoogleAdsTrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
+  getParentRoute: () => AppGoogleAdsRoute,
 } as any)
 const AppGoogleAdsConversionsRoute = AppGoogleAdsConversionsRouteImport.update({
   id: '/conversions',
@@ -252,6 +266,17 @@ const AppAutomacoesExecucoesRoute = AppAutomacoesExecucoesRouteImport.update({
   id: '/execucoes',
   path: '/execucoes',
   getParentRoute: () => AppAutomacoesRoute,
+} as any)
+const ApiPublicTrackScriptDotjsRoute =
+  ApiPublicTrackScriptDotjsRouteImport.update({
+    id: '/api/public/track/script.js',
+    path: '/api/public/track/script.js',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicTrackEventRoute = ApiPublicTrackEventRouteImport.update({
+  id: '/api/public/track/event',
+  path: '/api/public/track/event',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicWhatsappWebhookInstanceIdRoute =
   ApiPublicWhatsappWebhookInstanceIdRouteImport.update({
@@ -296,10 +321,12 @@ export interface FileRoutesByFullPath {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -313,6 +340,8 @@ export interface FileRoutesByFullPath {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
+  '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -331,10 +360,12 @@ export interface FileRoutesByTo {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -348,6 +379,8 @@ export interface FileRoutesByTo {
   '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
+  '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -377,10 +410,12 @@ export interface FileRoutesById {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -394,6 +429,8 @@ export interface FileRoutesById {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/api/public/track/event': typeof ApiPublicTrackEventRoute
+  '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -424,10 +461,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -441,6 +480,8 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/api/public/track/event'
+    | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -459,10 +500,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -476,6 +519,8 @@ export interface FileRouteTypes {
     | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
+    | '/api/public/track/event'
+    | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -504,10 +549,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -521,6 +568,8 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/api/public/track/event'
+    | '/api/public/track/script.js'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -532,6 +581,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicTrackEventRoute: typeof ApiPublicTrackEventRoute
+  ApiPublicTrackScriptDotjsRoute: typeof ApiPublicTrackScriptDotjsRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -756,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSigmaConsoleRouteImport
       parentRoute: typeof AppSigmaRoute
     }
+    '/app/meta-ads/tracking': {
+      id: '/app/meta-ads/tracking'
+      path: '/tracking'
+      fullPath: '/app/meta-ads/tracking'
+      preLoaderRoute: typeof AppMetaAdsTrackingRouteImport
+      parentRoute: typeof AppMetaAdsRoute
+    }
     '/app/meta-ads/conversions': {
       id: '/app/meta-ads/conversions'
       path: '/conversions'
@@ -783,6 +841,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/ia/qualificar'
       preLoaderRoute: typeof AppIaQualificarRouteImport
       parentRoute: typeof AppIaRoute
+    }
+    '/app/google-ads/tracking': {
+      id: '/app/google-ads/tracking'
+      path: '/tracking'
+      fullPath: '/app/google-ads/tracking'
+      preLoaderRoute: typeof AppGoogleAdsTrackingRouteImport
+      parentRoute: typeof AppGoogleAdsRoute
     }
     '/app/google-ads/conversions': {
       id: '/app/google-ads/conversions'
@@ -818,6 +883,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/automacoes/execucoes'
       preLoaderRoute: typeof AppAutomacoesExecucoesRouteImport
       parentRoute: typeof AppAutomacoesRoute
+    }
+    '/api/public/track/script.js': {
+      id: '/api/public/track/script.js'
+      path: '/api/public/track/script.js'
+      fullPath: '/api/public/track/script.js'
+      preLoaderRoute: typeof ApiPublicTrackScriptDotjsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/track/event': {
+      id: '/api/public/track/event'
+      path: '/api/public/track/event'
+      fullPath: '/api/public/track/event'
+      preLoaderRoute: typeof ApiPublicTrackEventRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/whatsapp/webhook/$instanceId': {
       id: '/api/public/whatsapp/webhook/$instanceId'
@@ -888,12 +967,14 @@ const AppFinanceiroRouteWithChildren = AppFinanceiroRoute._addFileChildren(
 interface AppGoogleAdsRouteChildren {
   AppGoogleAdsCampaignsRoute: typeof AppGoogleAdsCampaignsRoute
   AppGoogleAdsConversionsRoute: typeof AppGoogleAdsConversionsRoute
+  AppGoogleAdsTrackingRoute: typeof AppGoogleAdsTrackingRoute
   AppGoogleAdsIndexRoute: typeof AppGoogleAdsIndexRoute
 }
 
 const AppGoogleAdsRouteChildren: AppGoogleAdsRouteChildren = {
   AppGoogleAdsCampaignsRoute: AppGoogleAdsCampaignsRoute,
   AppGoogleAdsConversionsRoute: AppGoogleAdsConversionsRoute,
+  AppGoogleAdsTrackingRoute: AppGoogleAdsTrackingRoute,
   AppGoogleAdsIndexRoute: AppGoogleAdsIndexRoute,
 }
 
@@ -916,12 +997,14 @@ const AppIaRouteWithChildren = AppIaRoute._addFileChildren(AppIaRouteChildren)
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
+  AppMetaAdsTrackingRoute: typeof AppMetaAdsTrackingRoute
   AppMetaAdsIndexRoute: typeof AppMetaAdsIndexRoute
 }
 
 const AppMetaAdsRouteChildren: AppMetaAdsRouteChildren = {
   AppMetaAdsCampaignsRoute: AppMetaAdsCampaignsRoute,
   AppMetaAdsConversionsRoute: AppMetaAdsConversionsRoute,
+  AppMetaAdsTrackingRoute: AppMetaAdsTrackingRoute,
   AppMetaAdsIndexRoute: AppMetaAdsIndexRoute,
 }
 
@@ -1015,6 +1098,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicTrackEventRoute: ApiPublicTrackEventRoute,
+  ApiPublicTrackScriptDotjsRoute: ApiPublicTrackScriptDotjsRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
