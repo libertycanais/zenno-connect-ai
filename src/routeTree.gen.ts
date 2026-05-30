@@ -40,10 +40,12 @@ import { Route as AppAdminIndexRouteImport } from './routes/app.admin.index'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
 import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
+import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tracking'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
+import { Route as AppGoogleAdsTrackingRouteImport } from './routes/app.google-ads.tracking'
 import { Route as AppGoogleAdsConversionsRouteImport } from './routes/app.google-ads.conversions'
 import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-ads.campaigns'
 import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
@@ -210,6 +212,11 @@ const AppSigmaConsoleRoute = AppSigmaConsoleRouteImport.update({
   path: '/console',
   getParentRoute: () => AppSigmaRoute,
 } as any)
+const AppMetaAdsTrackingRoute = AppMetaAdsTrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
+  getParentRoute: () => AppMetaAdsRoute,
+} as any)
 const AppMetaAdsConversionsRoute = AppMetaAdsConversionsRouteImport.update({
   id: '/conversions',
   path: '/conversions',
@@ -229,6 +236,11 @@ const AppIaQualificarRoute = AppIaQualificarRouteImport.update({
   id: '/qualificar',
   path: '/qualificar',
   getParentRoute: () => AppIaRoute,
+} as any)
+const AppGoogleAdsTrackingRoute = AppGoogleAdsTrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
+  getParentRoute: () => AppGoogleAdsRoute,
 } as any)
 const AppGoogleAdsConversionsRoute = AppGoogleAdsConversionsRouteImport.update({
   id: '/conversions',
@@ -309,10 +321,12 @@ export interface FileRoutesByFullPath {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -346,10 +360,12 @@ export interface FileRoutesByTo {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -394,10 +410,12 @@ export interface FileRoutesById {
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
   '/app/google-ads/campaigns': typeof AppGoogleAdsCampaignsRoute
   '/app/google-ads/conversions': typeof AppGoogleAdsConversionsRoute
+  '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
@@ -443,10 +461,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -480,10 +500,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -527,10 +549,12 @@ export interface FileRouteTypes {
     | '/app/financeiro/transacoes'
     | '/app/google-ads/campaigns'
     | '/app/google-ads/conversions'
+    | '/app/google-ads/tracking'
     | '/app/ia/qualificar'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
@@ -783,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSigmaConsoleRouteImport
       parentRoute: typeof AppSigmaRoute
     }
+    '/app/meta-ads/tracking': {
+      id: '/app/meta-ads/tracking'
+      path: '/tracking'
+      fullPath: '/app/meta-ads/tracking'
+      preLoaderRoute: typeof AppMetaAdsTrackingRouteImport
+      parentRoute: typeof AppMetaAdsRoute
+    }
     '/app/meta-ads/conversions': {
       id: '/app/meta-ads/conversions'
       path: '/conversions'
@@ -810,6 +841,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/ia/qualificar'
       preLoaderRoute: typeof AppIaQualificarRouteImport
       parentRoute: typeof AppIaRoute
+    }
+    '/app/google-ads/tracking': {
+      id: '/app/google-ads/tracking'
+      path: '/tracking'
+      fullPath: '/app/google-ads/tracking'
+      preLoaderRoute: typeof AppGoogleAdsTrackingRouteImport
+      parentRoute: typeof AppGoogleAdsRoute
     }
     '/app/google-ads/conversions': {
       id: '/app/google-ads/conversions'
@@ -929,12 +967,14 @@ const AppFinanceiroRouteWithChildren = AppFinanceiroRoute._addFileChildren(
 interface AppGoogleAdsRouteChildren {
   AppGoogleAdsCampaignsRoute: typeof AppGoogleAdsCampaignsRoute
   AppGoogleAdsConversionsRoute: typeof AppGoogleAdsConversionsRoute
+  AppGoogleAdsTrackingRoute: typeof AppGoogleAdsTrackingRoute
   AppGoogleAdsIndexRoute: typeof AppGoogleAdsIndexRoute
 }
 
 const AppGoogleAdsRouteChildren: AppGoogleAdsRouteChildren = {
   AppGoogleAdsCampaignsRoute: AppGoogleAdsCampaignsRoute,
   AppGoogleAdsConversionsRoute: AppGoogleAdsConversionsRoute,
+  AppGoogleAdsTrackingRoute: AppGoogleAdsTrackingRoute,
   AppGoogleAdsIndexRoute: AppGoogleAdsIndexRoute,
 }
 
@@ -957,12 +997,14 @@ const AppIaRouteWithChildren = AppIaRoute._addFileChildren(AppIaRouteChildren)
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
+  AppMetaAdsTrackingRoute: typeof AppMetaAdsTrackingRoute
   AppMetaAdsIndexRoute: typeof AppMetaAdsIndexRoute
 }
 
 const AppMetaAdsRouteChildren: AppMetaAdsRouteChildren = {
   AppMetaAdsCampaignsRoute: AppMetaAdsCampaignsRoute,
   AppMetaAdsConversionsRoute: AppMetaAdsConversionsRoute,
+  AppMetaAdsTrackingRoute: AppMetaAdsTrackingRoute,
   AppMetaAdsIndexRoute: AppMetaAdsIndexRoute,
 }
 
@@ -1066,3 +1108,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
