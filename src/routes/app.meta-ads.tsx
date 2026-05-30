@@ -10,6 +10,7 @@ function MetaAdsLayout() {
     { to: "/app/meta-ads", label: "Contas", exact: true },
     { to: "/app/meta-ads/campaigns", label: "Campanhas" },
     { to: "/app/meta-ads/conversions", label: "Conversion API" },
+    { to: "/app/meta-ads/tracking", label: "Rastreio" },
   ];
   return (
     <div className="flex flex-col h-screen">
