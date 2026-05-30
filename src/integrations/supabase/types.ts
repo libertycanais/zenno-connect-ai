@@ -917,18 +917,21 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          tracking_public_key: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
+          tracking_public_key?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
+          tracking_public_key?: string
           updated_at?: string
         }
         Relationships: []
@@ -1228,6 +1231,209 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      tracking_events: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          currency: string | null
+          email: string | null
+          event_name: string
+          event_source_url: string | null
+          external_id: string | null
+          fbclid: string | null
+          gbraid: string | null
+          gclid: string | null
+          id: string
+          ip: string | null
+          msclkid: string | null
+          organization_id: string
+          page_title: string | null
+          phone: string | null
+          raw: Json | null
+          referrer: string | null
+          session_id: string
+          ttclid: string | null
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_id: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          value: number | null
+          wbraid: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          currency?: string | null
+          email?: string | null
+          event_name: string
+          event_source_url?: string | null
+          external_id?: string | null
+          fbclid?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          ip?: string | null
+          msclkid?: string | null
+          organization_id: string
+          page_title?: string | null
+          phone?: string | null
+          raw?: Json | null
+          referrer?: string | null
+          session_id: string
+          ttclid?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_id?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value?: number | null
+          wbraid?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          currency?: string | null
+          email?: string | null
+          event_name?: string
+          event_source_url?: string | null
+          external_id?: string | null
+          fbclid?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          ip?: string | null
+          msclkid?: string | null
+          organization_id?: string
+          page_title?: string | null
+          phone?: string | null
+          raw?: Json | null
+          referrer?: string | null
+          session_id?: string
+          ttclid?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_id?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          value?: number | null
+          wbraid?: string | null
+        }
+        Relationships: []
+      }
+      tracking_leads: {
+        Row: {
+          conversion_value: number
+          created_at: string
+          email: string | null
+          events_count: number
+          first_fbclid: string | null
+          first_gclid: string | null
+          first_landing_url: string | null
+          first_referrer: string | null
+          first_seen_at: string
+          first_utm_campaign: string | null
+          first_utm_content: string | null
+          first_utm_id: string | null
+          first_utm_medium: string | null
+          first_utm_source: string | null
+          first_utm_term: string | null
+          id: string
+          last_fbclid: string | null
+          last_gclid: string | null
+          last_seen_at: string
+          last_utm_campaign: string | null
+          last_utm_medium: string | null
+          last_utm_source: string | null
+          lead_id: string | null
+          name: string | null
+          organization_id: string
+          phone: string | null
+          session_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          conversion_value?: number
+          created_at?: string
+          email?: string | null
+          events_count?: number
+          first_fbclid?: string | null
+          first_gclid?: string | null
+          first_landing_url?: string | null
+          first_referrer?: string | null
+          first_seen_at?: string
+          first_utm_campaign?: string | null
+          first_utm_content?: string | null
+          first_utm_id?: string | null
+          first_utm_medium?: string | null
+          first_utm_source?: string | null
+          first_utm_term?: string | null
+          id?: string
+          last_fbclid?: string | null
+          last_gclid?: string | null
+          last_seen_at?: string
+          last_utm_campaign?: string | null
+          last_utm_medium?: string | null
+          last_utm_source?: string | null
+          lead_id?: string | null
+          name?: string | null
+          organization_id: string
+          phone?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          conversion_value?: number
+          created_at?: string
+          email?: string | null
+          events_count?: number
+          first_fbclid?: string | null
+          first_gclid?: string | null
+          first_landing_url?: string | null
+          first_referrer?: string | null
+          first_seen_at?: string
+          first_utm_campaign?: string | null
+          first_utm_content?: string | null
+          first_utm_id?: string | null
+          first_utm_medium?: string | null
+          first_utm_source?: string | null
+          first_utm_term?: string | null
+          id?: string
+          last_fbclid?: string | null
+          last_gclid?: string | null
+          last_seen_at?: string
+          last_utm_campaign?: string | null
+          last_utm_medium?: string | null
+          last_utm_source?: string | null
+          lead_id?: string | null
+          name?: string | null
+          organization_id?: string
+          phone?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracking_leads_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
