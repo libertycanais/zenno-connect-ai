@@ -8,6 +8,7 @@ function GoogleAdsLayout() {
     { to: "/app/google-ads", label: "Contas", exact: true },
     { to: "/app/google-ads/campaigns", label: "Campanhas" },
     { to: "/app/google-ads/conversions", label: "Conversões Offline" },
+    { to: "/app/google-ads/tracking", label: "Rastreio" },
   ];
   return (
     <div className="flex flex-col h-screen">
