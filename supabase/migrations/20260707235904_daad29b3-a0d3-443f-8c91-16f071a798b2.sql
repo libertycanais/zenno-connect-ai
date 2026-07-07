@@ -1,0 +1,1 @@
+CREATE POLICY "deny all rate limits" ON public.tracking_rate_limits FOR ALL TO anon, authenticated USING (false) WITH CHECK (false);
