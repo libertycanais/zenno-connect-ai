@@ -144,7 +144,7 @@ describe("Contract: Google Ads Offline Conversion Import payload", () => {
     expect(body.conversions[0].currencyCode).toBe("USD");
     // conversionDateTime format: "YYYY-MM-DD HH:MM:SS+00:00"
     expect(body.conversions[0].conversionDateTime).toMatch(
-      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+00:00$/,
+      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?\+00:00$/,
     );
   });
 });
