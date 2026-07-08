@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { clientIp, rateLimitHit, tooManyRequests } from "@/lib/rate-limit.server";
 
 export const Route = createFileRoute("/api/public/google-ads/oauth/callback")({
   server: {
