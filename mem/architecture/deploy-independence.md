@@ -27,9 +27,16 @@ Separação: Frontend → Backend/API → Postgres → Redis/BullMQ → Serviço
 - Código server-only nunca no client bundle.
 - Segredos apenas no backend. Funções internas autenticadas.
 
-## 5. Integrações externas — camada de abstração
-Toda integração (Meta Ads, Google Ads, WhatsApp/Uazapi, pagamentos Asaas/MP/Stripe, IA, webhooks) deve ter interface própria que permita trocar provider.
-Padrão: `Provider Interface` → `MetaProvider | GoogleProvider | WhatsAppProvider | PaymentProvider`.
+## 5. Integrações externas — camada de abstração (REGRA CRÍTICA)
+**Nenhum módulo novo pode depender diretamente de fornecedor externo.** Toda integração passa por interface/provider layer. Consumer importa a interface, nunca o SDK do provider.
+
+Padrão obrigatório:
+- `PaymentProvider` → `StripeProvider | MercadoPagoProvider | AsaasProvider`
+- `AIProvider` → `LovableAI | OpenAI | Anthropic`
+- `WhatsAppProvider` → `Uazapi | WABA | Outros`
+- `AdsProvider` → `MetaProvider | GoogleProvider`
+
+Objetivo: evitar lock-in em Uazapi, Lovable AI, Supabase, ou qualquer gateway específico.
 
 ## 6. Infraestrutura (backlog documentado)
 - Dockerfile
