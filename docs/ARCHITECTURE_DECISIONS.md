@@ -358,16 +358,17 @@ de APIs internas (chamadas do frontend autenticado).
   webhooks, cron e endpoints públicos.
 - **Middleware `requireSupabaseAuth`** obrigatório em toda server
   function que acessa dados protegidos.
-- **BullMQ + Redis** planejados como camada de jobs assíncronos
-  (worker atualmente é placeholder no compose).
-- **Workers** rodam em processo separado quando ativados; leem da mesma
-  fila Redis.
+- **Fila de jobs (BullMQ + Redis)** foi originalmente cogitada mas **não
+  faz parte da baseline v1.0 congelada**: Cloudflare Workers não executa
+  processos Node persistentes. Jobs assíncronos hoje são resolvidos por
+  `pg_cron`, triggers e endpoints `/api/public/*` idempotentes. Uma futura
+  adoção (Cloudflare Queues ou worker Node externo) exige **novo ADR**.
 
 ### Alternativas avaliadas
 - **API REST monolítica** (`/api/v1/...`): perde tipagem ponta-a-ponta.
 - **tRPC**: sobreposto ao que `createServerFn` já oferece nativamente.
-- **Fila em Postgres (LISTEN/NOTIFY)**: aceitável em escala pequena, não
-  substitui BullMQ em cargas reais.
+- **Fila em Postgres (LISTEN/NOTIFY)** e **`pg_cron`**: adotados na baseline
+  para tarefas agendadas; suficientes na escala atual.
 
 ### Consequências positivas
 - Auth centralizada; contratos públicos isolados em `/api/public/*`.
