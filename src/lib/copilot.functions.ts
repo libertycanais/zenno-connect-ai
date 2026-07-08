@@ -58,15 +58,69 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "pause_campaign",
+      description: "Pausa uma campanha. Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string", description: "UUID da campanha (id local no banco)" },
+        },
+        required: ["platform", "campaign_id"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "resume_campaign",
+      description: "Reativa uma campanha pausada. Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string" },
+        },
+        required: ["platform", "campaign_id"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "update_daily_budget",
+      description: "Ajusta o orçamento diário de uma campanha em reais (BRL). Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string" },
+          new_daily_budget_brl: { type: "number", description: "Novo valor em BRL, ex: 50 = R$ 50/dia" },
+        },
+        required: ["platform", "campaign_id", "new_daily_budget_brl"],
+        additionalProperties: false,
+      },
+    },
+  },
 ] as const;
 
+const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget"]);
+
 // ---------- Tool executor (runs server-side with user's supabase client) ----------
+type ToolCtx = { supabase: any; orgId: string; userId: string; convId: string; toolCallId: string };
+
 async function runTool(
   name: string,
   args: Record<string, unknown>,
-  supabase: any,
-  orgId: string,
+  ctx: ToolCtx,
 ): Promise<unknown> {
+  const { supabase, orgId, userId, convId, toolCallId } = ctx;
+
   if (name === "list_client_accounts") {
     const [meta, google] = await Promise.all([
       supabase
@@ -164,10 +218,81 @@ async function runTool(
     return { total: r.data?.length ?? 0, by_source: bySource, sample: (r.data ?? []).slice(0, 20) };
   }
 
+  if (WRITE_TOOLS.has(name)) {
+    return await stagePendingAction(name, args, ctx);
+  }
+
   return { error: `tool_unknown:${name}` };
 }
 
-// ---------- Helper: call gateway ----------
+async function stagePendingAction(
+  name: string,
+  args: Record<string, unknown>,
+  ctx: ToolCtx,
+): Promise<unknown> {
+  const { supabase, orgId, userId, convId, toolCallId } = ctx;
+  const platform = String(args.platform ?? "");
+  const campaignId = String(args.campaign_id ?? "");
+  if (!platform || !campaignId) {
+    return { error: "missing_platform_or_campaign_id" };
+  }
+
+  // resolve campaign name + ownership check
+  let campaignName = campaignId;
+  let accountRowId: string | null = null;
+  if (platform === "meta") {
+    const { data } = await supabase
+      .from("meta_campaigns")
+      .select("id, name, ad_account_id, organization_id, daily_budget, status")
+      .eq("id", campaignId).maybeSingle();
+    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+    campaignName = data.name;
+    accountRowId = data.ad_account_id;
+  } else if (platform === "google") {
+    const { data } = await supabase
+      .from("google_ads_campaigns")
+      .select("id, name, account_id, organization_id, budget_amount, status")
+      .eq("id", campaignId).maybeSingle();
+    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+    campaignName = data.name;
+    accountRowId = data.account_id;
+  } else {
+    return { error: "invalid_platform" };
+  }
+
+  let preview = "";
+  if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+  else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+  else if (name === "update_daily_budget") {
+    const brl = Number(args.new_daily_budget_brl ?? 0);
+    preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+  }
+
+  const { data: pending, error } = await supabase
+    .from("ai_copilot_pending_actions")
+    .insert({
+      organization_id: orgId,
+      conversation_id: convId,
+      user_id: userId,
+      tool_name: name,
+      tool_call_id: toolCallId,
+      tool_args: args,
+      preview,
+      platform,
+      account_id: accountRowId,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+  if (error) return { error: `pending_action_error: ${error.message}` };
+
+  return {
+    status: "pending_approval",
+    pending_id: pending.id,
+    preview,
+    message: "Ação aguardando aprovação do usuário. NÃO foi executada ainda.",
+  };
+}
 async function callGateway(payload: unknown) {
   const apiKey = process.env.LOVABLE_API_KEY;
   if (!apiKey) throw new Error("LOVABLE_API_KEY ausente. Habilite Lovable AI.");
@@ -192,7 +317,9 @@ Regras:
 - Responda em português do Brasil, direto ao ponto, com bullets curtos.
 - Formate valores monetários em BRL (R$).
 - Se o usuário pedir algo sem ter contas conectadas, sugira ir em /app/integracoes.
-- Você está em modo LEITURA: ainda não pode criar/pausar campanhas — quando pedirem uma ação de escrita, explique o que faria e diga que a execução automática estará disponível em breve.`;
+- Para pausar/reativar campanhas ou ajustar orçamentos, use as ferramentas de escrita — elas SEMPRE pedem aprovação humana antes de executar de fato. Explique o que vai fazer, chame a tool e diga que a ação ficou pendente aguardando o clique do usuário.
+- Nunca invente IDs de campanha; primeiro liste com list_campaigns.`;
+
 
 // ---------- Main server function ----------
 export const copilotChat = createServerFn({ method: "POST" })
@@ -295,7 +422,9 @@ export const copilotChat = createServerFn({ method: "POST" })
           } catch {
             args = {};
           }
-          const result = await runTool(tc.function.name, args, supabase, orgId);
+          const result = await runTool(tc.function.name, args, {
+            supabase, orgId, userId, convId: convId!, toolCallId: tc.id,
+          });
           const resultStr = JSON.stringify(result).slice(0, 8000);
           await supabase.from("ai_copilot_messages").insert({
             conversation_id: convId,
@@ -353,9 +482,95 @@ export const getCopilotConversation = createServerFn({ method: "GET" })
     const { supabase } = context;
     const { data: msgs, error } = await supabase
       .from("ai_copilot_messages")
-      .select("id, role, content, tool_name, created_at")
+      .select("id, role, content, tool_name, tool_call_id, created_at")
       .eq("conversation_id", data.id)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
     return { messages: msgs ?? [] };
+  });
+
+// ================= PENDING ACTIONS =================
+export const listPendingActions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ conversationId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await context.supabase
+      .from("ai_copilot_pending_actions")
+      .select("id, tool_name, tool_call_id, tool_args, preview, platform, status, result, error, executed_at, created_at")
+      .eq("conversation_id", data.conversationId)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    return { actions: rows ?? [] };
+  });
+
+export const rejectPendingAction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("ai_copilot_pending_actions")
+      .update({ status: "rejected" })
+      .eq("id", data.id)
+      .eq("status", "pending");
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const approvePendingAction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: pa, error: perr } = await supabase
+      .from("ai_copilot_pending_actions")
+      .select("id, conversation_id, organization_id, tool_name, tool_args, platform, status, preview")
+      .eq("id", data.id).single();
+    if (perr || !pa) throw new Error("Ação não encontrada.");
+    if (pa.status !== "pending") throw new Error(`Ação já processada (${pa.status}).`);
+
+    const args = (pa.tool_args ?? {}) as Record<string, unknown>;
+    const campaignId = String(args.campaign_id ?? "");
+    const platform = String(args.platform ?? pa.platform ?? "");
+
+    const exec = await import("./copilot-executors.server");
+    let result: unknown;
+    try {
+      if (pa.tool_name === "pause_campaign") {
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { status: "PAUSED" })
+          : await exec.googleUpdateCampaignStatus(supabase, campaignId, "PAUSED");
+      } else if (pa.tool_name === "resume_campaign") {
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { status: "ACTIVE" })
+          : await exec.googleUpdateCampaignStatus(supabase, campaignId, "ENABLED");
+      } else if (pa.tool_name === "update_daily_budget") {
+        const brl = Number(args.new_daily_budget_brl ?? 0);
+        if (!(brl > 0)) throw new Error("Orçamento inválido.");
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { daily_budget_cents: Math.round(brl * 100) })
+          : await exec.googleUpdateCampaignBudget(supabase, campaignId, Math.round(brl * 1_000_000));
+      } else {
+        throw new Error(`Ferramenta desconhecida: ${pa.tool_name}`);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      await supabase.from("ai_copilot_pending_actions")
+        .update({ status: "failed", error: msg })
+        .eq("id", pa.id);
+      throw new Error(msg);
+    }
+
+    await supabase.from("ai_copilot_pending_actions")
+      .update({ status: "executed", result: result as any, executed_at: new Date().toISOString() })
+      .eq("id", pa.id);
+
+    // Log a system message so the model sees the outcome on next turn
+    await supabase.from("ai_copilot_messages").insert({
+      conversation_id: pa.conversation_id,
+      organization_id: pa.organization_id,
+      role: "assistant",
+      content: `✅ Ação executada: ${pa.preview}`,
+    });
+
+    return { ok: true };
   });

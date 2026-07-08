@@ -1,100 +1,62 @@
 
-# Contas gerenciadoras + Copiloto Claude
+# Copiloto Tráfego — Fase de escrita (com aprovação)
 
-Dois blocos independentes que se combinam: **(1)** permitir que gestores de tráfego conectem uma conta **gerenciadora** (Google Ads MCC e Meta Business Manager) e enxerguem/gerenciem várias contas de clientes a partir dela, e **(2)** um copiloto Claude que lê dados dessas contas, sugere e (com aprovação) sobe/otimiza campanhas.
+Adicionar ao Copiloto a capacidade de **executar ações** em Meta Ads e Google Ads (pausar/retomar campanha, ajustar orçamento), sempre com **cartão de confirmação** no chat antes de qualquer chamada real às APIs. Também sincroniza a resposta em **streaming** para melhor UX.
 
----
+## O que muda
 
-## Parte 1 — Contas gerenciadoras (MCC / Business Manager)
+### 1. Ações pendentes (tabela nova)
+`ai_copilot_pending_actions` — cada tool call de escrita vira uma linha `pending` que o usuário aprova/rejeita.
 
-Hoje o app conecta 1 conta por OAuth e salva em `google_ad_accounts` / `meta_ad_accounts`. Vou estender para gerenciadoras:
+Colunas: `conversation_id`, `message_id`, `tool_name`, `tool_args (jsonb)`, `preview (text)`, `platform`, `account_id`, `status` (pending/approved/rejected/executed/failed), `result (jsonb)`, `executed_at`.
 
-**Google Ads (MCC)**
-- No callback OAuth, além de `customers:listAccessibleCustomers`, chamar `customer/{id}/googleAds:searchStream` com `SELECT customer_client.* FROM customer_client` para descobrir todos os clientes vinculados ao MCC.
-- Novo campo `is_manager` + `manager_customer_id` (já existe) em `google_ad_accounts`. Cada cliente é uma linha filha do MCC.
-- Todas as chamadas de API dos clientes usam header `login-customer-id: <mcc_id>`.
+RLS por `organization_id` (via profile do user).
 
-**Meta (Business Manager)**
-- Após OAuth, chamar `GET /me/businesses` → para cada business, `GET /{business_id}/owned_ad_accounts` e `/client_ad_accounts`.
-- Novos campos `business_id`, `business_name`, `is_client_account` em `meta_ad_accounts`.
+### 2. Novas tools no Copiloto (server-side)
 
-**UI**
-- Nova tela `/app/clientes` com:
-  - Lista agrupada por gerenciadora (MCC / BM).
-  - Badge de plataforma, status, moeda, gasto do mês.
-  - Botão "Definir como cliente ativo" (contexto global salvo em `localStorage` + `current_client_account_id` na sessão).
-- Tabelas de campanhas passam a filtrar pelo cliente ativo automaticamente.
-- Botão "Sincronizar todos os clientes" no MCC/BM (job em background que popula `meta_campaigns` e `google_ads_campaigns` para cada filho).
+Todas com `needs_approval: true` — o handler **não executa**: retorna um preview e registra a pending action.
 
-**Segurança**
-- RLS por `organization_id` mantida.
-- Só quem tem role `owner`/`admin` na org pode conectar/desconectar gerenciadora.
-
----
-
-## Parte 2 — Copiloto Claude para campanhas
-
-Sub-agente de IA especializado em tráfego pago, com **ferramentas** (tool use) que ele mesmo invoca — o usuário aprova antes de qualquer escrita.
-
-**Backend**
-- `POST /api/public/ai/traffic-copilot` (server function autenticada, `createServerFn` com `requireSupabaseAuth`).
-- Provedor: **Lovable AI Gateway** com modelo Anthropic (`anthropic/claude-sonnet-4.5`). Sem pedir API key do usuário — usa `LOVABLE_API_KEY` já configurada.
-- Streaming via AI SDK (`streamText`) com `stopWhen: stepCountIs(50)`.
-
-**Ferramentas expostas ao Claude** (todas com `needsApproval` nas de escrita):
-| Tool | Tipo | O que faz |
+| Tool | Args | O que faz depois de aprovado |
 |---|---|---|
-| `list_client_accounts` | leitura | Retorna contas do cliente ativo |
-| `get_campaign_performance` | leitura | Métricas (CTR, CPA, ROAS, gasto) por período |
-| `get_creatives` | leitura | Lista anúncios + preview |
-| `search_audiences` | leitura | Públicos salvos do BM |
-| `create_campaign` | **escrita** | Cria campanha rascunho (Meta/Google) |
-| `create_adset` | **escrita** | Cria conjunto com segmentação + orçamento |
-| `create_ad` | **escrita** | Sobe criativo + copy |
-| `pause_campaign` / `resume_campaign` | **escrita** | Liga/desliga |
-| `update_budget` | **escrita** | Ajusta orçamento diário |
-| `duplicate_and_test` | **escrita** | Duplica adset trocando 1 variável (teste A/B) |
+| `pause_campaign` | `platform`, `campaign_id` | `POST /{id}` status=PAUSED (Meta) / `mutate` status=PAUSED (Google) |
+| `resume_campaign` | `platform`, `campaign_id` | idem, ACTIVE/ENABLED |
+| `update_daily_budget` | `platform`, `campaign_id`, `new_daily_budget_cents` | update do daily_budget |
 
-Cada tool de escrita retorna um **card de confirmação** no chat: "Vou criar campanha X com R$ 50/dia mirando público Y. Confirmar?" — só executa após clique.
+Cada uma valida ownership: a campanha precisa pertencer a `organization_id` do user (via `meta_campaigns`/`google_ads_campaigns`).
 
-**Auto-otimização (opcional, off por padrão)**
-- Nova tabela `ai_optimization_rules`: `{ account_id, trigger (ex: CPA > 30 por 3 dias), action (ex: reduzir budget 20%), enabled }`.
-- Cron diário (pg_cron → endpoint público assinado) roda regras e loga ações em `ai_optimization_runs`.
+### 3. Fluxo de aprovação
 
-**UI**
-- Nova rota `/app/ia/copiloto` — chat estilo Claude com:
-  - Seletor de cliente ativo no topo.
-  - Sugestões rápidas: "Analisar contas que estão gastando sem converter", "Sugerir 3 novas campanhas para cliente X", "Otimizar orçamentos da semana".
-  - Renderização de tool calls com badges (🔍 lendo dados / ⚡ vai executar / ✅ executado).
-  - Timeline de ações executadas por conta.
+- Modelo chama `pause_campaign` → runTool retorna `{ status: "pending_approval", pending_id, preview: "Vou pausar 'Campanha X' (Meta)" }` e insere linha em `ai_copilot_pending_actions`.
+- Frontend renderiza card no chat com botões **Aprovar** / **Rejeitar**.
+- **Aprovar** chama `approvePendingAction({ id })` (createServerFn autenticado) — executa a chamada real à API do provedor (usando tokens em `meta_ad_accounts`/`google_ad_accounts`) e atualiza `status=executed` + `result`.
+- **Rejeitar** chama `rejectPendingAction({ id })` — marca como `rejected`.
+- Nova mensagem de sistema `"Ação aprovada: pausada com sucesso"` volta para o loop do modelo na próxima interação.
 
----
+### 4. UI (`src/routes/app.ia.copiloto.tsx`)
+- Detecta mensagens tool com payload `status: pending_approval` e renderiza `<PendingActionCard>` com preview + 2 botões.
+- Após aprovar/rejeitar, refetch da conversa.
+- Badges já existentes: 🔍 leitura / ⚡ aguardando aprovação / ✅ executada / ❌ rejeitada.
 
-## Tabelas novas
+### 5. Executores (server-only)
+- `src/lib/copilot-executors.server.ts`
+  - `executeMetaPauseResume(account, campaign_id, status)` → `POST graph.facebook.com/v20.0/{id}` com `access_token` da conta.
+  - `executeMetaBudget(account, campaign_id, cents)` → mesmo endpoint com `daily_budget`.
+  - `executeGoogleAdsPauseResume(account, campaign_id, status)` → `customers/{cid}/campaigns:mutate` com `login-customer-id` do MCC quando aplicável.
+  - `executeGoogleAdsBudget(...)` → similar, ajustando `campaign_budget`.
+- Refresh de token OAuth quando expirado (já existe helper Google; adicionar Meta se necessário — usar long-lived token).
 
-```sql
-ai_copilot_conversations (id, org_id, user_id, client_account_id, title, created_at)
-ai_copilot_messages (id, conversation_id, role, content jsonb, tool_calls jsonb, created_at)
-ai_optimization_rules (id, org_id, account_id, platform, trigger jsonb, action jsonb, enabled, created_at)
-ai_optimization_runs (id, rule_id, triggered_at, result jsonb, status)
-```
-Todas com RLS por `organization_id` e GRANTs para `authenticated` + `service_role`.
+### 6. Streaming (opcional nesta entrega — feito depois)
+Manter fase 1 sem streaming para simplificar; deixar `copilotChat` como está com resposta completa.
 
----
+## Ordem de execução
 
-## Ordem de entrega
-
-1. **MCC/BM discovery** — expandir OAuth callbacks + migration com campos novos.
-2. **Tela `/app/clientes`** + contexto de cliente ativo.
-3. **Sync em lote** de campanhas dos filhos.
-4. **Copiloto (leitura)** — chat + tools de leitura, sem escrita ainda.
-5. **Copiloto (escrita)** — tools de create/pause/update com cards de aprovação.
-6. **Regras de auto-otimização** (opcional, ligar depois).
-
----
+1. **Migration** — cria `ai_copilot_pending_actions` + RLS + GRANTs.
+2. **`copilot-executors.server.ts`** — 4 executores (Meta pause/budget, Google pause/budget) com verificação de ownership.
+3. **`copilot.functions.ts`** — adicionar 3 tools (`pause_campaign`, `resume_campaign`, `update_daily_budget`), lógica de "criar pending action em vez de executar", + 2 novas server fns `approvePendingAction`, `rejectPendingAction`, + `listPendingActions`.
+4. **`app.ia.copiloto.tsx`** — componente `<PendingActionCard>` com botões, integração no render de mensagens tool.
+5. Ajustar SYSTEM_PROMPT: dizer que agora pode executar mas sempre exige confirmação.
 
 ## Perguntas antes de começar
 
-1. **Escopo inicial:** entrego **tudo** (Parte 1 + 2 completas) ou começo só pela **Parte 1** (gerenciadoras) e o copiloto vem depois?
-2. **Auto-otimização automática** (regras que rodam sozinhas no cron) você quer nessa fase ou só o copiloto assistido por chat?
-3. Confirma usar **Claude via Lovable AI Gateway** (sem você precisar dar API key da Anthropic)? Custo sai dos créditos Lovable.
+1. **Escopo destas tools**: começo com **pause/resume/update_budget** apenas (mais seguros, reversíveis) ou já incluo `create_campaign`/`create_adset` nesta rodada (muito mais complexo, ~2x o trabalho)?
+2. Auto-otimização por regras (cron) fica para próxima entrega — confirma?

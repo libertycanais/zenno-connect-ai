@@ -2,11 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { copilotChat, listCopilotConversations, getCopilotConversation } from "@/lib/copilot.functions";
+import {
+  copilotChat,
+  listCopilotConversations,
+  getCopilotConversation,
+  listPendingActions,
+  approvePendingAction,
+  rejectPendingAction,
+} from "@/lib/copilot.functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Bot, Send, Sparkles, User, Wrench, Plus, MessageSquare } from "lucide-react";
+import { Bot, Send, Sparkles, User, Wrench, Plus, MessageSquare, Check, X, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -20,12 +27,15 @@ export const Route = createFileRoute("/app/ia/copiloto")({
   }),
 });
 
-type Msg = { id?: string; role: "user" | "assistant" | "tool"; content: string; tool_name?: string | null };
+type Msg = { id?: string; role: "user" | "assistant" | "tool"; content: string; tool_name?: string | null; tool_call_id?: string | null };
 
 function CopilotoPage() {
   const chat = useServerFn(copilotChat);
   const listConv = useServerFn(listCopilotConversations);
   const getConv = useServerFn(getCopilotConversation);
+  const listPending = useServerFn(listPendingActions);
+  const approveFn = useServerFn(approvePendingAction);
+  const rejectFn = useServerFn(rejectPendingAction);
   const qc = useQueryClient();
 
   const [convId, setConvId] = useState<string | null>(null);
@@ -43,6 +53,35 @@ function CopilotoPage() {
     enabled: !!convId,
   });
 
+  const pendingQ = useQuery({
+    queryKey: ["copilot-pending", convId],
+    queryFn: () => (convId ? listPending({ data: { conversationId: convId } }) : Promise.resolve({ actions: [] })),
+    enabled: !!convId,
+    refetchInterval: 4000,
+  });
+
+  const pendingByCallId = new Map<string, any>();
+  for (const a of pendingQ.data?.actions ?? []) {
+    if (a.tool_call_id) pendingByCallId.set(a.tool_call_id, a);
+  }
+
+  const approveMut = useMutation({
+    mutationFn: (id: string) => approveFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Ação executada");
+      qc.invalidateQueries({ queryKey: ["copilot-pending", convId] });
+      qc.invalidateQueries({ queryKey: ["copilot-conv", convId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const rejectMut = useMutation({
+    mutationFn: (id: string) => rejectFn({ data: { id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["copilot-pending", convId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const [pending, setPending] = useState<Msg[]>([]);
   const messages: Msg[] = [
     ...((msgsQ.data?.messages ?? []) as any[]).map((m) => ({
@@ -50,6 +89,7 @@ function CopilotoPage() {
       role: m.role as Msg["role"],
       content: m.content ?? "",
       tool_name: m.tool_name,
+      tool_call_id: m.tool_call_id,
     })),
     ...pending,
   ];
@@ -152,6 +192,54 @@ function CopilotoPage() {
 
           {messages.map((m, i) => {
             if (m.role === "tool") {
+              const pa = m.tool_call_id ? pendingByCallId.get(m.tool_call_id) : undefined;
+              if (pa) {
+                const isPending = pa.status === "pending";
+                const isExecuted = pa.status === "executed";
+                const isRejected = pa.status === "rejected";
+                const isFailed = pa.status === "failed";
+                return (
+                  <Card key={m.id ?? i} className="p-4 border-primary/40 bg-primary/5">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="text-primary shrink-0 mt-0.5" size={18} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                          {isPending && "Aguardando aprovação"}
+                          {isExecuted && "Executado"}
+                          {isRejected && "Rejeitado"}
+                          {isFailed && "Falhou"}
+                        </div>
+                        <div className="text-sm font-medium">{pa.preview}</div>
+                        {isFailed && pa.error && (
+                          <div className="text-xs text-destructive mt-1">{pa.error}</div>
+                        )}
+                        {isPending && (
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              size="sm"
+                              onClick={() => approveMut.mutate(pa.id)}
+                              disabled={approveMut.isPending}
+                              className="gap-1"
+                            >
+                              {approveMut.isPending ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                              Aprovar e executar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => rejectMut.mutate(pa.id)}
+                              disabled={rejectMut.isPending}
+                              className="gap-1"
+                            >
+                              <X size={14} /> Rejeitar
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                );
+              }
               return (
                 <div key={m.id ?? i} className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Wrench size={12} />
