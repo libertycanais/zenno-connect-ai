@@ -24,6 +24,7 @@ import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
+import { Route as AppClientesRouteImport } from './routes/app.clientes'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
 import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
@@ -131,6 +132,11 @@ const AppGoogleAdsRoute = AppGoogleAdsRouteImport.update({
 const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
   id: '/financeiro',
   path: '/financeiro',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesRoute = AppClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAutomacoesRoute = AppAutomacoesRouteImport.update({
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AppAdminRouteWithChildren
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
+  '/app/clientes': typeof AppClientesRoute
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
@@ -359,6 +366,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/assinatura': typeof AppAssinaturaRoute
+  '/app/clientes': typeof AppClientesRoute
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/app/admin': typeof AppAdminRouteWithChildren
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
+  '/app/clientes': typeof AppClientesRoute
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/assinatura'
     | '/app/automacoes'
+    | '/app/clientes'
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/app/assinatura'
+    | '/app/clientes'
     | '/app/integracoes'
     | '/app/settings'
     | '/app'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/assinatura'
     | '/app/automacoes'
+    | '/app/clientes'
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
@@ -706,6 +718,13 @@ declare module '@tanstack/react-router' {
       path: '/financeiro'
       fullPath: '/app/financeiro'
       preLoaderRoute: typeof AppFinanceiroRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clientes': {
+      id: '/app/clientes'
+      path: '/clientes'
+      fullPath: '/app/clientes'
+      preLoaderRoute: typeof AppClientesRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/automacoes': {
@@ -1078,6 +1097,7 @@ interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssinaturaRoute: typeof AppAssinaturaRoute
   AppAutomacoesRoute: typeof AppAutomacoesRouteWithChildren
+  AppClientesRoute: typeof AppClientesRoute
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppIaRoute: typeof AppIaRouteWithChildren
@@ -1096,6 +1116,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRouteWithChildren,
   AppAssinaturaRoute: AppAssinaturaRoute,
   AppAutomacoesRoute: AppAutomacoesRouteWithChildren,
+  AppClientesRoute: AppClientesRoute,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppIaRoute: AppIaRouteWithChildren,
