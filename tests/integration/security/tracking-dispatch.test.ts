@@ -124,7 +124,7 @@ describe("Tracking dispatch — CAPI / Google offline (WS-6)", () => {
         "POST",
         makeJsonRequest("http://api/api/public/track/event", {
           pk: "pk_valid_1234567", session_id: "sess_no_lead", event_name: "pageview",
-          email: "x@y.z",
+          email: "user@example.com",
         }, { headers: { origin: "https://shop.example.com" } }),
       );
       expect(called).toBe(0);
@@ -173,7 +173,7 @@ describe("Tracking dispatch — CAPI / Google offline (WS-6)", () => {
         "POST",
         makeJsonRequest("http://api/api/public/track/event", {
           pk: "pk_valid_1234567", session_id: "sess_secret_1", event_name: "Lead",
-          email: "x@y.z",
+          email: "user@example.com",
         }, { headers: { origin: "https://shop.example.com" } }),
       );
       const body = await res.text();
