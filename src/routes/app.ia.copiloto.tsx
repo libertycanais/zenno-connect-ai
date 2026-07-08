@@ -44,7 +44,15 @@ function CopilotoPage() {
   });
 
   const [pending, setPending] = useState<Msg[]>([]);
-  const messages: Msg[] = [...(msgsQ.data?.messages ?? []), ...pending];
+  const messages: Msg[] = [
+    ...((msgsQ.data?.messages ?? []) as any[]).map((m) => ({
+      id: m.id,
+      role: m.role as Msg["role"],
+      content: m.content ?? "",
+      tool_name: m.tool_name,
+    })),
+    ...pending,
+  ];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

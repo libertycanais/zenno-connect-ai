@@ -208,15 +208,14 @@ export const copilotChat = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    // Resolve org
-    const { data: member } = await supabase
-      .from("organization_members")
+    // Resolve org from profile
+    const { data: profile } = await supabase
+      .from("profiles")
       .select("organization_id")
-      .eq("user_id", userId)
-      .limit(1)
+      .eq("id", userId)
       .maybeSingle();
-    if (!member) throw new Error("Sem organização vinculada.");
-    const orgId = member.organization_id;
+    if (!profile?.organization_id) throw new Error("Sem organização vinculada.");
+    const orgId = profile.organization_id as string;
 
     // Get/create conversation
     let convId = data.conversationId ?? null;
