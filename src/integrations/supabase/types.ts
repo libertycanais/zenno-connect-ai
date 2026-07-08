@@ -1493,8 +1493,20 @@ export type Database = {
       }
       whatsapp_chats: {
         Row: {
+          attributed_at: string | null
           avatar_url: string | null
+          conversion_currency: string | null
+          conversion_status: string
+          conversion_value: number | null
+          converted_at: string | null
           created_at: string
+          first_fbclid: string | null
+          first_gclid: string | null
+          first_landing_url: string | null
+          first_utm_campaign: string | null
+          first_utm_content: string | null
+          first_utm_source: string | null
+          first_utm_term: string | null
           id: string
           instance_id: string
           last_message_at: string | null
@@ -1503,12 +1515,27 @@ export type Database = {
           name: string | null
           organization_id: string
           phone: string
+          tracking_lead_id: string | null
+          tracking_session_id: string | null
+          tracking_short_code: string | null
           unread_count: number
           updated_at: string
         }
         Insert: {
+          attributed_at?: string | null
           avatar_url?: string | null
+          conversion_currency?: string | null
+          conversion_status?: string
+          conversion_value?: number | null
+          converted_at?: string | null
           created_at?: string
+          first_fbclid?: string | null
+          first_gclid?: string | null
+          first_landing_url?: string | null
+          first_utm_campaign?: string | null
+          first_utm_content?: string | null
+          first_utm_source?: string | null
+          first_utm_term?: string | null
           id?: string
           instance_id: string
           last_message_at?: string | null
@@ -1517,12 +1544,27 @@ export type Database = {
           name?: string | null
           organization_id: string
           phone: string
+          tracking_lead_id?: string | null
+          tracking_session_id?: string | null
+          tracking_short_code?: string | null
           unread_count?: number
           updated_at?: string
         }
         Update: {
+          attributed_at?: string | null
           avatar_url?: string | null
+          conversion_currency?: string | null
+          conversion_status?: string
+          conversion_value?: number | null
+          converted_at?: string | null
           created_at?: string
+          first_fbclid?: string | null
+          first_gclid?: string | null
+          first_landing_url?: string | null
+          first_utm_campaign?: string | null
+          first_utm_content?: string | null
+          first_utm_source?: string | null
+          first_utm_term?: string | null
           id?: string
           instance_id?: string
           last_message_at?: string | null
@@ -1531,6 +1573,9 @@ export type Database = {
           name?: string | null
           organization_id?: string
           phone?: string
+          tracking_lead_id?: string | null
+          tracking_session_id?: string | null
+          tracking_short_code?: string | null
           unread_count?: number
           updated_at?: string
         }
@@ -1554,6 +1599,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_chats_tracking_lead_id_fkey"
+            columns: ["tracking_lead_id"]
+            isOneToOne: false
+            referencedRelation: "tracking_leads"
             referencedColumns: ["id"]
           },
         ]
@@ -1693,6 +1745,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      whatsapp_tracking_codes: {
+        Row: {
+          code: string
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          organization_id: string
+          phone: string | null
+          session_id: string
+        }
+        Insert: {
+          code: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          organization_id: string
+          phone?: string | null
+          session_id: string
+        }
+        Update: {
+          code?: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          organization_id?: string
+          phone?: string | null
+          session_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
