@@ -129,3 +129,60 @@ function ChatPage() {
     </div>
   );
 }
+
+function ConversionButton({ chatId, isCustomer }: { chatId: string; isCustomer: boolean }) {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [currency, setCurrency] = useState("BRL");
+  const mark = useServerFn(markWhatsappConversion);
+  const mut = useMutation({
+    mutationFn: (input: { status: "customer" | "lost" | "lead"; value?: number; currency?: string }) =>
+      mark({ data: { chatId, ...input } }),
+    onSuccess: (r) => {
+      toast.success(r.dispatched ? "Venda registrada e enviada para CAPI" : "Status atualizado");
+      qc.invalidateQueries({ queryKey: ["wa-chats"] });
+      setOpen(false);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (isCustomer) {
+    return (
+      <Button size="sm" variant="ghost" onClick={() => mut.mutate({ status: "lead" })}>
+        <X size={14} className="mr-1" />Desmarcar venda
+      </Button>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="default"><DollarSign size={14} className="mr-1" />Marcar venda</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Registrar venda</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-muted-foreground">Valor</label>
+            <Input type="number" step="0.01" value={value} onChange={(e) => setValue(e.target.value)} placeholder="297.00" />
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground">Moeda</label>
+            <Input value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase().slice(0, 3))} />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Dispara Purchase para Meta CAPI (via fbclid) e Google Offline Conversion (via gclid) se a conversa tiver atribuição.
+          </p>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+          <Button
+            disabled={mut.isPending}
+            onClick={() => mut.mutate({ status: "customer", value: value ? Number(value) : undefined, currency })}
+          >Confirmar venda</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
