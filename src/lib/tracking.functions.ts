@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { normalizeAllowedOrigins } from "@/lib/tracking-security";
 
 export const getTrackingConfig = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -110,12 +111,7 @@ export const updateTrackingOrigins = createServerFn({ method: "POST" })
     });
     if (!isOwner && !isAdmin) throw new Error("Somente owner/admin pode alterar domínios do rastreio.");
 
-    // normaliza: remove protocolo/caminho, lowercase, sem duplicatas
-    const normalized = Array.from(new Set(
-      data.origins
-        .map((o) => o.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, ""))
-        .filter((o) => o.length > 0 && /^(\*\.)?[a-z0-9.-]+\.[a-z]{2,}$/.test(o)),
-    ));
+    const normalized = normalizeAllowedOrigins(data.origins);
 
     const { error } = await supabase
       .from("organizations")

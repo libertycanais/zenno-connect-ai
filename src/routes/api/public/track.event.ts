@@ -1,42 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-
-const baseCors = {
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Max-Age": "600",
-  Vary: "Origin",
-};
-
-function corsFor(origin: string | null) {
-  return { ...baseCors, "Access-Control-Allow-Origin": origin ?? "*" };
-}
-
-function hostOf(url: string | null): string | null {
-  if (!url) return null;
-  try { return new URL(url).hostname.toLowerCase(); } catch { return null; }
-}
-
-function normalizeAllowed(entry: string): string | null {
-  const t = entry.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
-  return t || null;
-}
-
-function originAllowed(reqHost: string | null, allowed: string[]): boolean {
-  if (!reqHost) return false;
-  return allowed.some((a) => {
-    const n = normalizeAllowed(a);
-    if (!n) return false;
-    if (n.startsWith("*.")) {
-      const suffix = n.slice(1); // ".dominio.com"
-      return reqHost === n.slice(2) || reqHost.endsWith(suffix);
-    }
-    return reqHost === n;
-  });
-}
-
-const RATE_LIMIT_PER_MINUTE = 60;
+import {
+  corsFor,
+  hostOf,
+  normalizeAllowedOrigins,
+  originAllowed,
+  safeTrackingAuditData,
+  TRACKING_IP_RATE_LIMIT_PER_MINUTE,
+  TRACKING_PUBLIC_KEY_RATE_LIMIT_PER_MINUTE,
+  trackingRateLimitKeys,
+} from "@/lib/tracking-security";
 
 const payloadSchema = z.object({
   pk: z.string().min(8).max(80),
@@ -93,11 +67,42 @@ export const Route = createFileRoute("/api/public/track/event")({
           .maybeSingle();
         if (!org) return errResp(400, "invalid_pk", cors);
 
-        const allowed = ((org as { tracking_allowed_origins?: string[] | null }).tracking_allowed_origins ?? []) as string[];
-        // Se a org configurou allowlist e a origem não bate → rejeita.
-        // Se ainda não configurou → aceita a coleta mas NÃO dispara CAPI/Google (blast radius zero).
+        const allowed = normalizeAllowedOrigins(
+          (org as { tracking_allowed_origins?: string[] | null }).tracking_allowed_origins,
+        );
         const originIsAllowed = allowed.length > 0 && originAllowed(reqHost, allowed);
-        if (allowed.length > 0 && !originIsAllowed) {
+        if (allowed.length === 0) {
+          await auditSuspiciousTracking({
+            orgId: org.id,
+            reason: "missing_allowed_origins",
+            reqHost,
+            originHeader,
+            refererHeader,
+            eventName: data.event_name,
+            sessionId: data.session_id,
+            allowedCount: allowed.length,
+            ip: request.headers.get("cf-connecting-ip")
+              || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+              || null,
+            userAgent: request.headers.get("user-agent"),
+          });
+          return errResp(403, "origin_not_allowed", cors);
+        }
+        if (!originIsAllowed) {
+          await auditSuspiciousTracking({
+            orgId: org.id,
+            reason: reqHost ? "origin_not_allowed" : "missing_request_origin",
+            reqHost,
+            originHeader,
+            refererHeader,
+            eventName: data.event_name,
+            sessionId: data.session_id,
+            allowedCount: allowed.length,
+            ip: request.headers.get("cf-connecting-ip")
+              || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+              || null,
+            userAgent: request.headers.get("user-agent"),
+          });
           return errResp(403, "origin_not_allowed", cors);
         }
 
@@ -107,13 +112,37 @@ export const Route = createFileRoute("/api/public/track/event")({
         const ua = request.headers.get("user-agent");
         const country = request.headers.get("cf-ipcountry");
 
-        // Rate limit: 60 eventos/min por (org, ip)
-        const { data: throttled } = await supabaseAdmin.rpc("track_rate_limit_hit", {
-          _org: org.id,
-          _ip: ip ?? "unknown",
-          _max: RATE_LIMIT_PER_MINUTE,
-        });
-        if (throttled === true) return errResp(429, "rate_limited", cors);
+        const safeIp = ip ?? "unknown";
+        const rateLimitKeys = trackingRateLimitKeys(org.id, data.pk, safeIp);
+        const [{ data: ipThrottled }, { data: publicKeyThrottled }] = await Promise.all([
+          supabaseAdmin.rpc("track_rate_limit_hit", {
+            _org: org.id,
+            _ip: safeIp,
+            _key: rateLimitKeys.ipKey,
+            _max: TRACKING_IP_RATE_LIMIT_PER_MINUTE,
+          }),
+          supabaseAdmin.rpc("track_rate_limit_hit", {
+            _org: org.id,
+            _ip: safeIp,
+            _key: rateLimitKeys.publicKeyKey,
+            _max: TRACKING_PUBLIC_KEY_RATE_LIMIT_PER_MINUTE,
+          }),
+        ]);
+        if (ipThrottled === true || publicKeyThrottled === true) {
+          await auditSuspiciousTracking({
+            orgId: org.id,
+            reason: publicKeyThrottled === true ? "public_key_rate_limited" : "ip_rate_limited",
+            reqHost,
+            originHeader,
+            refererHeader,
+            eventName: data.event_name,
+            sessionId: data.session_id,
+            allowedCount: allowed.length,
+            ip,
+            userAgent: ua,
+          });
+          return errResp(429, "rate_limited", cors);
+        }
 
         await supabaseAdmin.from("tracking_events").insert({
           organization_id: org.id,
@@ -203,8 +232,6 @@ export const Route = createFileRoute("/api/public/track/event")({
           });
         }
 
-        // Só dispara CAPI/Google quando a origem foi validada contra a allowlist.
-        // Isso remove o vetor de abuso de conta de anúncios com pk vazada.
         if (originIsAllowed
             && (data.event_name === "lead" || data.event_name === "Lead"
               || data.event_name === "purchase" || data.event_name === "Purchase")) {
@@ -225,6 +252,45 @@ function errResp(status: number, code: string, cors: Record<string, string>) {
     status,
     headers: { ...cors, "Content-Type": "application/json" },
   });
+}
+
+async function auditSuspiciousTracking(params: {
+  orgId: string;
+  reason: string;
+  reqHost: string | null;
+  originHeader: string | null;
+  refererHeader: string | null;
+  eventName: string | null;
+  sessionId: string | null;
+  allowedCount: number;
+  ip: string | null;
+  userAgent: string | null;
+}) {
+  try {
+    await supabaseAdmin.rpc("app_write_audit_log", {
+      _actor_user_id: null as unknown as string,
+      _actor_org_id: params.orgId,
+      _action: "TRACKING_REJECTED",
+      _entity_type: "tracking_event",
+      _entity_id: params.sessionId ?? null as unknown as string,
+      _old_data: null,
+      _new_data: safeTrackingAuditData({
+        reason: params.reason,
+        requestHost: params.reqHost,
+        allowedOriginsCount: params.allowedCount,
+        hasOrigin: Boolean(params.originHeader),
+        hasReferer: Boolean(params.refererHeader),
+        eventName: params.eventName,
+        sessionId: params.sessionId,
+      }),
+      _request_id: null,
+      _trace_id: null,
+      _ip: params.ip,
+      _user_agent: params.userAgent,
+    });
+  } catch {
+    // Audit logging is best-effort; never expose internals to public callers.
+  }
 }
 
 async function dispatchAttribution(
