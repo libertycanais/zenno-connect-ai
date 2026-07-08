@@ -81,8 +81,12 @@ describe.skipIf(!HAS_PG)("WS-7 — RLS coverage on sensitive tables", () => {
   });
 
   it("cross-tenant: every RLS policy references organization_id, auth.uid(), has_role or current_org_id", () => {
+    // regexp_replace collapses newlines + our pipe delimiter so the psql
+    // helper's line-based parser stays aligned.
     const rows = psql(
-      `select tablename, policyname, coalesce(qual,'') || ' ' || coalesce(with_check,''), coalesce(array_to_string(roles,','),'')
+      `select tablename, policyname,
+              regexp_replace(coalesce(qual,'') || ' ' || coalesce(with_check,''), '[\\r\\n|]+', ' ', 'g'),
+              coalesce(array_to_string(roles,','),'')
        from pg_policies where schemaname='public'
          and tablename in (${SENSITIVE_TABLES.map((t) => `'${t}'`).join(",")})`,
     );
@@ -92,7 +96,7 @@ describe.skipIf(!HAS_PG)("WS-7 — RLS coverage on sensitive tables", () => {
         /auth\.uid\(\)/.test(body) ||
         /has_role\(/.test(body) ||
         /current_org_id\(/.test(body);
-      // Service-role-only policies are fine to be permissive (RLS is bypassed anyway).
+      // Service-role-only policies are permissive by design (RLS is bypassed).
       const isServiceRoleOnly = roles === "service_role";
       expect(
         hasTenantGuard || isServiceRoleOnly,

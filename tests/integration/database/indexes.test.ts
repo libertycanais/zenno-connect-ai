@@ -26,13 +26,15 @@ const REQUIRED_INDEXES: Array<[string, RegExp]> = [
 
 describe.skipIf(!HAS_PG)("WS-7 — critical indexes", () => {
   it.each(REQUIRED_INDEXES)("%s has an index matching %s", (table, pattern) => {
-    const idx = psqlColumn(
-      `select indexname from pg_indexes where schemaname='public' and tablename='${table}'`,
+    // Match against the full index definition (includes column names + PK)
+    // so tables that satisfy the criterion via their PK still pass.
+    const defs = psqlColumn(
+      `select indexdef from pg_indexes where schemaname='public' and tablename='${table}'`,
     );
-    expect(idx.length, `${table} has no indexes`).toBeGreaterThan(0);
+    expect(defs.length, `${table} has no indexes`).toBeGreaterThan(0);
     expect(
-      idx.some((i) => pattern.test(i)),
-      `no index on ${table} matching ${pattern}, got: ${idx.join(", ")}`,
+      defs.some((d) => pattern.test(d)),
+      `no index on ${table} matching ${pattern}, got: ${defs.join(" | ")}`,
     ).toBe(true);
   });
 

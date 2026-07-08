@@ -64,24 +64,14 @@ describe.skipIf(!HAS_PG)("WS-7 — audit_log append-only + partitions", () => {
     }
   });
 
-  it("attempting UPDATE / DELETE on audit_log raises 'append-only' via the trigger", () => {
-    // Run in a rolled-back transaction so we never mutate real data.
-    // psql exit is non-zero on error → wrap in a DO block that captures.
-    const rows = psql(
-      `do $$
-         declare msg text;
-       begin
-         begin
-           update public.audit_log set action = action where false;
-         exception when others then
-           msg := SQLERRM;
-         end;
-         perform 1 where msg is not null and msg like '%append-only%';
-         if msg is null then raise exception 'update did not raise'; end if;
-         raise notice 'ok:%', msg;
-       end $$;
-       select 'ok';`,
-    );
-    expect(rows[0]?.[0]).toBe("ok");
+  it("attempting UPDATE on audit_log raises 'append-only' via the trigger", () => {
+    // psql exits non-zero when the statement raises, so use a try/catch.
+    let msg = "";
+    try {
+      psql(`update public.audit_log set action = action where false`);
+    } catch (e) {
+      msg = e instanceof Error ? e.message : String(e);
+    }
+    expect(msg).toContain("append-only");
   });
 });
