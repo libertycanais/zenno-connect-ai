@@ -3,7 +3,7 @@
  * the row we insert into a keyed bucket, which is naturally bounded).
  */
 import { describe, expect, it } from "vitest";
-import { HAS_PG, psqlScalar } from "@tests/helpers/pg";
+import { HAS_PG, psqlColumn, psqlScalar } from "@tests/helpers/pg";
 
 describe.skipIf(!HAS_PG)("WS-7 — rate-limit functions", () => {
   it("global_rate_limit_hit returns false on first call and true after exceeding limit", () => {
