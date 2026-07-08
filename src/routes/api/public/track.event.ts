@@ -272,7 +272,7 @@ async function auditSuspiciousTracking(params: {
       _actor_org_id: params.orgId,
       _action: "TRACKING_REJECTED",
       _entity_type: "tracking_event",
-      _entity_id: params.sessionId ?? null as unknown as string,
+      _entity_id: params.sessionId ?? "public-tracking",
       _old_data: null,
       _new_data: safeTrackingAuditData({
         reason: params.reason,
@@ -283,10 +283,10 @@ async function auditSuspiciousTracking(params: {
         eventName: params.eventName,
         sessionId: params.sessionId,
       }),
-      _request_id: null,
-      _trace_id: null,
-      _ip: params.ip,
-      _user_agent: params.userAgent,
+      _request_id: undefined,
+      _trace_id: undefined,
+      _ip: params.ip ?? undefined,
+      _user_agent: params.userAgent ?? undefined,
     });
   } catch {
     // Audit logging is best-effort; never expose internals to public callers.
