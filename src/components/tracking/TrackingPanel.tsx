@@ -81,6 +81,36 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
       </TabsList>
 
       <TabsContent value="install" className="space-y-4">
+        <Card className={savedOrigins.length === 0 ? "border-amber-500/40 bg-amber-500/5" : "border-emerald-500/30 bg-emerald-500/5"}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ShieldCheck className="w-4 h-4" />
+              Domínios autorizados {savedOrigins.length === 0
+                ? <Badge variant="destructive" className="ml-2">Obrigatório</Badge>
+                : <Badge variant="default" className="ml-2">{savedOrigins.length} ativo(s)</Badge>}
+            </CardTitle>
+            <CardDescription>
+              Liste os domínios que podem enviar eventos para essa chave (um por linha). Enquanto estiver vazio,
+              <strong> os eventos são coletados mas não são enviados para o Meta CAPI nem para o Google Offline
+              Conversions</strong> — isso protege sua conta de anúncio caso alguém copie a chave pública do HTML.
+              Suporta curinga: <code>*.seudominio.com</code>.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <textarea
+              className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-xs font-mono"
+              placeholder={"exemplo.com\n*.exemplo.com\nlanding.cliente.com.br"}
+              value={originsText}
+              onChange={(e) => setOriginsText(e.target.value)}
+            />
+            <div className="flex justify-end">
+              <Button size="sm" onClick={() => saveOrigins.mutate()} disabled={saveOrigins.isPending}>
+                <Save className="w-4 h-4 mr-2" />Salvar domínios
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Pixel de rastreio {sourceLabel}</CardTitle>
