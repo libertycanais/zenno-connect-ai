@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      active_client_selections: {
+        Row: {
+          account_id: string
+          account_label: string | null
+          organization_id: string
+          platform: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_id: string
+          account_label?: string | null
+          organization_id: string
+          platform: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_id?: string
+          account_label?: string | null
+          organization_id?: string
+          platform?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "active_client_selections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_runs: {
         Row: {
           actions_result: Json | null
@@ -183,10 +218,13 @@ export type Database = {
           created_at: string
           currency: string | null
           customer_id: string
+          descriptive_name: string | null
           id: string
+          is_manager: boolean
           manager_customer_id: string | null
           name: string
           organization_id: string
+          parent_account_id: string | null
           refresh_token: string | null
           status: string
           timezone: string | null
@@ -199,10 +237,13 @@ export type Database = {
           created_at?: string
           currency?: string | null
           customer_id: string
+          descriptive_name?: string | null
           id?: string
+          is_manager?: boolean
           manager_customer_id?: string | null
           name: string
           organization_id: string
+          parent_account_id?: string | null
           refresh_token?: string | null
           status?: string
           timezone?: string | null
@@ -215,10 +256,13 @@ export type Database = {
           created_at?: string
           currency?: string | null
           customer_id?: string
+          descriptive_name?: string | null
           id?: string
+          is_manager?: boolean
           manager_customer_id?: string | null
           name?: string
           organization_id?: string
+          parent_account_id?: string | null
           refresh_token?: string | null
           status?: string
           timezone?: string | null
@@ -231,6 +275,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "google_ad_accounts_parent_account_id_fkey"
+            columns: ["parent_account_id"]
+            isOneToOne: false
+            referencedRelation: "google_ad_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -614,11 +665,15 @@ export type Database = {
           access_token: string | null
           ad_account_id: string
           business_id: string | null
+          business_name: string | null
           connected_by: string | null
           created_at: string
           id: string
+          is_client_account: boolean
+          is_manager: boolean
           name: string
           organization_id: string
+          parent_account_id: string | null
           pixel_id: string | null
           status: string
           token_expires_at: string | null
@@ -628,11 +683,15 @@ export type Database = {
           access_token?: string | null
           ad_account_id: string
           business_id?: string | null
+          business_name?: string | null
           connected_by?: string | null
           created_at?: string
           id?: string
+          is_client_account?: boolean
+          is_manager?: boolean
           name: string
           organization_id: string
+          parent_account_id?: string | null
           pixel_id?: string | null
           status?: string
           token_expires_at?: string | null
@@ -642,11 +701,15 @@ export type Database = {
           access_token?: string | null
           ad_account_id?: string
           business_id?: string | null
+          business_name?: string | null
           connected_by?: string | null
           created_at?: string
           id?: string
+          is_client_account?: boolean
+          is_manager?: boolean
           name?: string
           organization_id?: string
+          parent_account_id?: string | null
           pixel_id?: string | null
           status?: string
           token_expires_at?: string | null
@@ -658,6 +721,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meta_ad_accounts_parent_account_id_fkey"
+            columns: ["parent_account_id"]
+            isOneToOne: false
+            referencedRelation: "meta_ad_accounts"
             referencedColumns: ["id"]
           },
         ]
