@@ -57,11 +57,18 @@ export default defineConfig({
         "src/routeTree.gen.ts",
       ],
       thresholds: {
-        lines: 0,
-        functions: 0,
-        branches: 0,
-        statements: 0,
+        // WS-9 — thresholds enforced in CI. Values reflect current baseline
+        // across the whole include[] surface (src/lib, src/providers,
+        // src/routes/api/public — including *.functions.ts not yet covered).
+        // Raise as coverage grows; do NOT lower without explicit review.
+        lines: 20,
+        functions: 20,
+        branches: 20,
+        statements: 20,
       },
     },
+    // WS-9 — safe parallelization: each test file runs in an isolated
+    // worker context, preventing shared-mock leaks between suites.
+    isolate: true,
   },
 });
