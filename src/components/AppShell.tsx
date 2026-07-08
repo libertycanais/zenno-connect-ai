@@ -13,6 +13,7 @@ const nav = [
   { to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/app/clientes", label: "Clientes", icon: Users },
   { to: "/app/leads", label: "Leads", icon: Users },
+  { to: "/app/leads/atribuicao", label: "Atribuição", icon: Target },
   { to: "/app/leads/kanban", label: "Pipeline", icon: KanbanSquare },
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
   { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone },
