@@ -216,6 +216,678 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_07: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_08: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_09: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_10: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_11: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2026_12: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_01: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_02: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_03: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_04: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_05: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_06: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      audit_log_2027_07: {
+        Row: {
+          action: string
+          actor_org_id: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip: string | null
+          new_data: Json | null
+          old_data: Json | null
+          request_id: string | null
+          trace_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_org_id?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          request_id?: string | null
+          trace_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       automation_runs: {
         Row: {
           actions_result: Json | null
@@ -2051,6 +2723,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      app_write_audit_log: {
+        Args: {
+          _action: string
+          _actor_org_id: string
+          _actor_user_id: string
+          _entity_id: string
+          _entity_type: string
+          _ip?: string
+          _new_data?: Json
+          _old_data?: Json
+          _request_id?: string
+          _trace_id?: string
+          _user_agent?: string
+        }
+        Returns: string
+      }
+      audit_redact: { Args: { payload: Json }; Returns: Json }
       current_org_id: { Args: never; Returns: string }
       has_role: {
         Args: {
