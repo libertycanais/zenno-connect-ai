@@ -58,7 +58,58 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "pause_campaign",
+      description: "Pausa uma campanha. Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string", description: "UUID da campanha (id local no banco)" },
+        },
+        required: ["platform", "campaign_id"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "resume_campaign",
+      description: "Reativa uma campanha pausada. Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string" },
+        },
+        required: ["platform", "campaign_id"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "update_daily_budget",
+      description: "Ajusta o orçamento diário de uma campanha em reais (BRL). Requer aprovação humana antes de executar.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google"] },
+          campaign_id: { type: "string" },
+          new_daily_budget_brl: { type: "number", description: "Novo valor em BRL, ex: 50 = R$ 50/dia" },
+        },
+        required: ["platform", "campaign_id", "new_daily_budget_brl"],
+        additionalProperties: false,
+      },
+    },
+  },
 ] as const;
+
+const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget"]);
 
 // ---------- Tool executor (runs server-side with user's supabase client) ----------
 async function runTool(
