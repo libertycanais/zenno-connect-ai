@@ -15,6 +15,7 @@ import { CheckCircle2, Facebook, Instagram, Search, XCircle, Target } from "luci
 import {
   listAttributedChats, convertChat, rejectChatConversion, type AttributedChat,
 } from "@/lib/attributed-leads.functions";
+import { updateChatPayment } from "@/lib/charges.functions";
 
 export const Route = createFileRoute("/app/leads/atribuicao")({ component: Page });
 
