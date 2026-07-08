@@ -57,6 +57,7 @@ import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financ
 import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as AppAutomacoesExecucoesRouteImport } from './routes/app.automacoes.execucoes'
 import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
+import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicLiveRouteImport } from './routes/api/public/live'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicTrackWaLinkRouteImport } from './routes/api/public/track.wa-link'
@@ -306,6 +307,11 @@ const ApiPublicReadyRoute = ApiPublicReadyRouteImport.update({
   path: '/api/public/ready',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMetricsRoute = ApiPublicMetricsRouteImport.update({
+  id: '/api/public/metrics',
+  path: '/api/public/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicLiveRoute = ApiPublicLiveRouteImport.update({
   id: '/api/public/live',
   path: '/api/public/live',
@@ -373,6 +379,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
@@ -480,6 +488,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
@@ -540,6 +549,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/public/health'
     | '/api/public/live'
+    | '/api/public/metrics'
     | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
@@ -588,6 +598,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/api/public/health'
     | '/api/public/live'
+    | '/api/public/metrics'
     | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
@@ -646,6 +657,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/api/public/health'
     | '/api/public/live'
+    | '/api/public/metrics'
     | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
@@ -691,6 +703,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicLiveRoute: typeof ApiPublicLiveRoute
+  ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
   ApiPublicReadyRoute: typeof ApiPublicReadyRoute
   ApiPublicTrackEventRoute: typeof ApiPublicTrackEventRoute
   ApiPublicTrackScriptDotjsRoute: typeof ApiPublicTrackScriptDotjsRoute
@@ -1038,6 +1051,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/metrics': {
+      id: '/api/public/metrics'
+      path: '/api/public/metrics'
+      fullPath: '/api/public/metrics'
+      preLoaderRoute: typeof ApiPublicMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/live': {
       id: '/api/public/live'
       path: '/api/public/live'
@@ -1285,6 +1305,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicLiveRoute: ApiPublicLiveRoute,
+  ApiPublicMetricsRoute: ApiPublicMetricsRoute,
   ApiPublicReadyRoute: ApiPublicReadyRoute,
   ApiPublicTrackEventRoute: ApiPublicTrackEventRoute,
   ApiPublicTrackScriptDotjsRoute: ApiPublicTrackScriptDotjsRoute,
