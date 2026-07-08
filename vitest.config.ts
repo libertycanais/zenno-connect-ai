@@ -66,14 +66,8 @@ export default defineConfig({
         statements: 55,
       },
     },
-    // WS-9 — safe parallelization: each test file gets an isolated worker,
-    // preventing shared-mock leaks between suites.
+    // WS-9 — safe parallelization: each test file runs in an isolated
+    // worker context, preventing shared-mock leaks between suites.
     isolate: true,
-    pool: "forks",
-    poolOptions: {
-      forks: {
-        singleFork: false,
-      },
-    },
   },
 });
