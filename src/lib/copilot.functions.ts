@@ -422,7 +422,9 @@ export const copilotChat = createServerFn({ method: "POST" })
           } catch {
             args = {};
           }
-          const result = await runTool(tc.function.name, args, supabase, orgId);
+          const result = await runTool(tc.function.name, args, {
+            supabase, orgId, userId, convId: convId!, toolCallId: tc.id,
+          });
           const resultStr = JSON.stringify(result).slice(0, 8000);
           await supabase.from("ai_copilot_messages").insert({
             conversation_id: convId,
