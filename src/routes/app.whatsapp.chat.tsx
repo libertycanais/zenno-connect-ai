@@ -3,8 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { useInstances, useChats, useMessages, useSendMessage } from "@/modules/whatsapp/hooks";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Send, DollarSign, X } from "lucide-react";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { markWhatsappConversion } from "@/lib/whatsapp.functions";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/app/whatsapp/chat")({
   component: ChatPage,
