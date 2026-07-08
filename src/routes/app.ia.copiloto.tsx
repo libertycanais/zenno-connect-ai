@@ -27,7 +27,7 @@ export const Route = createFileRoute("/app/ia/copiloto")({
   }),
 });
 
-type Msg = { id?: string; role: "user" | "assistant" | "tool"; content: string; tool_name?: string | null };
+type Msg = { id?: string; role: "user" | "assistant" | "tool"; content: string; tool_name?: string | null; tool_call_id?: string | null };
 
 function CopilotoPage() {
   const chat = useServerFn(copilotChat);
