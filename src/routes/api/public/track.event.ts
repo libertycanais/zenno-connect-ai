@@ -2,11 +2,41 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const baseCors = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "600",
+  Vary: "Origin",
 };
+
+function corsFor(origin: string | null) {
+  return { ...baseCors, "Access-Control-Allow-Origin": origin ?? "*" };
+}
+
+function hostOf(url: string | null): string | null {
+  if (!url) return null;
+  try { return new URL(url).hostname.toLowerCase(); } catch { return null; }
+}
+
+function normalizeAllowed(entry: string): string | null {
+  const t = entry.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  return t || null;
+}
+
+function originAllowed(reqHost: string | null, allowed: string[]): boolean {
+  if (!reqHost) return false;
+  return allowed.some((a) => {
+    const n = normalizeAllowed(a);
+    if (!n) return false;
+    if (n.startsWith("*.")) {
+      const suffix = n.slice(1); // ".dominio.com"
+      return reqHost === n.slice(2) || reqHost.endsWith(suffix);
+    }
+    return reqHost === n;
+  });
+}
+
+const RATE_LIMIT_PER_MINUTE = 60;
 
 const payloadSchema = z.object({
   pk: z.string().min(8).max(80),
@@ -31,35 +61,59 @@ const payloadSchema = z.object({
   phone: z.string().max(32).optional().nullable(),
   name: z.string().max(255).optional().nullable(),
   external_id: z.string().max(255).optional().nullable(),
-  value: z.number().nonnegative().optional().nullable(),
+  value: z.number().nonnegative().max(1_000_000).optional().nullable(),
   currency: z.string().min(3).max(3).optional().nullable(),
 }).passthrough();
 
 export const Route = createFileRoute("/api/public/track/event")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: corsHeaders }),
+      OPTIONS: async ({ request }) => new Response(null, {
+        status: 204,
+        headers: corsFor(request.headers.get("origin")),
+      }),
       POST: async ({ request }) => {
+        const originHeader = request.headers.get("origin");
+        const refererHeader = request.headers.get("referer");
+        const reqHost = hostOf(originHeader) ?? hostOf(refererHeader);
+        const cors = corsFor(originHeader);
+
         let json: unknown;
         try { json = await request.json(); }
-        catch { return json400("invalid_json"); }
+        catch { return errResp(400, "invalid_json", cors); }
 
         const parsed = payloadSchema.safeParse(json);
-        if (!parsed.success) return json400("invalid_payload");
+        if (!parsed.success) return errResp(400, "invalid_payload", cors);
         const data = parsed.data;
 
         const { data: org } = await supabaseAdmin
           .from("organizations")
-          .select("id")
+          .select("id, tracking_allowed_origins")
           .eq("tracking_public_key", data.pk)
           .maybeSingle();
-        if (!org) return json400("invalid_pk");
+        if (!org) return errResp(400, "invalid_pk", cors);
+
+        const allowed = ((org as { tracking_allowed_origins?: string[] | null }).tracking_allowed_origins ?? []) as string[];
+        // Se a org configurou allowlist e a origem não bate → rejeita.
+        // Se ainda não configurou → aceita a coleta mas NÃO dispara CAPI/Google (blast radius zero).
+        const originIsAllowed = allowed.length > 0 && originAllowed(reqHost, allowed);
+        if (allowed.length > 0 && !originIsAllowed) {
+          return errResp(403, "origin_not_allowed", cors);
+        }
 
         const ip = request.headers.get("cf-connecting-ip")
           || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
           || null;
         const ua = request.headers.get("user-agent");
         const country = request.headers.get("cf-ipcountry");
+
+        // Rate limit: 60 eventos/min por (org, ip)
+        const { data: throttled } = await supabaseAdmin.rpc("track_rate_limit_hit", {
+          _org: org.id,
+          _ip: ip ?? "unknown",
+          _max: RATE_LIMIT_PER_MINUTE,
+        });
+        if (throttled === true) return errResp(429, "rate_limited", cors);
 
         await supabaseAdmin.from("tracking_events").insert({
           organization_id: org.id,
@@ -149,26 +203,27 @@ export const Route = createFileRoute("/api/public/track/event")({
           });
         }
 
-        // Dispara CAPI Meta / Google Offline Conversion automaticamente
-        // para eventos de conversão com fbclid/gclid presente.
-        if (data.event_name === "lead" || data.event_name === "Lead"
-            || data.event_name === "purchase" || data.event_name === "Purchase") {
+        // Só dispara CAPI/Google quando a origem foi validada contra a allowlist.
+        // Isso remove o vetor de abuso de conta de anúncios com pk vazada.
+        if (originIsAllowed
+            && (data.event_name === "lead" || data.event_name === "Lead"
+              || data.event_name === "purchase" || data.event_name === "Purchase")) {
           try { await dispatchAttribution(org.id, data, ip, ua); } catch { /* silent */ }
         }
 
         return new Response(JSON.stringify({ ok: true }), {
           status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...cors, "Content-Type": "application/json" },
         });
       },
     },
   },
 });
 
-function json400(code: string) {
+function errResp(status: number, code: string, cors: Record<string, string>) {
   return new Response(JSON.stringify({ ok: false, error: code }), {
-    status: 400,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status,
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -181,7 +236,6 @@ async function dispatchAttribution(
   const { createHash } = await import("crypto");
   const sha = (v: string) => createHash("sha256").update(v.trim().toLowerCase()).digest("hex");
 
-  // META CAPI: precisa de fbclid ou contato hashed + pixel configurado
   if (data.fbclid || data.email || data.phone) {
     const { data: metaAcc } = await supabaseAdmin
       .from("meta_ad_accounts")
@@ -236,7 +290,6 @@ async function dispatchAttribution(
     }
   }
 
-  // GOOGLE Offline Conversion: requer gclid
   if (data.gclid) {
     const { data: gAcc } = await supabaseAdmin
       .from("google_ad_accounts")
