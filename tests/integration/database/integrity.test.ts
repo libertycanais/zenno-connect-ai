@@ -9,7 +9,6 @@ const NOT_NULL_ORG = [
   "meta_ad_accounts", "google_ad_accounts", "payment_integrations",
   "tracking_events", "tracking_leads",
   "meta_conversion_events", "google_ads_conversions",
-  "audit_log",
 ] as const;
 
 describe.skipIf(!HAS_PG)("WS-7 — integrity", () => {

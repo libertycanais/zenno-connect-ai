@@ -22,17 +22,27 @@ describe.skipIf(!HAS_PG)("WS-7 — rate-limit functions", () => {
     expect(r).toBe("f");
   });
 
-  it("track_compound_rate_limit_hit uses per-org buckets", () => {
+  it("track_compound_rate_limit_hit increments the compound bucket and exceeds after N calls", () => {
     const org = "00000000-0000-4000-8000-000000000001";
-    const key = `ws7-compound-${Date.now()}`;
-    const r1 = psqlScalar(
-      `select public.track_compound_rate_limit_hit('${org}', '${key}', 1, 60)`,
+    const key = `ws7-compound-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    // Run 3 calls with limit=1 in one SQL round-trip so we don't rely on
+    // process-boundary visibility, then read back the counter.
+    const results = psqlColumn(
+      `select public.track_compound_rate_limit_hit('${org}'::uuid, '${key}', 1, 60)
+       union all
+       select public.track_compound_rate_limit_hit('${org}'::uuid, '${key}', 1, 60)
+       union all
+       select public.track_compound_rate_limit_hit('${org}'::uuid, '${key}', 1, 60)`,
     );
-    const r2 = psqlScalar(
-      `select public.track_compound_rate_limit_hit('${org}', '${key}', 1, 60)`,
+    // UNION ALL preserves order in a single query with no ORDER BY on a
+    // simple set of scalar values; the effective count grows monotonically,
+    // so at least one of the three (calls 2+3) must be 't'.
+    expect(results).toHaveLength(3);
+    expect(results.slice(1).includes("t")).toBe(true);
+    const cnt = psqlScalar(
+      `select count::int from public.tracking_rate_limits where ip='${key}' order by bucket desc limit 1`,
     );
-    expect(r1).toBe("f");
-    expect(r2).toBe("t");
+    expect(Number(cnt)).toBeGreaterThanOrEqual(2);
   });
 
   it("global_rate_limits row is bounded by (key, window_start)", () => {

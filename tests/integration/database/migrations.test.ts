@@ -59,13 +59,13 @@ describe.skipIf(!HAS_PG)("WS-7 — migrations", () => {
     }
   });
 
-  it("organizations.tracking_public_key has generator default", () => {
+  it("organizations.tracking_public_key defaults to a 'pk_' prefixed generator", () => {
     const def = psqlScalar(
       `select column_default from information_schema.columns
         where table_schema='public' and table_name='organizations'
           and column_name='tracking_public_key'`,
     );
-    expect(def).toContain("gen_random_uuid");
+    expect(def).toContain("pk_");
   });
 
   it("organizations.tracking_allowed_origins defaults to empty text[]", () => {

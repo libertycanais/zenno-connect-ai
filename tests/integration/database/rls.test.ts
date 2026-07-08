@@ -80,21 +80,24 @@ describe.skipIf(!HAS_PG)("WS-7 — RLS coverage on sensitive tables", () => {
     expect(uk).toContain("user_roles_");
   });
 
-  it("cross-tenant: every RLS policy references organization_id or auth.uid()", () => {
+  it("cross-tenant: every RLS policy references organization_id, auth.uid(), has_role or current_org_id", () => {
     const rows = psql(
-      `select tablename, policyname, coalesce(qual,'') || ' ' || coalesce(with_check,'')
+      `select tablename, policyname, coalesce(qual,'') || ' ' || coalesce(with_check,''), coalesce(array_to_string(roles,','),'')
        from pg_policies where schemaname='public'
          and tablename in (${SENSITIVE_TABLES.map((t) => `'${t}'`).join(",")})`,
     );
-    for (const [table, policy, body] of rows) {
-      // At least one of: organization_id scoping, auth.uid() ownership,
-      // or a call to has_role/current_org_id which encapsulate both.
+    for (const [table, policy, body, roles] of rows) {
       const hasTenantGuard =
         /organization_id/.test(body) ||
         /auth\.uid\(\)/.test(body) ||
         /has_role\(/.test(body) ||
         /current_org_id\(/.test(body);
-      expect(hasTenantGuard, `${table}.${policy} lacks tenant guard`).toBe(true);
+      // Service-role-only policies are fine to be permissive (RLS is bypassed anyway).
+      const isServiceRoleOnly = roles === "service_role";
+      expect(
+        hasTenantGuard || isServiceRoleOnly,
+        `${table}.${policy} (roles=${roles}) lacks tenant guard`,
+      ).toBe(true);
     }
   });
 });
