@@ -11,7 +11,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MetaAdsProvider } from "@/providers/ads/meta-ads.provider";
 import { GoogleAdsProvider } from "@/providers/ads/google-ads.provider";
-import { UazapiWhatsAppProvider } from "@/providers/whatsapp/uazapi.provider";
+import { UazapiProvider } from "@/providers/whatsapp/uazapi.provider";
 import type { AdsAccountConnection, AdsConversionEvent } from "@/providers/ads/ads-provider.interface";
 import type { ProviderContext } from "@/providers/common/provider.types";
 
@@ -154,7 +154,7 @@ describe("Contract: WhatsApp (Uazapi) send payload", () => {
     process.env.UAZAPI_BASE_URL = "https://uazapi.test";
     process.env.UAZAPI_ADMIN_TOKEN = "admin_tok";
     stubFetch({ id: "wamid_1" });
-    const provider = new UazapiWhatsAppProvider();
+    const provider = new UazapiProvider();
     const out = await provider.sendMessage(ctx, "inst-1", {
       to: "5511999999999",
       text: "Olá",
@@ -174,7 +174,7 @@ describe("Contract: WhatsApp (Uazapi) send payload", () => {
   });
 
   it("inbound webhook normalization shape is frozen", async () => {
-    const provider = new UazapiWhatsAppProvider();
+    const provider = new UazapiProvider();
     const result = await provider.receiveWebhook(ctx, "inst-1", {
       event: "message",
       data: {
