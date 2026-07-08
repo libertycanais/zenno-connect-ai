@@ -89,3 +89,38 @@ export const trackingAttribution = createServerFn({ method: "GET" })
     }
     return { rows: Array.from(map.values()).sort((a, b) => b.leads + b.customers - (a.leads + a.customers)) };
   });
+
+export const updateTrackingOrigins = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    origins: z.array(z.string().trim().min(1).max(253)).max(50),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: prof } = await supabase
+      .from("profiles").select("organization_id").maybeSingle();
+    if (!prof?.organization_id) throw new Error("Organização não encontrada.");
+
+    // Só owner/admin pode alterar a allowlist
+    const { data: isOwner } = await supabase.rpc("has_role", {
+      _user_id: userId, _role: "owner", _org_id: prof.organization_id,
+    });
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId, _role: "admin", _org_id: prof.organization_id,
+    });
+    if (!isOwner && !isAdmin) throw new Error("Somente owner/admin pode alterar domínios do rastreio.");
+
+    // normaliza: remove protocolo/caminho, lowercase, sem duplicatas
+    const normalized = Array.from(new Set(
+      data.origins
+        .map((o) => o.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, ""))
+        .filter((o) => o.length > 0 && /^(\*\.)?[a-z0-9.-]+\.[a-z]{2,}$/.test(o)),
+    ));
+
+    const { error } = await supabase
+      .from("organizations")
+      .update({ tracking_allowed_origins: normalized })
+      .eq("id", prof.organization_id);
+    if (error) throw new Error(error.message);
+    return { origins: normalized };
+  });
