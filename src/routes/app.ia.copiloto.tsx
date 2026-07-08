@@ -53,6 +53,35 @@ function CopilotoPage() {
     enabled: !!convId,
   });
 
+  const pendingQ = useQuery({
+    queryKey: ["copilot-pending", convId],
+    queryFn: () => (convId ? listPending({ data: { conversationId: convId } }) : Promise.resolve({ actions: [] })),
+    enabled: !!convId,
+    refetchInterval: 4000,
+  });
+
+  const pendingByCallId = new Map<string, any>();
+  for (const a of pendingQ.data?.actions ?? []) {
+    if (a.tool_call_id) pendingByCallId.set(a.tool_call_id, a);
+  }
+
+  const approveMut = useMutation({
+    mutationFn: (id: string) => approveFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Ação executada");
+      qc.invalidateQueries({ queryKey: ["copilot-pending", convId] });
+      qc.invalidateQueries({ queryKey: ["copilot-conv", convId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const rejectMut = useMutation({
+    mutationFn: (id: string) => rejectFn({ data: { id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["copilot-pending", convId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const [pending, setPending] = useState<Msg[]>([]);
   const messages: Msg[] = [
     ...((msgsQ.data?.messages ?? []) as any[]).map((m) => ({
