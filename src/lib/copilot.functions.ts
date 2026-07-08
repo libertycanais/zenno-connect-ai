@@ -572,5 +572,5 @@ export const approvePendingAction = createServerFn({ method: "POST" })
       content: `✅ Ação executada: ${pa.preview}`,
     });
 
-    return { ok: true, result: result as Record<string, unknown> };
+    return { ok: true };
   });
