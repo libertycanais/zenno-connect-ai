@@ -917,6 +917,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          tracking_allowed_origins: string[]
           tracking_public_key: string
           updated_at: string
         }
@@ -924,6 +925,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          tracking_allowed_origins?: string[]
           tracking_public_key?: string
           updated_at?: string
         }
@@ -931,6 +933,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          tracking_allowed_origins?: string[]
           tracking_public_key?: string
           updated_at?: string
         }
@@ -1435,6 +1438,27 @@ export type Database = {
           },
         ]
       }
+      tracking_rate_limits: {
+        Row: {
+          bucket: string
+          count: number
+          ip: string
+          organization_id: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          ip: string
+          organization_id: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          ip?: string
+          organization_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1681,6 +1705,15 @@ export type Database = {
           _org_id: string
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
+        }
+        Returns: boolean
+      }
+      track_rate_limit_hit: {
+        Args: {
+          _ip: string
+          _max: number
+          _org: string
+          _window_seconds?: number
         }
         Returns: boolean
       }

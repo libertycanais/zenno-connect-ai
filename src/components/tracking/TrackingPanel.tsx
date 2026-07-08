@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,21 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Copy, Code2, Activity, Users, BarChart3 } from "lucide-react";
+import { Copy, Code2, Activity, Users, BarChart3, ShieldCheck, Save } from "lucide-react";
 import {
   getTrackingConfig,
   listTrackingLeads,
   listTrackingEvents,
   trackingAttribution,
+  updateTrackingOrigins,
 } from "@/lib/tracking.functions";
 
 type Props = { source: "meta" | "google"; sourceLabel: string };
 
 export function TrackingPanel({ source, sourceLabel }: Props) {
+  const qc = useQueryClient();
   const cfgFn = useServerFn(getTrackingConfig);
   const leadsFn = useServerFn(listTrackingLeads);
   const eventsFn = useServerFn(listTrackingEvents);
   const attrFn = useServerFn(trackingAttribution);
+  const updOriginsFn = useServerFn(updateTrackingOrigins);
 
   const cfg = useQuery({ queryKey: ["tracking-cfg"], queryFn: () => cfgFn() });
   const leads = useQuery({
@@ -39,6 +42,20 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
   });
 
   const pk = cfg.data?.organization?.tracking_public_key ?? "";
+  const savedOrigins: string[] = (cfg.data?.organization as { tracking_allowed_origins?: string[] } | undefined)?.tracking_allowed_origins ?? [];
+  const [originsText, setOriginsText] = useState("");
+  useEffect(() => { setOriginsText(savedOrigins.join("\n")); }, [savedOrigins.join("|")]);
+
+  const saveOrigins = useMutation({
+    mutationFn: () => updOriginsFn({ data: {
+      origins: originsText.split(/[\n,\s]+/).map((s) => s.trim()).filter(Boolean),
+    } }),
+    onSuccess: (r) => {
+      toast.success(`${r.origins.length} domínio(s) autorizado(s)`);
+      qc.invalidateQueries({ queryKey: ["tracking-cfg"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const scriptTag = `<script async src="${origin}/api/public/track/script.js?pk=${pk}"></script>`;
   const leadSnippet = `<script>
@@ -64,6 +81,36 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
       </TabsList>
 
       <TabsContent value="install" className="space-y-4">
+        <Card className={savedOrigins.length === 0 ? "border-amber-500/40 bg-amber-500/5" : "border-emerald-500/30 bg-emerald-500/5"}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ShieldCheck className="w-4 h-4" />
+              Domínios autorizados {savedOrigins.length === 0
+                ? <Badge variant="destructive" className="ml-2">Obrigatório</Badge>
+                : <Badge variant="default" className="ml-2">{savedOrigins.length} ativo(s)</Badge>}
+            </CardTitle>
+            <CardDescription>
+              Liste os domínios que podem enviar eventos para essa chave (um por linha). Enquanto estiver vazio,
+              <strong> os eventos são coletados mas não são enviados para o Meta CAPI nem para o Google Offline
+              Conversions</strong> — isso protege sua conta de anúncio caso alguém copie a chave pública do HTML.
+              Suporta curinga: <code>*.seudominio.com</code>.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <textarea
+              className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-xs font-mono"
+              placeholder={"exemplo.com\n*.exemplo.com\nlanding.cliente.com.br"}
+              value={originsText}
+              onChange={(e) => setOriginsText(e.target.value)}
+            />
+            <div className="flex justify-end">
+              <Button size="sm" onClick={() => saveOrigins.mutate()} disabled={saveOrigins.isPending}>
+                <Save className="w-4 h-4 mr-2" />Salvar domínios
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Pixel de rastreio {sourceLabel}</CardTitle>
