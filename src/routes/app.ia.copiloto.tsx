@@ -2,11 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { copilotChat, listCopilotConversations, getCopilotConversation } from "@/lib/copilot.functions";
+import {
+  copilotChat,
+  listCopilotConversations,
+  getCopilotConversation,
+  listPendingActions,
+  approvePendingAction,
+  rejectPendingAction,
+} from "@/lib/copilot.functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Bot, Send, Sparkles, User, Wrench, Plus, MessageSquare } from "lucide-react";
+import { Bot, Send, Sparkles, User, Wrench, Plus, MessageSquare, Check, X, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
