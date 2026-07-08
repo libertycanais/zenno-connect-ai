@@ -13,3 +13,4 @@ Antes de criar feature nova: validar se respeita independência de infra, env-va
 ## Memories
 - [Arquitetura de deploy independente](mem://architecture/deploy-independence) — Regras completas de portabilidade, infra, segurança, observabilidade e integrações
 - [Segurança operacional](mem://architecture/security) — audit_log append-only + partições, global_rate_limit_hit, SECURITY DEFINER com search_path fixo
+- [Provider Layer](mem://architecture/provider-layer) — camada de abstração Ads/WhatsApp/Payments/AI. Domínio nunca importa SDK direto

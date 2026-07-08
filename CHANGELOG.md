@@ -1,6 +1,26 @@
 # Changelog
 
+## Sprint Arquitetura 3 — Provider Layer (2026-07-08)
+
+Aditivo. Nenhuma alteração em consumers existentes ou APIs públicas.
+
+### Adicionado
+- **Camada de providers** em `src/providers/` — interfaces + factories + adapters isolando fornecedores externos.
+- `AdsProvider` (`meta`, `google_ads`) — connect/campaigns/insights/conversion/disconnect.
+- `WhatsAppProvider` (`uazapi`) — create/status/send/receiveWebhook/disconnect. Preparado para WABA.
+- `PaymentProvider` (`stripe`, `mercadopago`) — customer/subscription/checkout/status.
+- `AIProvider` (`lovable`) — chat/vision/embeddings/executeAction. Preparado para OpenAI/Anthropic.
+- Factories selecionam provider por `ADS_PROVIDER`, `WHATSAPP_PROVIDER`, `PAYMENT_PROVIDER`, `AI_PROVIDER`.
+- Erros unificados: `ProviderError`, `ProviderNotConfiguredError`, `UnknownProviderError`, `sanitizeProviderError`.
+- Documentação: `docs/ARCHITECTURE.md` com diagrama Provider Layer.
+
+### Notas de migração
+- Consumers atuais (`meta-ads.functions`, `google-ads.functions`, `whatsapp.functions`, `copilot`, callbacks OAuth) continuam funcionando inalterados.
+- Nova regra em memória: **novas features devem consumir apenas via factory** — SDK de fornecedor não pode ser importado em módulo de domínio.
+- Migração dos consumers atuais para as factories é próximo passo incremental (aditivo, sem breaking).
+
 ## Sprint Segurança 2 — Hardening (2026-07-08)
+
 
 Aditivo. Sem breaking changes. Sem alterações em contratos públicos.
 
