@@ -81,7 +81,7 @@ export const updateChatPayment = createServerFn({ method: "POST" })
     if (data.due_at !== undefined) patch.reminder_sent_at = null; // reagenda lembrete
     const { error } = await supabaseAdmin
       .from("whatsapp_chats")
-      .update(patch)
+      .update(patch as any)
       .eq("id", data.chatId)
       .eq("organization_id", orgId);
     if (error) throw new Error(error.message);
