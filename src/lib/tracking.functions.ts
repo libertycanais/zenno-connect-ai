@@ -10,7 +10,7 @@ export const getTrackingConfig = createServerFn({ method: "GET" })
       .from("profiles").select("organization_id").maybeSingle();
     if (!prof?.organization_id) throw new Error("Organização não encontrada.");
     const { data: org } = await supabase
-      .from("organizations").select("id, name, tracking_public_key")
+      .from("organizations").select("id, name, tracking_public_key, tracking_allowed_origins")
       .eq("id", prof.organization_id).single();
     return { organization: org };
   });
