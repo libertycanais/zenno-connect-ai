@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, KanbanSquare, MessageSquare, Megaphone,
   Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, ShieldCheck,
-  Menu, X, Plug, CreditCard, Sparkles,
+  Menu, X, Plug, CreditCard, Sparkles, Target,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import logo from "@/assets/zenno-logo.png";
