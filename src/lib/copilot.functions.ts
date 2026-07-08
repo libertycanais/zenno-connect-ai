@@ -255,40 +255,56 @@ async function stagePendingAction(
 ): Promise<unknown> {
   const { supabase, orgId, userId, convId, toolCallId } = ctx;
   const platform = String(args.platform ?? "");
-  const campaignId = String(args.campaign_id ?? "");
-  if (!platform || !campaignId) {
-    return { error: "missing_platform_or_campaign_id" };
-  }
 
-  // resolve campaign name + ownership check
-  let campaignName = campaignId;
+  let campaignName = "";
   let accountRowId: string | null = null;
-  if (platform === "meta") {
-    const { data } = await supabase
-      .from("meta_campaigns")
-      .select("id, name, ad_account_id, organization_id, daily_budget, status")
-      .eq("id", campaignId).maybeSingle();
-    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
-    campaignName = data.name;
-    accountRowId = data.ad_account_id;
-  } else if (platform === "google") {
-    const { data } = await supabase
-      .from("google_ads_campaigns")
-      .select("id, name, account_id, organization_id, budget_amount, status")
-      .eq("id", campaignId).maybeSingle();
-    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
-    campaignName = data.name;
-    accountRowId = data.account_id;
-  } else {
-    return { error: "invalid_platform" };
-  }
-
   let preview = "";
-  if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
-  else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
-  else if (name === "update_daily_budget") {
-    const brl = Number(args.new_daily_budget_brl ?? 0);
-    preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+
+  if (name === "create_campaign") {
+    if (platform !== "meta") return { error: "create_campaign_meta_only" };
+    accountRowId = String(args.account_id ?? "");
+    if (!accountRowId) return { error: "missing_account_id" };
+    const { data: acc } = await supabase
+      .from("meta_ad_accounts")
+      .select("id, name, organization_id")
+      .eq("id", accountRowId).maybeSingle();
+    if (!acc || acc.organization_id !== orgId) return { error: "account_not_found_or_forbidden" };
+    const nm = String(args.name ?? "");
+    const obj = String(args.objective ?? "");
+    const brl = Number(args.daily_budget_brl ?? 0);
+    if (!nm || !obj || !(brl > 0)) return { error: "missing_fields" };
+    preview = `Criar campanha Meta "${nm}" na conta ${acc.name} — objetivo ${obj}, R$ ${brl.toFixed(2)}/dia (nasce PAUSADA)`;
+  } else {
+    const campaignId = String(args.campaign_id ?? "");
+    if (!platform || !campaignId) return { error: "missing_platform_or_campaign_id" };
+    campaignName = campaignId;
+
+    if (platform === "meta") {
+      const { data } = await supabase
+        .from("meta_campaigns")
+        .select("id, name, ad_account_id, organization_id, daily_budget, status")
+        .eq("id", campaignId).maybeSingle();
+      if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+      campaignName = data.name;
+      accountRowId = data.ad_account_id;
+    } else if (platform === "google") {
+      const { data } = await supabase
+        .from("google_ads_campaigns")
+        .select("id, name, account_id, organization_id, budget_amount, status")
+        .eq("id", campaignId).maybeSingle();
+      if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+      campaignName = data.name;
+      accountRowId = data.account_id;
+    } else {
+      return { error: "invalid_platform" };
+    }
+
+    if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+    else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+    else if (name === "update_daily_budget") {
+      const brl = Number(args.new_daily_budget_brl ?? 0);
+      preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+    }
   }
 
   const { data: pending, error } = await supabase
