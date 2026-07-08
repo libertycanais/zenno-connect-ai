@@ -38,6 +38,7 @@ function Page() {
   const list = useServerFn(listAttributedChats);
   const convert = useServerFn(convertChat);
   const reject = useServerFn(rejectChatConversion);
+  const updatePay = useServerFn(updateChatPayment);
 
   const [q, setQ] = useState("");
   const query = useQuery({ queryKey: ["attributed-chats"], queryFn: () => list() });
@@ -50,6 +51,12 @@ function Page() {
   const rejectMut = useMutation({
     mutationFn: (chatId: string) => reject({ data: { chatId } }),
     onSuccess: () => { toast.success("Marcado como rejeitado."); qc.invalidateQueries({ queryKey: ["attributed-chats"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const payMut = useMutation({
+    mutationFn: (v: { chatId: string; payment_mode?: "upfront" | "cod" | "postpaid" | null; due_at?: string | null }) =>
+      updatePay({ data: v }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["attributed-chats"] }),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -99,6 +106,8 @@ function Page() {
               <TableHead>Origem</TableHead>
               <TableHead>Campanha</TableHead>
               <TableHead>Anúncio</TableHead>
+              <TableHead>Modalidade</TableHead>
+              <TableHead>Vence em</TableHead>
               <TableHead>Valor</TableHead>
               <TableHead>Status</TableHead>
               <TableHead />
@@ -106,10 +115,10 @@ function Page() {
           </TableHeader>
           <TableBody>
             {query.isLoading && (
-              <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Carregando…</TableCell></TableRow>
+              <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">Carregando…</TableCell></TableRow>
             )}
             {!query.isLoading && filtered.length === 0 && (
-              <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+              <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                 Nenhuma conversa ainda. Gere um link rastreado do WhatsApp para começar a atribuir leads.
               </TableCell></TableRow>
             )}
@@ -117,6 +126,7 @@ function Page() {
               <Row key={c.id} chat={c}
                 onConvert={(v) => convertMut.mutate({ chatId: c.id, value: v })}
                 onReject={() => rejectMut.mutate(c.id)}
+                onPay={(p) => payMut.mutate({ chatId: c.id, ...p })}
                 pending={convertMut.isPending || rejectMut.isPending}
               />
             ))}
@@ -138,12 +148,17 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-function Row({ chat, onConvert, onReject, pending }: {
-  chat: AttributedChat; onConvert: (v: number) => void; onReject: () => void; pending: boolean;
+function Row({ chat, onConvert, onReject, onPay, pending }: {
+  chat: AttributedChat;
+  onConvert: (v: number) => void;
+  onReject: () => void;
+  onPay: (p: { payment_mode?: "upfront" | "cod" | "postpaid" | null; due_at?: string | null }) => void;
+  pending: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [val, setVal] = useState("");
   const attributed = Boolean(chat.attributed_at);
+  const dueLocal = chat.due_at ? new Date(chat.due_at).toISOString().slice(0, 16) : "";
 
   return (
     <TableRow>
@@ -161,11 +176,31 @@ function Row({ chat, onConvert, onReject, pending }: {
           <span>{chat.first_utm_source ?? (attributed ? "direct" : "—")}</span>
         </div>
       </TableCell>
-      <TableCell className="text-xs max-w-[180px] truncate" title={chat.first_utm_campaign ?? ""}>
+      <TableCell className="text-xs max-w-[160px] truncate" title={chat.first_utm_campaign ?? ""}>
         {chat.first_utm_campaign ?? "—"}
       </TableCell>
-      <TableCell className="text-xs max-w-[180px] truncate" title={chat.first_utm_content ?? ""}>
+      <TableCell className="text-xs max-w-[160px] truncate" title={chat.first_utm_content ?? ""}>
         {chat.first_utm_content ?? "—"}
+      </TableCell>
+      <TableCell>
+        <select
+          className="text-xs bg-background border border-border rounded px-1 py-0.5"
+          value={chat.payment_mode ?? ""}
+          onChange={(e) => onPay({ payment_mode: (e.target.value || null) as any })}
+        >
+          <option value="">—</option>
+          <option value="upfront">Antecipado</option>
+          <option value="cod">Na entrega</option>
+          <option value="postpaid">Pós-entrega</option>
+        </select>
+      </TableCell>
+      <TableCell>
+        <input
+          type="datetime-local"
+          className="text-xs bg-background border border-border rounded px-1 py-0.5"
+          value={dueLocal}
+          onChange={(e) => onPay({ due_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+        />
       </TableCell>
       <TableCell className="text-xs">
         {chat.conversion_value != null
