@@ -27,6 +27,8 @@ export type AttributedChat = {
   converted_at: string | null;
   last_message_preview: string | null;
   last_message_at: string | null;
+  payment_mode: string | null;
+  due_at: string | null;
 };
 
 export const listAttributedChats = createServerFn({ method: "GET" })
@@ -36,7 +38,7 @@ export const listAttributedChats = createServerFn({ method: "GET" })
     const { data, error } = await supabaseAdmin
       .from("whatsapp_chats")
       .select(
-        "id, created_at, name, phone, first_utm_source, first_utm_campaign, first_utm_content, first_utm_term, first_fbclid, first_gclid, attributed_at, conversion_status, conversion_value, conversion_currency, converted_at, last_message_preview, last_message_at",
+        "id, created_at, name, phone, first_utm_source, first_utm_campaign, first_utm_content, first_utm_term, first_fbclid, first_gclid, attributed_at, conversion_status, conversion_value, conversion_currency, converted_at, last_message_preview, last_message_at, payment_mode, due_at",
       )
       .eq("organization_id", organization_id)
       .order("created_at", { ascending: false })
