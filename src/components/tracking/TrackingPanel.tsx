@@ -20,10 +20,12 @@ import {
 type Props = { source: "meta" | "google"; sourceLabel: string };
 
 export function TrackingPanel({ source, sourceLabel }: Props) {
+  const qc = useQueryClient();
   const cfgFn = useServerFn(getTrackingConfig);
   const leadsFn = useServerFn(listTrackingLeads);
   const eventsFn = useServerFn(listTrackingEvents);
   const attrFn = useServerFn(trackingAttribution);
+  const updOriginsFn = useServerFn(updateTrackingOrigins);
 
   const cfg = useQuery({ queryKey: ["tracking-cfg"], queryFn: () => cfgFn() });
   const leads = useQuery({
@@ -40,6 +42,20 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
   });
 
   const pk = cfg.data?.organization?.tracking_public_key ?? "";
+  const savedOrigins: string[] = (cfg.data?.organization as { tracking_allowed_origins?: string[] } | undefined)?.tracking_allowed_origins ?? [];
+  const [originsText, setOriginsText] = useState("");
+  useEffect(() => { setOriginsText(savedOrigins.join("\n")); }, [savedOrigins.join("|")]);
+
+  const saveOrigins = useMutation({
+    mutationFn: () => updOriginsFn({ data: {
+      origins: originsText.split(/[\n,\s]+/).map((s) => s.trim()).filter(Boolean),
+    } }),
+    onSuccess: (r) => {
+      toast.success(`${r.origins.length} domínio(s) autorizado(s)`);
+      qc.invalidateQueries({ queryKey: ["tracking-cfg"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const scriptTag = `<script async src="${origin}/api/public/track/script.js?pk=${pk}"></script>`;
   const leadSnippet = `<script>
