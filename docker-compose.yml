@@ -1,0 +1,114 @@
+# =============================================================================
+# Zenno SaaS — docker-compose (dev/staging local completo)
+# -----------------------------------------------------------------------------
+# Sobe o stack reproduzível:
+#   zenno-app   → aplicação TanStack Start (SSR + APIs)
+#   zenno-worker → placeholder para BullMQ (jobs assíncronos, ainda não wire)
+#   postgres    → banco (útil para desenvolvimento; produção pode usar Supabase/RDS)
+#   redis       → fila BullMQ
+#
+# Uso:
+#   cp .env.example .env       # preencha as chaves
+#   docker compose up --build
+#
+# NÃO substitui o ambiente Lovable — é ADITIVO, para deploy externo/GitHub.
+# =============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: zenno-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-zenno}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zenno_dev_pwd}
+      POSTGRES_DB: ${POSTGRES_DB:-zenno}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - zenno-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zenno} -d ${POSTGRES_DB:-zenno}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: zenno-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - zenno-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  zenno-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY}
+        VITE_SUPABASE_PROJECT_ID: ${VITE_SUPABASE_PROJECT_ID}
+    container_name: zenno-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      SERVICE_NAME: zenno-api
+      APP_ENV: ${APP_ENV:-production}
+      APP_VERSION: ${APP_VERSION:-dev}
+      # Supabase (backend)
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      # Infra local
+      DATABASE_URL: postgres://${POSTGRES_USER:-zenno}:${POSTGRES_PASSWORD:-zenno_dev_pwd}@postgres:5432/${POSTGRES_DB:-zenno}
+      REDIS_URL: redis://redis:6379
+      # Integrações (opcional — preencher no .env)
+      LOVABLE_API_KEY: ${LOVABLE_API_KEY:-}
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      GOOGLE_ADS_CLIENT_ID: ${GOOGLE_ADS_CLIENT_ID:-}
+      GOOGLE_ADS_CLIENT_SECRET: ${GOOGLE_ADS_CLIENT_SECRET:-}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/public/live"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  zenno-worker:
+    # Placeholder — BullMQ ainda não está integrado ao runtime.
+    # Quando existir `src/worker/index.ts`, trocar o CMD abaixo.
+    image: node:20-alpine
+    container_name: zenno-worker
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      SERVICE_NAME: zenno-worker
+      REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgres://${POSTGRES_USER:-zenno}:${POSTGRES_PASSWORD:-zenno_dev_pwd}@postgres:5432/${POSTGRES_DB:-zenno}
+    command: ["sh", "-c", "echo '[worker] placeholder — BullMQ não integrado. Sobe idle.'; tail -f /dev/null"]
+
+volumes:
+  zenno-pg-data:
+  zenno-redis-data:
