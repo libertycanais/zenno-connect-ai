@@ -317,7 +317,9 @@ Regras:
 - Responda em português do Brasil, direto ao ponto, com bullets curtos.
 - Formate valores monetários em BRL (R$).
 - Se o usuário pedir algo sem ter contas conectadas, sugira ir em /app/integracoes.
-- Você está em modo LEITURA: ainda não pode criar/pausar campanhas — quando pedirem uma ação de escrita, explique o que faria e diga que a execução automática estará disponível em breve.`;
+- Para pausar/reativar campanhas ou ajustar orçamentos, use as ferramentas de escrita — elas SEMPRE pedem aprovação humana antes de executar de fato. Explique o que vai fazer, chame a tool e diga que a ação ficou pendente aguardando o clique do usuário.
+- Nunca invente IDs de campanha; primeiro liste com list_campaigns.`;
+
 
 // ---------- Main server function ----------
 export const copilotChat = createServerFn({ method: "POST" })
