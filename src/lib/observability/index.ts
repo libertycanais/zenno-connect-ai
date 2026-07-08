@@ -23,3 +23,8 @@ export {
   captureMessage,
   isSentryEnabled,
 } from "./sentry";
+
+export { METRICS, LABEL_KEYS } from "./catalog";
+export type { MetricName } from "./catalog";
+
+export { toPrometheusText } from "./prometheus";
