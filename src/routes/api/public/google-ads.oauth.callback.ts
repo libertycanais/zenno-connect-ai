@@ -55,16 +55,101 @@ export const Route = createFileRoute("/api/public/google-ads/oauth/callback")({
         const ids = (listJson.resourceNames ?? []).map((rn) => rn.split("/")[1]).filter(Boolean);
         if (!ids.length) return redir("/app/google-ads?error=no_customers");
 
-        const rows = ids.map((cid) => ({
-          organization_id: state.o,
-          customer_id: cid,
-          name: `Customer ${cid}`,
-          access_token: tokens.access_token!,
-          refresh_token: tokens.refresh_token ?? null,
-          token_expires_at: expiresAt,
-          connected_by: state.u,
-          status: "active",
-        }));
+        // For each accessible customer, discover metadata + child accounts if it's a manager (MCC).
+        type Row = {
+          organization_id: string; customer_id: string; name: string;
+          descriptive_name?: string | null; currency?: string | null; timezone?: string | null;
+          manager_customer_id?: string | null; is_manager?: boolean;
+          access_token: string; refresh_token: string | null; token_expires_at: string;
+          connected_by: string; status: string;
+        };
+        const rows: Row[] = [];
+
+        for (const cid of ids) {
+          const headers: Record<string, string> = {
+            Authorization: `Bearer ${tokens.access_token}`,
+            "developer-token": devToken,
+            "Content-Type": "application/json",
+            "login-customer-id": cid,
+          };
+          // Get self info
+          let isManager = false;
+          let selfName = `Customer ${cid}`;
+          let currency: string | null = null;
+          let timezone: string | null = null;
+          try {
+            const selfRes = await fetch(
+              `https://googleads.googleapis.com/v17/customers/${cid}/googleAds:search`,
+              {
+                method: "POST", headers,
+                body: JSON.stringify({
+                  query: "SELECT customer.id, customer.descriptive_name, customer.manager, customer.currency_code, customer.time_zone FROM customer LIMIT 1",
+                }),
+              },
+            );
+            const selfJson = await selfRes.json() as { results?: Array<{ customer?: { descriptive_name?: string; manager?: boolean; currency_code?: string; time_zone?: string } }> };
+            const c = selfJson.results?.[0]?.customer;
+            if (c) {
+              isManager = Boolean(c.manager);
+              selfName = c.descriptive_name || selfName;
+              currency = c.currency_code ?? null;
+              timezone = c.time_zone ?? null;
+            }
+          } catch { /* ignore, keep defaults */ }
+
+          rows.push({
+            organization_id: state.o,
+            customer_id: cid,
+            name: selfName,
+            descriptive_name: selfName,
+            currency, timezone,
+            manager_customer_id: null,
+            is_manager: isManager,
+            access_token: tokens.access_token!,
+            refresh_token: tokens.refresh_token ?? null,
+            token_expires_at: expiresAt,
+            connected_by: state.u,
+            status: "active",
+          });
+
+          // If manager, enumerate children
+          if (isManager) {
+            try {
+              const childRes = await fetch(
+                `https://googleads.googleapis.com/v17/customers/${cid}/googleAds:search`,
+                {
+                  method: "POST", headers,
+                  body: JSON.stringify({
+                    query: "SELECT customer_client.client_customer, customer_client.descriptive_name, customer_client.currency_code, customer_client.time_zone, customer_client.manager, customer_client.level, customer_client.status FROM customer_client WHERE customer_client.level <= 1",
+                  }),
+                },
+              );
+              const childJson = await childRes.json() as { results?: Array<{ customerClient?: { clientCustomer?: string; descriptiveName?: string; currencyCode?: string; timeZone?: string; manager?: boolean; level?: number; status?: string } }> };
+              for (const r of childJson.results ?? []) {
+                const cc = r.customerClient;
+                if (!cc?.clientCustomer) continue;
+                const childId = cc.clientCustomer.split("/")[1];
+                if (!childId || childId === cid) continue;
+                if (cc.status && cc.status !== "ENABLED") continue;
+                rows.push({
+                  organization_id: state.o,
+                  customer_id: childId,
+                  name: cc.descriptiveName || `Customer ${childId}`,
+                  descriptive_name: cc.descriptiveName ?? null,
+                  currency: cc.currencyCode ?? null,
+                  timezone: cc.timeZone ?? null,
+                  manager_customer_id: cid,
+                  is_manager: Boolean(cc.manager),
+                  access_token: tokens.access_token!,
+                  refresh_token: tokens.refresh_token ?? null,
+                  token_expires_at: expiresAt,
+                  connected_by: state.u,
+                  status: "active",
+                });
+              }
+            } catch { /* ignore */ }
+          }
+        }
         const { error } = await supabaseAdmin
           .from("google_ad_accounts")
           .upsert(rows, { onConflict: "organization_id,customer_id" });
