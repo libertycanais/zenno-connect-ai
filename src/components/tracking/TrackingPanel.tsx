@@ -66,6 +66,31 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
   // Na página de obrigado / pós-compra:
   window.zennoTrack({ event: "Purchase", email: "cliente@email.com", value: 297.00, currency: "BRL" });
 </script>`;
+  const waSnippet = `<a href="#" data-wa-phone="551199999999" data-wa-message="Olá, vim do anúncio" onclick="return zennoWaOpen(this)">
+  Falar no WhatsApp
+</a>
+<script>
+  // Gera o link wa.me com código rastreável [t:XXXXXX] atrelado ao clique do anúncio.
+  // Requer o script base do rastreio já carregado na página.
+  async function zennoWaOpen(el) {
+    try {
+      const r = await fetch("${origin}/api/public/track/wa-link", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pk: "${pk}",
+          phone: el.dataset.waPhone,
+          message: el.dataset.waMessage,
+          session_id: (window.zennoTrack && window.zennoTrack.sessionId) || localStorage.getItem("zt_sid") || "",
+        }),
+      });
+      const j = await r.json();
+      if (j.ok) { window.open(j.url, "_blank"); return false; }
+    } catch(e) {}
+    // fallback: abre wa.me sem código
+    window.open("https://wa.me/" + el.dataset.waPhone + "?text=" + encodeURIComponent(el.dataset.waMessage || ""), "_blank");
+    return false;
+  }
+</script>`;
 
   const copy = (s: string, label: string) => {
     navigator.clipboard.writeText(s).then(() => toast.success(`${label} copiado`));
