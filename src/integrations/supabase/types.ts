@@ -1050,6 +1050,24 @@ export type Database = {
         }
         Relationships: []
       }
+      global_rate_limits: {
+        Row: {
+          count: number
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          window_start: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       google_ad_accounts: {
         Row: {
           access_token: string | null
@@ -2745,6 +2763,10 @@ export type Database = {
       }
       audit_redact: { Args: { payload: Json }; Returns: Json }
       current_org_id: { Args: never; Returns: string }
+      global_rate_limit_hit: {
+        Args: { _key: string; _limit: number; _window_seconds?: number }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _org_id: string
