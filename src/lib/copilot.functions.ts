@@ -218,10 +218,81 @@ async function runTool(
     return { total: r.data?.length ?? 0, by_source: bySource, sample: (r.data ?? []).slice(0, 20) };
   }
 
+  if (WRITE_TOOLS.has(name)) {
+    return await stagePendingAction(name, args, ctx);
+  }
+
   return { error: `tool_unknown:${name}` };
 }
 
-// ---------- Helper: call gateway ----------
+async function stagePendingAction(
+  name: string,
+  args: Record<string, unknown>,
+  ctx: ToolCtx,
+): Promise<unknown> {
+  const { supabase, orgId, userId, convId, toolCallId } = ctx;
+  const platform = String(args.platform ?? "");
+  const campaignId = String(args.campaign_id ?? "");
+  if (!platform || !campaignId) {
+    return { error: "missing_platform_or_campaign_id" };
+  }
+
+  // resolve campaign name + ownership check
+  let campaignName = campaignId;
+  let accountRowId: string | null = null;
+  if (platform === "meta") {
+    const { data } = await supabase
+      .from("meta_campaigns")
+      .select("id, name, ad_account_id, organization_id, daily_budget, status")
+      .eq("id", campaignId).maybeSingle();
+    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+    campaignName = data.name;
+    accountRowId = data.ad_account_id;
+  } else if (platform === "google") {
+    const { data } = await supabase
+      .from("google_ads_campaigns")
+      .select("id, name, account_id, organization_id, budget_amount, status")
+      .eq("id", campaignId).maybeSingle();
+    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+    campaignName = data.name;
+    accountRowId = data.account_id;
+  } else {
+    return { error: "invalid_platform" };
+  }
+
+  let preview = "";
+  if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+  else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+  else if (name === "update_daily_budget") {
+    const brl = Number(args.new_daily_budget_brl ?? 0);
+    preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+  }
+
+  const { data: pending, error } = await supabase
+    .from("ai_copilot_pending_actions")
+    .insert({
+      organization_id: orgId,
+      conversation_id: convId,
+      user_id: userId,
+      tool_name: name,
+      tool_call_id: toolCallId,
+      tool_args: args,
+      preview,
+      platform,
+      account_id: accountRowId,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+  if (error) return { error: `pending_action_error: ${error.message}` };
+
+  return {
+    status: "pending_approval",
+    pending_id: pending.id,
+    preview,
+    message: "Ação aguardando aprovação do usuário. NÃO foi executada ainda.",
+  };
+}
 async function callGateway(payload: unknown) {
   const apiKey = process.env.LOVABLE_API_KEY;
   if (!apiKey) throw new Error("LOVABLE_API_KEY ausente. Habilite Lovable AI.");
