@@ -3,21 +3,27 @@
  * Compatível com o shape atual:
  *   Route.options.server.handlers[METHOD]({ request, params })
  */
-export type ServerRoute = {
-  options?: {
-    server?: {
-      handlers?: Record<string, (ctx: { request: Request; params?: Record<string, string> }) => Promise<Response> | Response>;
-    };
-  };
-};
-
+// Route é intencionalmente `unknown` — tipagem interna do TanStack Router é
+// muito específica para descrever aqui; o teste sabe qual método existe.
 export async function invokeHandler(
-  route: ServerRoute,
+  route: unknown,
   method: string,
   request: Request,
   params: Record<string, string> = {},
 ): Promise<Response> {
-  const handler = route.options?.server?.handlers?.[method];
+  const r = route as {
+    options?: {
+      server?: {
+        handlers?: Record<
+          string,
+          (ctx: { request: Request; params?: Record<string, string> }) =>
+            | Promise<Response>
+            | Response
+        >;
+      };
+    };
+  };
+  const handler = r.options?.server?.handlers?.[method];
   if (!handler) throw new Error(`Route has no ${method} handler`);
   return await handler({ request, params });
 }
