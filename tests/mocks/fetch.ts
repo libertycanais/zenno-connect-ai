@@ -30,7 +30,7 @@ export function installFetchMock(): FetchMock {
     throw new Error(`[fetch-mock] unmatched request: ${req.method} ${req.url}`);
   };
 
-  const spy = vi.spyOn(globalThis, "fetch").mockImplementation(impl) as FetchMock;
+  const spy = vi.spyOn(globalThis, "fetch").mockImplementation(impl) as unknown as FetchMock;
   spy.routes = routes;
   spy.mockResponse = (matcher, body, init) =>
     routes.push({
