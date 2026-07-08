@@ -10,6 +10,7 @@
 |-----------|-----------|
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Visão arquitetural detalhada |
 | [ARCHITECTURE_DECISIONS.md](./ARCHITECTURE_DECISIONS.md) | 12 ADRs oficiais |
+| [ARCHITECTURE_FREEZE.md](./ARCHITECTURE_FREEZE.md) | Declaração de congelamento da arquitetura base |
 | [MASTER_ROADMAP.md](./MASTER_ROADMAP.md) | Sprints passadas + futuras até v2.0 |
 | [VERSION_HISTORY.md](./VERSION_HISTORY.md) | Histórico de versões |
 
@@ -89,18 +90,20 @@
 ### 🧭 Tech Lead
 1. `docs/ARCHITECTURE.md`
 2. `docs/ARCHITECTURE_DECISIONS.md`
-3. `docs/ENGINEERING_HANDBOOK.md` (integral)
-4. `docs/MASTER_ROADMAP.md`
-5. `docs/PROJECT_READINESS.md`
-6. `docs/PRODUCTION_READINESS.md`
+3. `docs/ARCHITECTURE_FREEZE.md`
+4. `docs/ENGINEERING_HANDBOOK.md` (integral)
+5. `docs/MASTER_ROADMAP.md`
+6. `docs/PROJECT_READINESS.md`
+7. `docs/PRODUCTION_READINESS.md`
 
 ### 🏛️ Arquiteto
 1. `docs/ARCHITECTURE_DECISIONS.md`
 2. `docs/ARCHITECTURE.md`
-3. `docs/SECURITY.md`
-4. `docs/DISASTER_RECOVERY.md`
-5. `docs/MASTER_ROADMAP.md`
-6. `docs/VERSION_HISTORY.md`
+3. `docs/ARCHITECTURE_FREEZE.md`
+4. `docs/SECURITY.md`
+5. `docs/DISASTER_RECOVERY.md`
+6. `docs/MASTER_ROADMAP.md`
+7. `docs/VERSION_HISTORY.md`
 
 ### 🎩 CTO
 1. `docs/PROJECT_READINESS.md`
