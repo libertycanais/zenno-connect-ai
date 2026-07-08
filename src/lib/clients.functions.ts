@@ -100,8 +100,8 @@ export const getActiveClient = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data } = await (supabase.from("active_client_selections" as any) as any)
+    const { data } = await supabase
+      .from("active_client_selections")
       .select("platform, account_id, account_label, updated_at")
       .eq("user_id", userId)
       .maybeSingle();
@@ -121,8 +121,7 @@ export const setActiveClient = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: prof } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
     if (!prof?.organization_id) throw new Error("Organização não encontrada.");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase.from("active_client_selections" as any) as any).upsert({
+    const { error } = await supabase.from("active_client_selections").upsert({
       user_id: userId,
       organization_id: prof.organization_id,
       platform: data.platform,
@@ -137,8 +136,8 @@ export const setActiveClient = createServerFn({ method: "POST" })
 export const clearActiveClient = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (context.supabase.from("active_client_selections" as any) as any)
+    const { error } = await context.supabase
+      .from("active_client_selections")
       .delete()
       .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
