@@ -9,6 +9,7 @@ import { HAS_PG, psql, psqlColumn } from "@tests/helpers/pg";
 const EXPECTED = new Set([
   "app_write_audit_log",
   "audit_log_ensure_partition",
+  "audit_log_prune_partitions",
   "audit_row_change",
   "create_default_subscription",
   "current_org_id",

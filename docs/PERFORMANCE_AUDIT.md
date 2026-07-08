@@ -10,7 +10,7 @@
 
 ## 1. Sumário Executivo
 
-O Zenno AI Suite apresenta arquitetura sólida (multi-tenant + RLS + Provider Layer congelados) e está funcionalmente pronto para staging. Esta auditoria identifica **23 pontos de otimização** distribuídos em quatro camadas: banco, backend (server functions + workers BullMQ), frontend React e observabilidade.
+O Zenno AI Suite apresenta arquitetura sólida (multi-tenant + RLS + Provider Layer congelados) e está funcionalmente pronto para staging. Esta auditoria identifica pontos de otimização distribuídos em três camadas ativas na baseline v1.0: **banco (PostgreSQL)**, **backend (TanStack server functions em Cloudflare Workers)** e **frontend React**. A seção histórica sobre BullMQ é mantida apenas como referência futura — a baseline atual **não** roda workers Node persistentes, logo BullMQ/Redis não são executáveis neste runtime.
 
 **Distribuição por prioridade:**
 
@@ -49,7 +49,7 @@ Baseado no schema (`audit_log` particionado, `tracking_events`, `tracking_leads`
 
 ### 2.3 Loops e operações síncronas evitáveis
 - `copilot-executors.server.ts` — execução sequencial de ações pendentes; candidato a `Promise.allSettled` respeitando limites de provider.
-- `attribution.server.ts` — loop de matching sincronizado; mover para worker BullMQ dedicado (aditivo).
+- `attribution.server.ts` — loop de matching sincronizado; candidato a chunking / `Promise.allSettled` server-side (jobs externos são N/A na baseline v1.0).
 - Serialização JSON grande em `audit_redact` já é `IMMUTABLE` — ok.
 
 ### 2.4 Requisições duplicadas (frontend)
@@ -66,15 +66,15 @@ Baseado no schema (`audit_log` particionado, `tracking_events`, `tracking_leads`
 - Loaders que chamam `ensureQueryData` **e** componentes que refazem `useQuery` (não `useSuspenseQuery`) ⇒ waterfall.
 - Falta invalidação granular por `queryKey` composto (`['leads', orgId, filters]`).
 
-### 2.7 Gargalos BullMQ
-Ver seção WS-5.3.
+### 2.7 Gargalos de fila de jobs
+Ver §4 — **N/A na baseline v1.0** (Cloudflare Workers).
 
 ### 2.8 Uso de memória
 - `audit_log` growth: garantir política de retenção (drop de partições > 12 meses).
 - Cache in-memory eventual em server functions **não deve existir** (workers são stateless) — auditar `rate-limit.server.ts` (usa Postgres ✅).
 
 ### 2.9 Operações que podem ser assíncronas
-- Envio de webhook após criação de lead → mover para fila BullMQ (`webhooks` queue).
+- Envio de webhook após criação de lead → hoje síncrono; opção aditiva é usar `pg_cron` ou endpoint idempotente disparado por trigger (fila externa é N/A na baseline).
 - Enriquecimento de tracking (geo/UA) → job em background.
 - Sincronização inicial de campanhas Meta/Google após OAuth → job dedicado com retry.
 
@@ -112,20 +112,25 @@ Ver seção WS-5.3.
 
 ---
 
-## 4. WS-5.3 — BullMQ Review
+## 4. WS-5.3 — Fila de Jobs (Histórico / N/A na baseline)
 
-> Análise baseada nos padrões do runbook `docs/runbooks/bullmq.md` e nos workers referenciados no Handbook. Nenhuma alteração de código nesta sprint.
+> **Status:** ⚠️ **NÃO APLICÁVEL À ARQUITETURA CONGELADA v1.0.**
+> Cloudflare Workers não executa processos Node persistentes, portanto
+> **BullMQ/Redis não fazem parte da baseline**. Jobs assíncronos hoje são
+> resolvidos via `pg_cron`, webhooks idempotentes e endpoints `/api/public/*`.
+>
+> A tabela abaixo é mantida apenas como referência caso um dia a fila seja
+> adotada (Cloudflare Queues ou BullMQ em worker externo — exigirá novo ADR).
 
-| Aspecto | Estado atual (esperado) | Recomendação | Prioridade |
-|---------|-------------------------|--------------|------------|
-| Concorrência | Default (`1`) por worker | Definir por fila: `tracking=10`, `webhooks=20`, `ai=2`, `whatsapp=5` | 🟠 |
-| Retry | Ad-hoc | Padrão `attempts=5`, `backoff: exponential 2s base` | 🟠 |
-| Dead Letter | Não formalizado | Criar fila `*-dlq` + alerta ao mover | 🔴 |
-| Throughput | Não medido | Instrumentar `completed/failed/sec` (Sprint 5 — observabilidade) | 🟠 |
-| Memory | Sem limite | `removeOnComplete: { age: 3600, count: 1000 }`, `removeOnFail: { age: 86400 }` | 🔴 |
-| Idempotência | Parcial | `jobId` determinístico por evento externo | 🟠 |
-| Rate limit por provider | Ausente | `limiter: { max, duration }` por fila de provider | 🟠 |
-| Prioridade | Não usada | `priority` para jobs de UX (WhatsApp reply) | 🟡 |
+| Aspecto | Recomendação (se um dia for adotado) | Prioridade |
+|---------|--------------------------------------|------------|
+| Concorrência | Definir por fila conforme perfil do provider | 🟠 |
+| Retry | `attempts=5`, backoff exponencial | 🟠 |
+| Dead Letter | Fila `*-dlq` + alerta ao mover | 🔴 |
+| Throughput | Instrumentar `queue_jobs_total{status}` (catálogo já definido) | 🟠 |
+| Memory | Retenção agressiva por tempo/contagem | 🔴 |
+| Idempotência | `jobId` determinístico por evento externo | 🟠 |
+| Rate limit | Limiter por provider externo | 🟠 |
 
 ---
 
@@ -153,7 +158,7 @@ Validação (leitura apenas) contra `docs/STAGING_CHECKLIST.md`:
 |-------------|--------|------------|
 | Docker | ✅ | `docs/DOCKER.md` presente; imagens documentadas |
 | PostgreSQL | ✅ | Schema estável, RLS ativa, partições até 2027-07 |
-| Redis | ✅ | Documentado em `docs/runbooks/redis.md`; usado pelo BullMQ |
+| Redis | ➖ N/A | Não faz parte da baseline v1.0 (Cloudflare Workers) — runbook arquivado |
 | OAuth Meta | ✅ | `meta_ad_accounts` + fluxo em `oauth_states`; runbook OK |
 | OAuth Google | ✅ | `google_ad_accounts` + connector `GOOGLE_SEARCH_CONSOLE_API_KEY` configurado |
 | WhatsApp | ✅ | `whatsapp_*` tables + runbook dedicado |
@@ -170,7 +175,7 @@ Validação (leitura apenas) contra `docs/STAGING_CHECKLIST.md`:
 
 ### 7.1 Gargalos encontrados (top)
 1. 🔴 `tracking_events` sem índice `(org, created_at)` — escala linear.
-2. 🔴 BullMQ sem DLQ nem `removeOnComplete/Fail` — risco de OOM Redis.
+2. ➖ Fila de jobs (BullMQ/DLQ) — **N/A na baseline v1.0**; ver §4.
 3. 🔴 TanStack Query sem `staleTime` padrão — refetch excessivo.
 4. 🔴 Falta política de retenção de partições `audit_log`.
 5. 🟠 N+1 em WhatsApp / Tickets / Clients.
@@ -179,7 +184,7 @@ Validação (leitura apenas) contra `docs/STAGING_CHECKLIST.md`:
 
 ### 7.2 Quick Wins (< 1 dia cada, aditivos)
 - Setar defaults do `QueryClient` (`staleTime: 30_000`, `gcTime: 5min`).
-- Adicionar `removeOnComplete/Fail` global nos workers BullMQ.
+- (BullMQ) — N/A na baseline; ignorar até novo ADR.
 - Adicionar `React.memo` em `MessageBubble`, `LeadCard`, `KanbanCard`.
 - Consolidar `queryOptions` compartilhados (`orgProfile`, `subscription`).
 - Preload de rotas pesadas via `Link preload="intent"`.
@@ -188,7 +193,7 @@ Validação (leitura apenas) contra `docs/STAGING_CHECKLIST.md`:
 | # | Item | Prioridade | Esforço | Risco |
 |---|------|------------|---------|-------|
 | 1 | Migration aditiva com índices Q1/Q3/N1 (via `EXPLAIN` first) | 🔴 | M | Baixo (índices) |
-| 2 | Configuração BullMQ (DLQ, retenção, concorrência, limiter) | 🔴 | M | Médio |
+| 2 | (Fila de jobs) | ➖ N/A na baseline v1.0 | — | — |
 | 3 | Defaults TanStack Query + `queryOptions` compartilhados | 🔴 | S | Baixo |
 | 4 | Job de retenção de partições `audit_log` (cron) | 🔴 | S | Baixo |
 | 5 | Memoização React em listas críticas | 🟠 | M | Baixo |
@@ -199,12 +204,12 @@ Validação (leitura apenas) contra `docs/STAGING_CHECKLIST.md`:
 ### 7.4 Impacto esperado
 - **-40% a -70%** no p95 de `tracking_events` list após índice.
 - **-30%** em requisições HTTP do frontend (cache + queries compartilhadas).
-- **Zero OOM** no Redis com política de retenção BullMQ.
+- **N/A** para Redis/BullMQ nesta baseline (não executáveis em Workers).
 - **-50%** re-renders no Kanban / Chat.
 
 ### 7.5 Riscos
 - Índices podem aumentar tempo de escrita em `tracking_events` (~5-10%) — aceitável.
-- Ajuste de concorrência BullMQ pode saturar providers externos — mitigado com `limiter`.
+- (Concorrência BullMQ) — N/A; não aplicável na baseline v1.0.
 - Mudança de `staleTime` pode mascarar bugs de invalidação — cobrir com testes.
 
 ### 7.6 Parecer final

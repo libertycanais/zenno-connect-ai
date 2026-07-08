@@ -81,7 +81,7 @@ Chaves sensíveis (`authorization`, `token`, `password`, `api_key`, `secret`,
 | `SUPABASE_PUBLISHABLE_KEY` | Client auth-scoped no server |
 | `SUPABASE_SERVICE_ROLE_KEY` | Admin (bypass RLS) — nunca no front |
 | `DATABASE_URL` | Postgres direto (worker/migrations locais) |
-| `REDIS_URL` | Fila BullMQ |
+| `REDIS_URL` | ⚠️ Reservado — N/A na baseline v1.0 (sem fila externa) |
 | `SERVICE_NAME` | Rótulo nos logs (`zenno-api`, `zenno-worker`) |
 | `APP_ENV` | `production` \| `staging` \| `development` |
 | `APP_VERSION` \| `GIT_SHA` | Rastreabilidade de deploy nos logs |

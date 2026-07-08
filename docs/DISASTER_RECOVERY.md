@@ -20,10 +20,9 @@ Plano formal de continuidade para cenários catastróficos.
 - Verificação: teste de restore trimestral em ambiente scratch.
 
 ### Redis
-- AOF (append-only file) habilitado no `docker-compose.yml`.
-- Snapshot RDB a cada 6 h.
-- Fila BullMQ persistente — jobs sobrevivem a restart.
-- **Não é fonte de verdade**: perda total é degradação, não catástrofe.
+- **N/A na baseline v1.0** (Cloudflare Workers). Sem estado externo além do Postgres.
+- Se algum dia adotado (via novo ADR), aplicar AOF + snapshots RDB e tratar como
+  cache — nunca como fonte de verdade.
 
 ### Storage (Supabase)
 - Backup automático diário no Cloud.

@@ -69,10 +69,10 @@ Consolida sprints entregues e planejadas até v2.0.
 
 ### Sprint 8 — Escala e alta disponibilidade
 - Multi-AZ para Postgres.
-- Redis com replicação + Sentinel.
-- App ≥ 2 instâncias atrás de LB.
+- App ≥ 2 instâncias atrás de LB (quando aplicável em deploy externo).
 - Estratégia de cache formalizada (ADR-013).
-- BullMQ worker ativado + monitoring + DLQ.
+- **Fila de jobs assíncronos** (Cloudflare Queues ou BullMQ em worker Node externo)
+  se adotada — exige ADR-013 dedicado antes.
 
 ## Roadmap até v2.0
 
@@ -83,13 +83,12 @@ Consolida sprints entregues e planejadas até v2.0.
 | **v1.0** | Sprint 7 concluída → compliance + SLO ativos | +3 meses |
 | **v1.1** | Feature flags + i18n | +4 meses |
 | **v1.2** | Billing multi-região refinado (ADR-018) | +5 meses |
-| **v1.5** | Sprint 8 → multi-AZ, HA, BullMQ produtivo | +6-8 meses |
+| **v1.5** | Sprint 8 → multi-AZ, HA, fila de jobs (se aprovada por ADR) | +6-8 meses |
 | **v2.0** | Mobile (PWA/nativo) + API pública versionada | +12 meses |
 
 ## Escalabilidade
 - Postgres: read replicas quando p95 read > alvo.
-- Redis: cluster mode quando fila > 10k jobs sustentado.
-- Workers BullMQ: escalar por tipo de job.
+- Fila de jobs externa: N/A na baseline v1.0; considerar em v1.5 mediante ADR.
 
 ## Alta disponibilidade (alvo v1.5)
 - Multi-AZ (Supabase Pro / RDS multi-AZ).

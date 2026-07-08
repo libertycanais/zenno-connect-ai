@@ -1,45 +1,28 @@
-# Runbook — BullMQ
+# Runbook — Fila de Jobs Assíncronos (Reservado)
 
-## Sintomas
-- Jobs empilhando na fila.
-- Latência de tarefas assíncronas subindo.
-- Worker parado (não processa nada há > 2 min).
+> **Status atual (Sprint 5.3):** ⚠️ **NÃO APLICÁVEL À ARQUITETURA CONGELADA v1.0.**
+>
+> O stack oficial é **TanStack Start + Cloudflare Workers** (Architecture Freeze v1.0,
+> ver [`../ARCHITECTURE_FREEZE.md`](../ARCHITECTURE_FREEZE.md) e ADR-001/ADR-007).
+> Cloudflare Workers **não possuem processo Node persistente**, portanto **BullMQ
+> não é executável** neste runtime e **não faz parte** da baseline.
+>
+> Jobs assíncronos hoje são resolvidos por:
+> - `pg_cron` para tarefas agendadas de banco (retention, aggregation).
+> - Server functions idempotentes disparadas por webhooks.
+> - `/api/public/*` endpoints com verificação de assinatura.
+>
+> Este runbook fica **arquivado** como referência para uma eventual futura
+> adoção de fila (Cloudflare Queues ou BullMQ em worker Node externo).
+> Qualquer adoção real exigirá **novo ADR** e revisão do Architecture Freeze.
 
-## Diagnóstico
-1. `docker ps` → container `zenno-worker` `healthy`?
-2. `docker compose logs zenno-worker` — buscar exceções.
-3. Inspecionar fila (via CLI Redis):
-   ```bash
-   redis-cli -u $REDIS_URL LLEN bull:default:wait
-   redis-cli -u $REDIS_URL LLEN bull:default:active
-   ```
-4. Verificar DLQ:
-   ```bash
-   redis-cli -u $REDIS_URL LLEN bull:default:failed
-   ```
+## Se um dia for adotado (esboço)
 
-## Logs relevantes
-- `event=job.picked` / `job.completed` / `job.failed`
-- `event=worker.heartbeat` (planejado)
+Fila candidata #1: **Cloudflare Queues** (nativo, sem Redis, compatível com Workers).
+Fila candidata #2: **BullMQ** em worker Node externo (requer VPS + Redis).
 
-## Causa provável
-- Worker crashou por exceção não tratada.
-- Redis lento/indisponível.
-- Job específico causando loop de retry (poison message).
-- Concorrência alta demais para o pool de Postgres.
+Métricas a expor (padrão observability): `queue_jobs_total{queue,status}`,
+`queue_job_duration_ms{queue}`, `queue_depth{queue}`.
 
-## Correção
-- Reiniciar worker (`docker compose restart zenno-worker`).
-- Mover poison messages para DLQ manualmente.
-- Ajustar concorrência do worker.
-- Escalar Redis se saturado.
-
-## Rollback
-- Reverter versão que introduziu novo job com bug.
-- Desabilitar tipo de job problemático via feature flag.
-
-## Validação
-- Fila `wait` decrescendo continuamente.
-- `active` estável.
-- `failed` sem crescimento.
-- Job de teste completa em tempo esperado.
+Runbook operacional (sintomas, diagnóstico, correção, rollback) deverá ser
+escrito **após** o ADR de adoção — não usar este arquivo como fonte de verdade.

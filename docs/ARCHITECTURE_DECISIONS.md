@@ -358,16 +358,17 @@ de APIs internas (chamadas do frontend autenticado).
   webhooks, cron e endpoints públicos.
 - **Middleware `requireSupabaseAuth`** obrigatório em toda server
   function que acessa dados protegidos.
-- **BullMQ + Redis** planejados como camada de jobs assíncronos
-  (worker atualmente é placeholder no compose).
-- **Workers** rodam em processo separado quando ativados; leem da mesma
-  fila Redis.
+- **Fila de jobs (BullMQ + Redis)** foi originalmente cogitada mas **não
+  faz parte da baseline v1.0 congelada**: Cloudflare Workers não executa
+  processos Node persistentes. Jobs assíncronos hoje são resolvidos por
+  `pg_cron`, triggers e endpoints `/api/public/*` idempotentes. Uma futura
+  adoção (Cloudflare Queues ou worker Node externo) exige **novo ADR**.
 
 ### Alternativas avaliadas
 - **API REST monolítica** (`/api/v1/...`): perde tipagem ponta-a-ponta.
 - **tRPC**: sobreposto ao que `createServerFn` já oferece nativamente.
-- **Fila em Postgres (LISTEN/NOTIFY)**: aceitável em escala pequena, não
-  substitui BullMQ em cargas reais.
+- **Fila em Postgres (LISTEN/NOTIFY)** e **`pg_cron`**: adotados na baseline
+  para tarefas agendadas; suficientes na escala atual.
 
 ### Consequências positivas
 - Auth centralizada; contratos públicos isolados em `/api/public/*`.
@@ -569,12 +570,12 @@ alinhar expectativas e evitar mudanças estruturais fora dos ADRs.
 ### Escalabilidade
 - Server stateless: escala horizontalmente atrás de LB.
 - Postgres: read replicas quando p95 de read > alvo.
-- Redis: cluster mode quando fila > 10k jobs sustentado.
-- Workers BullMQ: escalar por tipo de job (tracking, webhook, AI).
+- Fila de jobs externa: **N/A na baseline v1.0**; considerar Cloudflare Queues
+  ou worker Node externo apenas com novo ADR.
 
 ### Alta disponibilidade
 - Multi-AZ para Postgres (Supabase Pro / RDS multi-AZ).
-- Redis com replicação + Sentinel.
+- Redis: N/A na baseline (não faz parte do stack ativo).
 - App em ≥ 2 instâncias atrás de LB com healthchecks.
 
 ### Disaster Recovery
@@ -600,7 +601,7 @@ alinhar expectativas e evitar mudanças estruturais fora dos ADRs.
 | ADR-004 | Segurança em profundidade | Aceito | 2026-02 | Segurança | Crítico | Não. Camadas só podem ser adicionadas, não removidas |
 | ADR-005 | Provider Layer | Aceito | 2026-03 | Arquitetura | Alto (integrações) | Sim, desde que interfaces sejam preservadas |
 | ADR-006 | Tracking próprio | Aceito | 2026-03 | Growth Eng. | Alto (atribuição) | Sim, com plano de coexistência para não perder eventos |
-| ADR-007 | Backend (server fn + /api/public + BullMQ) | Aceito | 2026-02 | Arquitetura | Alto | Sim, para APIs internas. `/api/public/*` é contrato — só via nova versão |
+| ADR-007 | Backend (server fn + /api/public) | Aceito | 2026-02 | Arquitetura | Alto | Sim, para APIs internas. `/api/public/*` é contrato — só via nova versão |
 | ADR-008 | Frontend (React 19 + TanStack + shadcn + Tailwind) | Aceito | 2026-01 | UI Architect | Médio | Componentes sim; stack base não |
 | ADR-009 | Deploy (Cloudflare + Docker) | Aceito | 2026-02 | Deploy Ops | Alto | Sim, adição de targets. Remoção de target exige ADR |
 | ADR-010 | Testes (Vitest + camadas + quality gate) | Aceito | 2026-03 | Testing | Alto | Sim, para adicionar camadas. Remover camadas exige ADR |
@@ -625,8 +626,8 @@ consequências, impacto, motivo, status).
   explícito para o depreciado.
 
 ### Possíveis ADRs adicionais (versões futuras)
-- **ADR-013** — Estratégia de cache (Redis + HTTP cache) quando o worker
-  BullMQ for ativado.
+- **ADR-013** — Estratégia de fila de jobs assíncronos (Cloudflare Queues
+  vs BullMQ em worker Node externo) se/quando for adotada.
 - **ADR-014** — Estratégia de retenção e arquivamento do `audit_log`.
 - **ADR-015** — SLO/SLA formais e política de erro budget.
 - **ADR-016** — Estratégia de feature flags (LaunchDarkly / OpenFeature /

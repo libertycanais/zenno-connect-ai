@@ -542,8 +542,9 @@ Ver `docs/PRODUCTION_READINESS.md` (bloqueadores + score + plano).
 - **Conversion**: evento com valor econômico enviado para Meta CAPI /
   Google Offline Conversion.
 - **Attribution**: engine que associa conversion → touchpoints anteriores.
-- **BullMQ**: fila de jobs assíncronos sobre Redis. Worker atualmente
-  placeholder.
+- **Fila de jobs assíncronos**: **N/A na baseline v1.0** (Cloudflare Workers).
+  Termos como BullMQ/Redis aparecem em runbooks arquivados apenas como
+  referência para uma eventual futura adoção via ADR.
 - **RLS** (Row Level Security): mecanismo Postgres para restringir linhas
   visíveis por usuário; base do isolamento multi-tenant.
 

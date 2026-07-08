@@ -1,37 +1,24 @@
-# Runbook — Redis
+# Runbook — Redis (Reservado)
 
-## Sintomas
-- `/api/public/ready` retorna 503 com `redis: fail`.
-- Worker BullMQ parado.
-- Latência do app subindo (se Redis é usado em cache).
+> **Status atual (Sprint 5.3):** ⚠️ **NÃO APLICÁVEL À ARQUITETURA CONGELADA v1.0.**
+>
+> A baseline (TanStack Start + Cloudflare Workers + PostgreSQL/Supabase) **não
+> depende de Redis**. Rate limit e caching leve são resolvidos em Postgres
+> (funções `global_rate_limit_hit`, `track_compound_rate_limit_hit`) e no
+> cache do TanStack Query (client-side).
+>
+> Este runbook fica **arquivado** para o caso de futura adoção de Redis
+> (fila BullMQ externa, cache compartilhado entre isolates, pub/sub).
+> Qualquer adoção real exigirá **novo ADR** e revisão do Architecture Freeze.
 
-## Diagnóstico
-1. `docker ps` → container `zenno-redis` `healthy`?
-2. `docker compose exec redis redis-cli ping` → deve responder `PONG`.
-3. `redis-cli info memory` — verificar uso de memória.
-4. `redis-cli info persistence` — AOF/RDB OK.
+## Se um dia for adotado (esboço)
 
-## Logs relevantes
-- Redis stdout: `Ready to accept connections`.
-- App: `event=redis.connect.failed`.
+Casos de uso candidatos:
+- Cache de resposta cross-isolate (hoje N/A — cada isolate mantém seu próprio in-memory).
+- Fila BullMQ (ver `runbooks/bullmq.md`).
+- Pub/sub para invalidação de cache.
 
-## Causa provável
-- Container caído / OOM killed.
-- Disco cheio (AOF cresceu demais).
-- Rede entre app e Redis com problema.
-- Redis com maxmemory atingido sem policy adequada.
+Métricas mínimas a expor: `redis_up`, `redis_latency_ms`,
+`redis_memory_used_bytes`, `redis_connected_clients`.
 
-## Correção
-- Reiniciar container: `docker compose restart redis`.
-- Ajustar `maxmemory` + `maxmemory-policy` no `redis.conf`.
-- Rotacionar AOF (`BGREWRITEAOF`).
-- Escalar disco.
-
-## Rollback
-- Restaurar AOF/RDB de backup se corrupção.
-- Redis não é fonte de verdade — perda total é degradação, não catástrofe.
-
-## Validação
-- `redis-cli ping` → `PONG`.
-- `/api/public/ready` volta a 200.
-- Worker BullMQ processa fila.
+Runbook operacional real deverá ser escrito **após** o ADR de adoção.
