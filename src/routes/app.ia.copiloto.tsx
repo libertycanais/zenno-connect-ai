@@ -89,6 +89,7 @@ function CopilotoPage() {
       role: m.role as Msg["role"],
       content: m.content ?? "",
       tool_name: m.tool_name,
+      tool_call_id: m.tool_call_id,
     })),
     ...pending,
   ];
