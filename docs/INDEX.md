@@ -10,6 +10,7 @@
 |-----------|-----------|
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Visão arquitetural detalhada |
 | [ARCHITECTURE_DECISIONS.md](./ARCHITECTURE_DECISIONS.md) | 12 ADRs oficiais |
+| [ARCHITECTURE_FREEZE.md](./ARCHITECTURE_FREEZE.md) | Declaração de congelamento da arquitetura base |
 | [MASTER_ROADMAP.md](./MASTER_ROADMAP.md) | Sprints passadas + futuras até v2.0 |
 | [VERSION_HISTORY.md](./VERSION_HISTORY.md) | Histórico de versões |
 
