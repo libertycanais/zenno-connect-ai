@@ -84,9 +84,25 @@ function ChatPage() {
           <div className="flex-1 flex items-center justify-center text-muted-foreground">Selecione uma conversa</div>
         ) : (
           <>
-            <div className="px-4 py-3 border-b border-border">
-              <div className="font-medium">{activeChat.name ?? activeChat.phone}</div>
-              <div className="text-xs text-muted-foreground">{activeChat.phone}</div>
+            <div className="px-4 py-3 border-b border-border flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="font-medium truncate">{activeChat.name ?? activeChat.phone}</div>
+                <div className="text-xs text-muted-foreground">{activeChat.phone}</div>
+                {activeChat.attributed_at ? (
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {activeChat.first_utm_source ? <Badge variant="secondary" className="text-[10px]">src: {activeChat.first_utm_source}</Badge> : null}
+                    {activeChat.first_utm_campaign ? <Badge variant="secondary" className="text-[10px]">camp: {activeChat.first_utm_campaign}</Badge> : null}
+                    {activeChat.first_fbclid ? <Badge variant="outline" className="text-[10px]">fbclid</Badge> : null}
+                    {activeChat.first_gclid ? <Badge variant="outline" className="text-[10px]">gclid</Badge> : null}
+                    {activeChat.conversion_status === "customer"
+                      ? <Badge className="text-[10px] bg-emerald-500/20 text-emerald-600 border-emerald-500/40">venda {activeChat.conversion_value ? `· ${activeChat.conversion_value}` : ""}</Badge>
+                      : null}
+                  </div>
+                ) : (
+                  <div className="text-[10px] text-muted-foreground mt-1">sem atribuição</div>
+                )}
+              </div>
+              <ConversionButton chatId={activeChat.id} isCustomer={activeChat.conversion_status === "customer"} />
             </div>
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2 bg-muted/30">
               {messages.map((m) => (
