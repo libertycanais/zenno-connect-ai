@@ -588,6 +588,13 @@ export const approvePendingAction = createServerFn({ method: "POST" })
         result = platform === "meta"
           ? await exec.metaUpdateCampaign(supabase, campaignId, { daily_budget_cents: Math.round(brl * 100) })
           : await exec.googleUpdateCampaignBudget(supabase, campaignId, Math.round(brl * 1_000_000));
+      } else if (pa.tool_name === "create_campaign") {
+        if (platform !== "meta") throw new Error("create_campaign: apenas Meta por enquanto.");
+        result = await exec.metaCreateCampaign(supabase, String(args.account_id ?? ""), {
+          name: String(args.name ?? ""),
+          objective: String(args.objective ?? ""),
+          daily_budget_cents: Math.round(Number(args.daily_budget_brl ?? 0) * 100),
+        });
       } else {
         throw new Error(`Ferramenta desconhecida: ${pa.tool_name}`);
       }
