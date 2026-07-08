@@ -135,7 +135,7 @@ export function useChats(instanceId: string | null) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("whatsapp_chats")
-        .select("id, instance_id, phone, name, last_message_at, last_message_preview, unread_count, lead_id")
+        .select("id, instance_id, phone, name, last_message_at, last_message_preview, unread_count, lead_id, first_utm_campaign, first_utm_source, first_fbclid, first_gclid, attributed_at, conversion_status, conversion_value, conversion_currency, converted_at")
         .eq("instance_id", instanceId!)
         .order("last_message_at", { ascending: false, nullsFirst: false });
       if (error) throw error;
