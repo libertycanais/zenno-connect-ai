@@ -29,6 +29,15 @@ export type WAChat = {
   last_message_preview: string | null;
   unread_count: number;
   lead_id: string | null;
+  first_utm_campaign: string | null;
+  first_utm_source: string | null;
+  first_fbclid: string | null;
+  first_gclid: string | null;
+  attributed_at: string | null;
+  conversion_status: string;
+  conversion_value: number | null;
+  conversion_currency: string | null;
+  converted_at: string | null;
 };
 
 export type WAMessage = {
@@ -126,7 +135,7 @@ export function useChats(instanceId: string | null) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("whatsapp_chats")
-        .select("id, instance_id, phone, name, last_message_at, last_message_preview, unread_count, lead_id")
+        .select("id, instance_id, phone, name, last_message_at, last_message_preview, unread_count, lead_id, first_utm_campaign, first_utm_source, first_fbclid, first_gclid, attributed_at, conversion_status, conversion_value, conversion_currency, converted_at")
         .eq("instance_id", instanceId!)
         .order("last_message_at", { ascending: false, nullsFirst: false });
       if (error) throw error;

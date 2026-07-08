@@ -66,6 +66,31 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
   // Na página de obrigado / pós-compra:
   window.zennoTrack({ event: "Purchase", email: "cliente@email.com", value: 297.00, currency: "BRL" });
 </script>`;
+  const waSnippet = `<a href="#" data-wa-phone="551199999999" data-wa-message="Olá, vim do anúncio" onclick="return zennoWaOpen(this)">
+  Falar no WhatsApp
+</a>
+<script>
+  // Gera o link wa.me com código rastreável [t:XXXXXX] atrelado ao clique do anúncio.
+  // Requer o script base do rastreio já carregado na página.
+  async function zennoWaOpen(el) {
+    try {
+      const r = await fetch("${origin}/api/public/track/wa-link", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pk: "${pk}",
+          phone: el.dataset.waPhone,
+          message: el.dataset.waMessage,
+          session_id: (window.zennoTrack && window.zennoTrack.sessionId) || localStorage.getItem("zt_sid") || "",
+        }),
+      });
+      const j = await r.json();
+      if (j.ok) { window.open(j.url, "_blank"); return false; }
+    } catch(e) {}
+    // fallback: abre wa.me sem código
+    window.open("https://wa.me/" + el.dataset.waPhone + "?text=" + encodeURIComponent(el.dataset.waMessage || ""), "_blank");
+    return false;
+  }
+</script>`;
 
   const copy = (s: string, label: string) => {
     navigator.clipboard.writeText(s).then(() => toast.success(`${label} copiado`));
@@ -148,6 +173,19 @@ export function TrackingPanel({ source, sourceLabel }: Props) {
               <Button size="sm" variant="outline" className="mt-2" onClick={() => copy(purchaseSnippet, "Snippet Purchase")}>
                 <Copy className="w-4 h-4 mr-2" />Copiar
               </Button>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Botão WhatsApp rastreável (Click-to-WhatsApp)</label>
+              <pre className="mt-1 bg-muted p-3 rounded text-xs overflow-x-auto">{waSnippet}</pre>
+              <Button size="sm" variant="outline" className="mt-2" onClick={() => copy(waSnippet, "Snippet WhatsApp")}>
+                <Copy className="w-4 h-4 mr-2" />Copiar
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Substitua <code>data-wa-phone</code> pelo número do cliente (formato internacional, só dígitos).
+                O sistema injeta automaticamente um código <code>[t:XXXXXX]</code> na mensagem — quando o WhatsApp
+                receber, o Zenno casa o número com o clique do anúncio e dispara Meta CAPI <code>Lead</code>.
+                No CRM, o botão <strong>Marcar venda</strong> dispara <code>Purchase</code>.
+              </p>
             </div>
             <div className="text-xs text-muted-foreground border-t pt-3">
               Quando o evento <code>Lead</code> ou <code>Purchase</code> chegar com <code>fbclid</code> presente,

@@ -94,6 +94,10 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")
             { onConflict: "instance_id,external_id", ignoreDuplicates: true },
           );
           if (!fromMe) {
+            // === Atribuição: casa código [t:XXXXXX] da 1a mensagem com o clique do anúncio ===
+            try { await attributeWhatsappChat(inst.organization_id, chat.id, cleanPhone, text); }
+            catch (e) { console.error("wa attribution", e); }
+
             const { dispatchEvent } = await import("@/lib/automations.functions");
             dispatchEvent({
               organizationId: inst.organization_id,
@@ -107,3 +111,77 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")
     },
   },
 });
+
+async function attributeWhatsappChat(
+  orgId: string,
+  chatId: string,
+  cleanPhone: string,
+  text: string | null,
+) {
+  // Já atribuído? sai.
+  const { data: chatRow } = await supabaseAdmin
+    .from("whatsapp_chats")
+    .select("attributed_at, tracking_session_id")
+    .eq("id", chatId)
+    .maybeSingle();
+  if (chatRow?.attributed_at || chatRow?.tracking_session_id) return;
+
+  if (!text) return;
+  const m = text.match(/\[t:([A-Z2-9]{4,10})\]/i);
+  if (!m) return;
+  const code = m[1].toUpperCase();
+
+  const { data: codeRow } = await supabaseAdmin
+    .from("whatsapp_tracking_codes")
+    .select("session_id, organization_id, consumed_at, expires_at")
+    .eq("code", code)
+    .maybeSingle();
+  if (!codeRow || codeRow.organization_id !== orgId) return;
+  if (codeRow.consumed_at) return;
+  if (new Date(codeRow.expires_at) < new Date()) return;
+
+  const { data: lead } = await supabaseAdmin
+    .from("tracking_leads")
+    .select("id, first_fbclid, first_gclid, first_utm_source, first_utm_campaign, first_utm_content, first_utm_term, first_landing_url, email")
+    .eq("organization_id", orgId)
+    .eq("session_id", codeRow.session_id)
+    .maybeSingle();
+
+  const nowIso = new Date().toISOString();
+  await supabaseAdmin.from("whatsapp_chats").update({
+    tracking_session_id: codeRow.session_id,
+    tracking_short_code: code,
+    tracking_lead_id: lead?.id ?? null,
+    first_fbclid: lead?.first_fbclid ?? null,
+    first_gclid: lead?.first_gclid ?? null,
+    first_utm_source: lead?.first_utm_source ?? null,
+    first_utm_campaign: lead?.first_utm_campaign ?? null,
+    first_utm_content: lead?.first_utm_content ?? null,
+    first_utm_term: lead?.first_utm_term ?? null,
+    first_landing_url: lead?.first_landing_url ?? null,
+    attributed_at: nowIso,
+  }).eq("id", chatId);
+
+  await supabaseAdmin.from("whatsapp_tracking_codes")
+    .update({ consumed_at: nowIso }).eq("code", code);
+
+  // Dispara Lead na Meta CAPI usando action_source="business_messaging"
+  try {
+    const { dispatchMetaCapi, registerGoogleOfflineConversion } = await import("@/lib/attribution.server");
+    await dispatchMetaCapi({
+      organizationId: orgId,
+      eventName: "Lead",
+      actionSource: "business_messaging",
+      fbclid: lead?.first_fbclid ?? null,
+      email: lead?.email ?? null,
+      phone: cleanPhone,
+      externalId: codeRow.session_id,
+      eventSourceUrl: lead?.first_landing_url ?? null,
+    });
+    await registerGoogleOfflineConversion({
+      organizationId: orgId,
+      eventName: "Lead",
+      gclid: lead?.first_gclid ?? null,
+    });
+  } catch (e) { console.error("wa capi lead", e); }
+}
