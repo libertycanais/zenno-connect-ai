@@ -60,7 +60,7 @@ Helper server-side: `src/lib/rate-limit.server.ts`.
 | Login | `auth:login:<ip>` | 20 | 60 s |
 | Login | `auth:login:<email>` | 5 | 60 s |
 
-Rate limit do módulo Tracking permanece separado (`track_rate_limit_hit`) para preservar contratos, mas agora usa proteção composta:
+Rate limit do módulo Tracking permanece separado para preservar contratos: `track_rate_limit_hit` continua atendendo fluxos legados, e `track_compound_rate_limit_hit` protege o endpoint público de eventos com chaves compostas:
 
 | Contexto | Chave | Limite | Janela |
 | --- | --- | ---: | ---: |

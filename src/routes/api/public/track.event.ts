@@ -98,15 +98,13 @@ export const Route = createFileRoute("/api/public/track/event")({
         const safeIp = ip ?? "unknown";
         const rateLimitKeys = trackingRateLimitKeys(org.id, data.pk, safeIp);
         const [{ data: ipThrottled }, { data: publicKeyThrottled }] = await Promise.all([
-          supabaseAdmin.rpc("track_rate_limit_hit", {
+          supabaseAdmin.rpc("track_compound_rate_limit_hit", {
             _org: org.id,
-            _ip: safeIp,
             _key: rateLimitKeys.ipKey,
             _max: TRACKING_IP_RATE_LIMIT_PER_MINUTE,
           }),
-          supabaseAdmin.rpc("track_rate_limit_hit", {
+          supabaseAdmin.rpc("track_compound_rate_limit_hit", {
             _org: org.id,
-            _ip: safeIp,
             _key: rateLimitKeys.publicKeyKey,
             _max: TRACKING_PUBLIC_KEY_RATE_LIMIT_PER_MINUTE,
           }),
