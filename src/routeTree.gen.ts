@@ -45,6 +45,7 @@ import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tr
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
+import { Route as AppLeadsAtribuicaoRouteImport } from './routes/app.leads.atribuicao'
 import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
 import { Route as AppIaCopilotoRouteImport } from './routes/app.ia.copiloto'
 import { Route as AppGoogleAdsTrackingRouteImport } from './routes/app.google-ads.tracking'
@@ -240,6 +241,11 @@ const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   path: '/leads/kanban',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLeadsAtribuicaoRoute = AppLeadsAtribuicaoRouteImport.update({
+  id: '/leads/atribuicao',
+  path: '/leads/atribuicao',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppIaQualificarRoute = AppIaQualificarRouteImport.update({
   id: '/qualificar',
   path: '/qualificar',
@@ -343,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -385,6 +392,7 @@ export interface FileRoutesByTo {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -438,6 +446,7 @@ export interface FileRoutesById {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
@@ -492,6 +501,7 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/leads/atribuicao'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -534,6 +544,7 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/leads/atribuicao'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -586,6 +597,7 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/leads/atribuicao'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
@@ -879,6 +891,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsKanbanRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/leads/atribuicao': {
+      id: '/app/leads/atribuicao'
+      path: '/leads/atribuicao'
+      fullPath: '/app/leads/atribuicao'
+      preLoaderRoute: typeof AppLeadsAtribuicaoRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/ia/qualificar': {
       id: '/app/ia/qualificar'
       path: '/qualificar'
@@ -1129,6 +1148,7 @@ interface AppRouteChildren {
   AppTicketsRoute: typeof AppTicketsRouteWithChildren
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
+  AppLeadsAtribuicaoRoute: typeof AppLeadsAtribuicaoRoute
   AppLeadsKanbanRoute: typeof AppLeadsKanbanRoute
   AppLeadsIndexRoute: typeof AppLeadsIndexRoute
 }
@@ -1148,6 +1168,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppTicketsRoute: AppTicketsRouteWithChildren,
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
+  AppLeadsAtribuicaoRoute: AppLeadsAtribuicaoRoute,
   AppLeadsKanbanRoute: AppLeadsKanbanRoute,
   AppLeadsIndexRoute: AppLeadsIndexRoute,
 }
