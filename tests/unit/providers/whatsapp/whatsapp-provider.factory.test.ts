@@ -15,7 +15,7 @@ describe("whatsapp-provider.factory", () => {
   });
 
   it("defaults to uazapi", () => {
-    vi.stubEnv("WHATSAPP_PROVIDER", "");
+    delete process.env.WHATSAPP_PROVIDER;
     expect(getWhatsAppProvider()).toBeInstanceOf(UazapiProvider);
   });
 

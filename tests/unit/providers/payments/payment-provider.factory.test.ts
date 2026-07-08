@@ -16,7 +16,7 @@ describe("payment-provider.factory", () => {
   });
 
   it("defaults to stripe", () => {
-    vi.stubEnv("PAYMENT_PROVIDER", "");
+    delete process.env.PAYMENT_PROVIDER;
     expect(getPaymentProvider()).toBeInstanceOf(StripeProvider);
   });
 

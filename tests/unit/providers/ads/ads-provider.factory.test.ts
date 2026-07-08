@@ -16,7 +16,7 @@ describe("ads-provider.factory", () => {
   });
 
   it("defaults to meta when no ENV / arg is set", () => {
-    vi.stubEnv("ADS_PROVIDER", "");
+    delete process.env.ADS_PROVIDER;
     expect(getAdsProvider()).toBeInstanceOf(MetaAdsProvider);
   });
 

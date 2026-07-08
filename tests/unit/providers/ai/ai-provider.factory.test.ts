@@ -15,7 +15,7 @@ describe("ai-provider.factory", () => {
   });
 
   it("defaults to lovable", () => {
-    vi.stubEnv("AI_PROVIDER", "");
+    delete process.env.AI_PROVIDER;
     expect(getAIProvider()).toBeInstanceOf(LovableAIProvider);
   });
 
