@@ -176,3 +176,55 @@ export const getInstanceWebhookSecret = createServerFn({ method: "POST" })
     if (error || !row) throw new Error("Instância não encontrada");
     return { secret: row.webhook_secret as string };
   });
+
+// Marca uma conversa do WhatsApp como venda/convertida e dispara CAPI Purchase
+export const markWhatsappConversion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    chatId: z.string().uuid(),
+    value: z.number().nonnegative().max(1_000_000).optional(),
+    currency: z.string().length(3).default("BRL"),
+    status: z.enum(["customer", "lost", "lead"]).default("customer"),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const organization_id = await getOrgId(supabase, userId);
+
+    const { data: chat } = await supabaseAdmin
+      .from("whatsapp_chats")
+      .select("id, organization_id, phone, first_fbclid, first_gclid, first_landing_url, tracking_session_id")
+      .eq("id", data.chatId)
+      .single();
+    if (!chat || chat.organization_id !== organization_id) throw new Error("Conversa não encontrada");
+
+    const nowIso = new Date().toISOString();
+    await supabaseAdmin.from("whatsapp_chats").update({
+      conversion_status: data.status,
+      conversion_value: data.value ?? null,
+      conversion_currency: data.currency,
+      converted_at: data.status === "customer" ? nowIso : null,
+    }).eq("id", data.chatId);
+
+    if (data.status !== "customer") return { ok: true, dispatched: false };
+
+    const { dispatchMetaCapi, registerGoogleOfflineConversion } = await import("@/lib/attribution.server");
+    const meta = await dispatchMetaCapi({
+      organizationId: organization_id,
+      eventName: "Purchase",
+      actionSource: "business_messaging",
+      fbclid: chat.first_fbclid,
+      phone: chat.phone,
+      externalId: chat.tracking_session_id ?? chat.id,
+      eventSourceUrl: chat.first_landing_url,
+      value: data.value ?? null,
+      currency: data.currency,
+    });
+    await registerGoogleOfflineConversion({
+      organizationId: organization_id,
+      eventName: "Purchase",
+      gclid: chat.first_gclid,
+      value: data.value ?? null,
+      currency: data.currency,
+    });
+    return { ok: true, dispatched: true, meta };
+  });
