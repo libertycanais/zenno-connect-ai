@@ -902,7 +902,12 @@ export type Database = {
       meta_ads_insights: {
         Row: {
           ad_account_id: string
+          ad_id: string | null
+          ad_name: string | null
+          adset_id: string | null
+          adset_name: string | null
           campaign_id: string | null
+          campaign_name: string | null
           clicks: number
           conversions: number
           cpc: number | null
@@ -919,7 +924,12 @@ export type Database = {
         }
         Insert: {
           ad_account_id: string
+          ad_id?: string | null
+          ad_name?: string | null
+          adset_id?: string | null
+          adset_name?: string | null
           campaign_id?: string | null
+          campaign_name?: string | null
           clicks?: number
           conversions?: number
           cpc?: number | null
@@ -936,7 +946,12 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string
+          ad_id?: string | null
+          ad_name?: string | null
+          adset_id?: string | null
+          adset_name?: string | null
           campaign_id?: string | null
+          campaign_name?: string | null
           clicks?: number
           conversions?: number
           cpc?: number | null
@@ -1737,6 +1752,7 @@ export type Database = {
           conversion_value: number | null
           converted_at: string | null
           created_at: string
+          due_at: string | null
           first_fbclid: string | null
           first_gclid: string | null
           first_landing_url: string | null
@@ -1751,7 +1767,9 @@ export type Database = {
           lead_id: string | null
           name: string | null
           organization_id: string
+          payment_mode: string | null
           phone: string
+          reminder_sent_at: string | null
           tracking_lead_id: string | null
           tracking_session_id: string | null
           tracking_short_code: string | null
@@ -1766,6 +1784,7 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string | null
           created_at?: string
+          due_at?: string | null
           first_fbclid?: string | null
           first_gclid?: string | null
           first_landing_url?: string | null
@@ -1780,7 +1799,9 @@ export type Database = {
           lead_id?: string | null
           name?: string | null
           organization_id: string
+          payment_mode?: string | null
           phone: string
+          reminder_sent_at?: string | null
           tracking_lead_id?: string | null
           tracking_session_id?: string | null
           tracking_short_code?: string | null
@@ -1795,6 +1816,7 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string | null
           created_at?: string
+          due_at?: string | null
           first_fbclid?: string | null
           first_gclid?: string | null
           first_landing_url?: string | null
@@ -1809,7 +1831,9 @@ export type Database = {
           lead_id?: string | null
           name?: string | null
           organization_id?: string
+          payment_mode?: string | null
           phone?: string
+          reminder_sent_at?: string | null
           tracking_lead_id?: string | null
           tracking_session_id?: string | null
           tracking_short_code?: string | null
@@ -1857,10 +1881,13 @@ export type Database = {
           name: string
           organization_id: string
           phone_number: string | null
+          provider: string
           qr_code: string | null
           status: Database["public"]["Enums"]["wa_instance_status"]
           token: string
           updated_at: string
+          waba_business_id: string | null
+          waba_phone_id: string | null
           webhook_secret: string
         }
         Insert: {
@@ -1872,10 +1899,13 @@ export type Database = {
           name: string
           organization_id: string
           phone_number?: string | null
+          provider?: string
           qr_code?: string | null
           status?: Database["public"]["Enums"]["wa_instance_status"]
           token: string
           updated_at?: string
+          waba_business_id?: string | null
+          waba_phone_id?: string | null
           webhook_secret?: string
         }
         Update: {
@@ -1887,10 +1917,13 @@ export type Database = {
           name?: string
           organization_id?: string
           phone_number?: string | null
+          provider?: string
           qr_code?: string | null
           status?: Database["public"]["Enums"]["wa_instance_status"]
           token?: string
           updated_at?: string
+          waba_business_id?: string | null
+          waba_phone_id?: string | null
           webhook_secret?: string
         }
         Relationships: [
