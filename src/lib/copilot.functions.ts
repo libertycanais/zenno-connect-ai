@@ -488,3 +488,89 @@ export const getCopilotConversation = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { messages: msgs ?? [] };
   });
+
+// ================= PENDING ACTIONS =================
+export const listPendingActions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ conversationId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await context.supabase
+      .from("ai_copilot_pending_actions")
+      .select("id, tool_name, tool_call_id, tool_args, preview, platform, status, result, error, executed_at, created_at")
+      .eq("conversation_id", data.conversationId)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    return { actions: rows ?? [] };
+  });
+
+export const rejectPendingAction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("ai_copilot_pending_actions")
+      .update({ status: "rejected" })
+      .eq("id", data.id)
+      .eq("status", "pending");
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const approvePendingAction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: pa, error: perr } = await supabase
+      .from("ai_copilot_pending_actions")
+      .select("id, conversation_id, organization_id, tool_name, tool_args, platform, status, preview")
+      .eq("id", data.id).single();
+    if (perr || !pa) throw new Error("Ação não encontrada.");
+    if (pa.status !== "pending") throw new Error(`Ação já processada (${pa.status}).`);
+
+    const args = (pa.tool_args ?? {}) as Record<string, unknown>;
+    const campaignId = String(args.campaign_id ?? "");
+    const platform = String(args.platform ?? pa.platform ?? "");
+
+    const exec = await import("./copilot-executors.server");
+    let result: unknown;
+    try {
+      if (pa.tool_name === "pause_campaign") {
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { status: "PAUSED" })
+          : await exec.googleUpdateCampaignStatus(supabase, campaignId, "PAUSED");
+      } else if (pa.tool_name === "resume_campaign") {
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { status: "ACTIVE" })
+          : await exec.googleUpdateCampaignStatus(supabase, campaignId, "ENABLED");
+      } else if (pa.tool_name === "update_daily_budget") {
+        const brl = Number(args.new_daily_budget_brl ?? 0);
+        if (!(brl > 0)) throw new Error("Orçamento inválido.");
+        result = platform === "meta"
+          ? await exec.metaUpdateCampaign(supabase, campaignId, { daily_budget_cents: Math.round(brl * 100) })
+          : await exec.googleUpdateCampaignBudget(supabase, campaignId, Math.round(brl * 1_000_000));
+      } else {
+        throw new Error(`Ferramenta desconhecida: ${pa.tool_name}`);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      await supabase.from("ai_copilot_pending_actions")
+        .update({ status: "failed", error: msg })
+        .eq("id", pa.id);
+      throw new Error(msg);
+    }
+
+    await supabase.from("ai_copilot_pending_actions")
+      .update({ status: "executed", result: result as any, executed_at: new Date().toISOString() })
+      .eq("id", pa.id);
+
+    // Log a system message so the model sees the outcome on next turn
+    await supabase.from("ai_copilot_messages").insert({
+      conversation_id: pa.conversation_id,
+      organization_id: pa.organization_id,
+      role: "assistant",
+      content: `✅ Ação executada: ${pa.preview}`,
+    });
+
+    return { ok: true, result };
+  });
