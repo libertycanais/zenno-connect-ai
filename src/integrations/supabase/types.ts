@@ -2761,6 +2761,12 @@ export type Database = {
         Args: { _month: string }
         Returns: undefined
       }
+      audit_log_prune_partitions: {
+        Args: { _keep_months?: number }
+        Returns: {
+          dropped_partition: string
+        }[]
+      }
       audit_redact: { Args: { payload: Json }; Returns: Json }
       current_org_id: { Args: never; Returns: string }
       global_rate_limit_hit: {
