@@ -70,10 +70,10 @@ Runbook: [`runbooks/providers.md`](./runbooks/providers.md).
 - Legítimo → aumentar limite após review.
 - Abuso → bloquear origem no LB/WAF.
 
-### Fila BullMQ travada
+### Fila de jobs assíncronos
 Runbook: [`runbooks/bullmq.md`](./runbooks/bullmq.md).
-- Verificar worker vivo, Redis OK.
-- Inspecionar DLQ.
+- **N/A na baseline v1.0** (Cloudflare Workers não roda BullMQ).
+- Runbook mantido como reserva para futura adoção (novo ADR obrigatório).
 
 ### Rollback
 Runbook: [`runbooks/rollback.md`](./runbooks/rollback.md).
