@@ -14,6 +14,13 @@ export const Route = createFileRoute("/api/public/whatsapp/webhook/$instanceId")
       POST: async ({ request, params }) => {
         const secret = request.headers.get("x-webhook-secret");
         const instanceId = params.instanceId;
+        const ip = clientIp(request);
+
+        const [instHit, ipHit] = await Promise.all([
+          rateLimitHit(`webhook:${instanceId ?? "unknown"}`, 600, 60),
+          rateLimitHit(`webhook:${ip}`, 300, 60),
+        ]);
+        if (instHit.limited || ipHit.limited) return tooManyRequests(60);
 
         if (!instanceId || !secret) {
           return new Response("Missing instance or secret header", { status: 401 });
