@@ -482,7 +482,7 @@ export const getCopilotConversation = createServerFn({ method: "GET" })
     const { supabase } = context;
     const { data: msgs, error } = await supabase
       .from("ai_copilot_messages")
-      .select("id, role, content, tool_name, created_at")
+      .select("id, role, content, tool_name, tool_call_id, created_at")
       .eq("conversation_id", data.id)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
