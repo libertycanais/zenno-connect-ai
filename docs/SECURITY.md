@@ -1,6 +1,6 @@
 # Segurança — Zenno SaaS
 
-Documento vivo. Descreve o modelo de segurança operacional do Zenno após Sprint Segurança 2.
+Documento vivo. Descreve o modelo de segurança operacional do Zenno após Sprint Segurança 2 e Sprint 3.5.
 
 ## 1. Modelo de acesso
 
@@ -60,7 +60,14 @@ Helper server-side: `src/lib/rate-limit.server.ts`.
 | Login | `auth:login:<ip>` | 20 | 60 s |
 | Login | `auth:login:<email>` | 5 | 60 s |
 
-Rate limit do módulo Tracking permanece separado (`track_rate_limit_hit`) para preservar contratos.
+Rate limit do módulo Tracking permanece separado (`track_rate_limit_hit`) para preservar contratos, mas agora usa proteção composta:
+
+| Contexto | Chave | Limite | Janela |
+| --- | --- | ---: | ---: |
+| Tracking público | `tracking:event:ip:<org>:<pk>:<ip>` | 60 | 60 s |
+| Tracking público | `tracking:event:pk:<org>:<pk>` | 600 | 60 s |
+
+A primeira chave limita abuso por origem de rede; a segunda reduz abuso distribuído/botnet contra uma mesma chave pública vazada.
 
 **Fail-open:** Se o RPC falhar, o helper libera a requisição e loga o erro — nunca derruba OAuth/webhook.
 
@@ -79,6 +86,19 @@ Todos os endpoints públicos DEVEM:
 2. Aplicar rate limit apropriado.
 3. Retornar 401/429 sem vazar detalhes internos.
 4. Nunca logar tokens, chaves ou PII.
+
+### Tracking público (`/api/public/track/event`)
+
+O endpoint de eventos de tracking é **fail-closed**:
+
+- `tracking_allowed_origins` vazio, nulo ou sem entradas válidas bloqueia a coleta (`403`).
+- Requests sem `Origin` e sem `Referer` são rejeitados; não há modo server-to-server anônimo para ingestão pública.
+- `Origin` tem prioridade; `Referer` é usado apenas como fallback para navegadores/fluxos que não enviam `Origin`.
+- Allowlist é normalizada para lowercase, sem protocolo/caminho, com suporte a wildcard controlado (`*.example.com`).
+- CORS nunca retorna wildcard no endpoint de eventos. Sem `Origin`, a resposta não inclui `Access-Control-Allow-Origin`.
+- Eventos rejeitados e rate limits são auditados com dados mínimos: motivo, host avaliado, contagem de origens cadastradas, presença de headers e sessão/evento; sem token, chave pública, e-mail ou telefone.
+
+Conversões públicas geradas a partir do tracking (`meta_conversion_events`, `google_ads_conversions`) possuem trilha de auditoria automática via `audit_log` com redação de campos sensíveis.
 
 ## 6. Compatibilidade
 

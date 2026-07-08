@@ -64,6 +64,35 @@ Regra: server functions e handlers importam **somente** a factory + tipos da int
 - `src/integrations/supabase/` — clients gerados (não editar)
 - `supabase/migrations/` — schema versionado
 
+## Tracking público
+
+Fluxo atual do pixel público:
+
+```
+site do cliente
+      │  Origin / Referer
+      ▼
+/api/public/track/event
+      │  valida pk + allowlist fail-closed
+      │  aplica rate limit por IP e por chave pública
+      ▼
+tracking_events / tracking_leads
+      │  somente se origem permitida
+      ▼
+meta_conversion_events / google_ads_conversions
+      │
+      ▼
+audit_log
+```
+
+Invariantes da camada:
+
+- Chave pública identifica a organização, mas não autoriza ingestão sozinha.
+- Allowlist vazia significa **bloqueado**, não modo permissivo.
+- Requests públicos sem origem/referer não são aceitos para evitar ingestão server-to-server não autenticada.
+- CORS é derivado do `Origin` recebido e nunca usa wildcard no endpoint de evento.
+- Conversões continuam no modelo atual de consumers; a migração completa para Provider Layer permanece como etapa posterior.
+
 ## Deploy independente
 
 Ver `docs/DOCKER.md` e `mem://architecture/deploy-independence`.

@@ -4,8 +4,6 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   corsFor,
   hostOf,
-  normalizeAllowedOrigins,
-  originAllowed,
   safeTrackingAuditData,
   TRACKING_IP_RATE_LIMIT_PER_MINUTE,
   TRACKING_PUBLIC_KEY_RATE_LIMIT_PER_MINUTE,

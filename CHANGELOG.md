@@ -1,5 +1,23 @@
 # Changelog
 
+## Sprint 3.5 — Tracking Security Hardening (2026-07-08)
+
+Aditivo. Sem alteração no contrato do payload público de tracking.
+
+### Corrigido
+- `/api/public/track/event` agora é **fail-closed**: `tracking_allowed_origins` vazio/nulo bloqueia ingestão pública.
+- Requests sem `Origin` e sem `Referer` são rejeitados para impedir ingestão server-to-server anônima.
+- CORS do endpoint de eventos não retorna mais wildcard quando não há origem.
+
+### Endurecido
+- Allowlist de tracking normalizada em código e migration: lowercase, sem protocolo/caminho, sem duplicatas e sem entradas inválidas.
+- Rate limit composto para tracking: por IP + chave pública e por chave pública global, reduzindo abuso distribuído.
+- Eventos suspeitos/rejeitados gravam auditoria mínima e sem PII.
+- `meta_conversion_events` e `google_ads_conversions` agora possuem triggers de auditoria para conversões originadas do tracking público.
+
+### Testes
+- Testes unitários para fail-closed, CORS sem wildcard, normalização de allowlist, wildcard controlado e chaves compostas de rate limit.
+
 ## Sprint Arquitetura 3 — Provider Layer (2026-07-08)
 
 Aditivo. Nenhuma alteração em consumers existentes ou APIs públicas.
