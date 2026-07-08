@@ -45,8 +45,8 @@
 | [runbooks/tracking.md](./runbooks/tracking.md) | Tracking parado |
 | [runbooks/oauth.md](./runbooks/oauth.md) | OAuth expirado / falhando |
 | [runbooks/whatsapp.md](./runbooks/whatsapp.md) | Webhook WhatsApp / Uazapi |
-| [runbooks/bullmq.md](./runbooks/bullmq.md) | Fila BullMQ travada |
-| [runbooks/redis.md](./runbooks/redis.md) | Redis indisponível |
+| [runbooks/bullmq.md](./runbooks/bullmq.md) | ⚠️ Reservado — não aplicável à baseline (Cloudflare Workers) |
+| [runbooks/redis.md](./runbooks/redis.md) | ⚠️ Reservado — não aplicável à baseline (Cloudflare Workers) |
 | [runbooks/postgres.md](./runbooks/postgres.md) | Postgres lento / indisponível |
 | [runbooks/providers.md](./runbooks/providers.md) | Provider externo fora |
 | [runbooks/deployment.md](./runbooks/deployment.md) | Deploy falhou |
