@@ -1,0 +1,362 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const MODEL = "anthropic/claude-sonnet-4.5";
+
+// ---------- Tool schema exposed to the model (read-only phase) ----------
+const TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "list_client_accounts",
+      description: "Lista todas as contas de anúncio (Meta e Google) conectadas na organização, agrupadas por MCC/BM.",
+      parameters: { type: "object", properties: {}, additionalProperties: false },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "list_campaigns",
+      description: "Lista campanhas do cliente ativo. Filtra por plataforma opcional.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta", "google", "all"], description: "Plataforma" },
+          status: { type: "string", description: "Filtrar por status (ACTIVE, PAUSED, ...)" },
+          limit: { type: "number", description: "Máximo de linhas", default: 30 },
+        },
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_campaign_performance",
+      description: "Retorna métricas agregadas (gasto, leads, CPA) das campanhas nos últimos N dias.",
+      parameters: {
+        type: "object",
+        properties: {
+          days: { type: "number", description: "Janela em dias (default 7)", default: 7 },
+          platform: { type: "string", enum: ["meta", "google", "all"] },
+        },
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "recent_leads_summary",
+      description: "Resumo dos leads recebidos nos últimos N dias com origem/utm_source.",
+      parameters: {
+        type: "object",
+        properties: { days: { type: "number", default: 7 } },
+        additionalProperties: false,
+      },
+    },
+  },
+] as const;
+
+// ---------- Tool executor (runs server-side with user's supabase client) ----------
+async function runTool(
+  name: string,
+  args: Record<string, unknown>,
+  supabase: any,
+  orgId: string,
+): Promise<unknown> {
+  if (name === "list_client_accounts") {
+    const [meta, google] = await Promise.all([
+      supabase
+        .from("meta_ad_accounts")
+        .select("id, name, ad_account_id, business_name, is_manager, is_client_account, status")
+        .eq("organization_id", orgId)
+        .limit(200),
+      supabase
+        .from("google_ad_accounts")
+        .select("id, name, descriptive_name, customer_id, manager_customer_id, is_manager, status")
+        .eq("organization_id", orgId)
+        .limit(200),
+    ]);
+    return {
+      meta: meta.data ?? [],
+      google: google.data ?? [],
+    };
+  }
+
+  if (name === "list_campaigns") {
+    const platform = (args.platform as string) ?? "all";
+    const status = args.status as string | undefined;
+    const limit = Math.min(Number(args.limit ?? 30), 100);
+    const out: any = {};
+    if (platform === "meta" || platform === "all") {
+      let q = supabase
+        .from("meta_campaigns")
+        .select("id, name, objective, status, daily_budget, lifetime_budget")
+        .eq("organization_id", orgId)
+        .limit(limit);
+      if (status) q = q.eq("status", status);
+      const r = await q;
+      out.meta = r.data ?? [];
+    }
+    if (platform === "google" || platform === "all") {
+      const r = await supabase
+        .from("google_ad_accounts")
+        .select("id, name, customer_id")
+        .eq("organization_id", orgId)
+        .limit(limit);
+      out.google_accounts = r.data ?? [];
+    }
+    return out;
+  }
+
+  if (name === "get_campaign_performance") {
+    const days = Math.min(Number(args.days ?? 7), 90);
+    const since = new Date(Date.now() - days * 86400_000).toISOString();
+    const [meta, google] = await Promise.all([
+      supabase
+        .from("meta_conversion_events")
+        .select("event_name, value, created_at")
+        .eq("organization_id", orgId)
+        .gte("created_at", since)
+        .limit(1000),
+      supabase
+        .from("google_ads_conversions")
+        .select("conversion_action, conversion_value, created_at")
+        .eq("organization_id", orgId)
+        .gte("created_at", since)
+        .limit(1000),
+    ]);
+    const metaAgg: Record<string, { count: number; value: number }> = {};
+    for (const e of meta.data ?? []) {
+      const k = e.event_name ?? "unknown";
+      metaAgg[k] ??= { count: 0, value: 0 };
+      metaAgg[k].count++;
+      metaAgg[k].value += Number(e.value ?? 0);
+    }
+    const googleAgg: Record<string, { count: number; value: number }> = {};
+    for (const e of google.data ?? []) {
+      const k = e.conversion_action ?? "unknown";
+      googleAgg[k] ??= { count: 0, value: 0 };
+      googleAgg[k].count++;
+      googleAgg[k].value += Number(e.conversion_value ?? 0);
+    }
+    return { days, meta: metaAgg, google: googleAgg };
+  }
+
+  if (name === "recent_leads_summary") {
+    const days = Math.min(Number(args.days ?? 7), 90);
+    const since = new Date(Date.now() - days * 86400_000).toISOString();
+    const r = await supabase
+      .from("leads")
+      .select("id, name, source, status, created_at")
+      .eq("organization_id", orgId)
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(200);
+    const bySource: Record<string, number> = {};
+    for (const l of r.data ?? []) {
+      const k = l.source ?? "direto";
+      bySource[k] = (bySource[k] ?? 0) + 1;
+    }
+    return { total: r.data?.length ?? 0, by_source: bySource, sample: (r.data ?? []).slice(0, 20) };
+  }
+
+  return { error: `tool_unknown:${name}` };
+}
+
+// ---------- Helper: call gateway ----------
+async function callGateway(payload: unknown) {
+  const apiKey = process.env.LOVABLE_API_KEY;
+  if (!apiKey) throw new Error("LOVABLE_API_KEY ausente. Habilite Lovable AI.");
+  const res = await fetch(GATEWAY_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (res.status === 429) throw new Error("Limite atingido. Aguarde alguns instantes.");
+  if (res.status === 402) throw new Error("Créditos esgotados. Adicione créditos em Lovable AI.");
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(`AI Gateway ${res.status}: ${t.slice(0, 300)}`);
+  }
+  return res.json();
+}
+
+const SYSTEM_PROMPT = `Você é o Copiloto de Tráfego da ZENNO — um especialista sênior em Meta Ads e Google Ads que ajuda gestores de tráfego a analisar contas de clientes, diagnosticar performance e sugerir otimizações.
+
+Regras:
+- Sempre use as ferramentas disponíveis para buscar dados reais antes de opinar.
+- Responda em português do Brasil, direto ao ponto, com bullets curtos.
+- Formate valores monetários em BRL (R$).
+- Se o usuário pedir algo sem ter contas conectadas, sugira ir em /app/integracoes.
+- Você está em modo LEITURA: ainda não pode criar/pausar campanhas — quando pedirem uma ação de escrita, explique o que faria e diga que a execução automática estará disponível em breve.`;
+
+// ---------- Main server function ----------
+export const copilotChat = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        conversationId: z.string().uuid().nullable().optional(),
+        message: z.string().min(1).max(4000),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    // Resolve org
+    const { data: member } = await supabase
+      .from("organization_members")
+      .select("organization_id")
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+    if (!member) throw new Error("Sem organização vinculada.");
+    const orgId = member.organization_id;
+
+    // Get/create conversation
+    let convId = data.conversationId ?? null;
+    if (!convId) {
+      const { data: conv, error } = await supabase
+        .from("ai_copilot_conversations")
+        .insert({
+          organization_id: orgId,
+          user_id: userId,
+          title: data.message.slice(0, 60),
+        })
+        .select("id")
+        .single();
+      if (error) throw new Error(error.message);
+      convId = conv.id;
+    }
+
+    // Persist user message
+    await supabase.from("ai_copilot_messages").insert({
+      conversation_id: convId,
+      organization_id: orgId,
+      role: "user",
+      content: data.message,
+    });
+
+    // Load history
+    const { data: history } = await supabase
+      .from("ai_copilot_messages")
+      .select("role, content, tool_calls, tool_call_id, tool_name")
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true })
+      .limit(40);
+
+    const messages: any[] = [{ role: "system", content: SYSTEM_PROMPT }];
+    for (const m of history ?? []) {
+      if (m.role === "assistant" && m.tool_calls) {
+        messages.push({ role: "assistant", content: m.content ?? "", tool_calls: m.tool_calls });
+      } else if (m.role === "tool") {
+        messages.push({
+          role: "tool",
+          tool_call_id: m.tool_call_id,
+          name: m.tool_name,
+          content: m.content ?? "",
+        });
+      } else {
+        messages.push({ role: m.role, content: m.content ?? "" });
+      }
+    }
+
+    // Iterate tool calls (max 6 steps)
+    let finalContent = "";
+    for (let step = 0; step < 6; step++) {
+      const resp: any = await callGateway({
+        model: MODEL,
+        messages,
+        tools: TOOLS,
+        tool_choice: "auto",
+      });
+      const choice = resp.choices?.[0]?.message;
+      if (!choice) throw new Error("Resposta vazia do modelo.");
+
+      if (choice.tool_calls && choice.tool_calls.length > 0) {
+        // persist assistant tool_call message
+        await supabase.from("ai_copilot_messages").insert({
+          conversation_id: convId,
+          organization_id: orgId,
+          role: "assistant",
+          content: choice.content ?? "",
+          tool_calls: choice.tool_calls,
+        });
+        messages.push({ role: "assistant", content: choice.content ?? "", tool_calls: choice.tool_calls });
+
+        for (const tc of choice.tool_calls) {
+          let args: Record<string, unknown> = {};
+          try {
+            args = JSON.parse(tc.function?.arguments ?? "{}");
+          } catch {
+            args = {};
+          }
+          const result = await runTool(tc.function.name, args, supabase, orgId);
+          const resultStr = JSON.stringify(result).slice(0, 8000);
+          await supabase.from("ai_copilot_messages").insert({
+            conversation_id: convId,
+            organization_id: orgId,
+            role: "tool",
+            content: resultStr,
+            tool_call_id: tc.id,
+            tool_name: tc.function.name,
+          });
+          messages.push({
+            role: "tool",
+            tool_call_id: tc.id,
+            name: tc.function.name,
+            content: resultStr,
+          });
+        }
+        continue;
+      }
+
+      finalContent = choice.content ?? "";
+      await supabase.from("ai_copilot_messages").insert({
+        conversation_id: convId,
+        organization_id: orgId,
+        role: "assistant",
+        content: finalContent,
+      });
+      break;
+    }
+
+    await supabase
+      .from("ai_copilot_conversations")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", convId);
+
+    return { conversationId: convId, reply: finalContent };
+  });
+
+export const listCopilotConversations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data, error } = await supabase
+      .from("ai_copilot_conversations")
+      .select("id, title, updated_at")
+      .order("updated_at", { ascending: false })
+      .limit(30);
+    if (error) throw new Error(error.message);
+    return { conversations: data ?? [] };
+  });
+
+export const getCopilotConversation = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: msgs, error } = await supabase
+      .from("ai_copilot_messages")
+      .select("id, role, content, tool_name, created_at")
+      .eq("conversation_id", data.id)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    return { messages: msgs ?? [] };
+  });
