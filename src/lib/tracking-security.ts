@@ -54,6 +54,28 @@ export function originAllowed(reqHost: string | null, allowed: readonly string[]
   });
 }
 
+export type TrackingOriginDecision =
+  | { allowed: true; normalizedAllowedOrigins: string[] }
+  | { allowed: false; normalizedAllowedOrigins: string[]; reason: "missing_allowed_origins" | "missing_request_origin" | "origin_not_allowed" };
+
+export function trackingOriginDecision(reqHost: string | null, allowedOrigins: readonly string[] | null | undefined): TrackingOriginDecision {
+  const normalizedAllowedOrigins = normalizeAllowedOrigins(allowedOrigins);
+
+  if (normalizedAllowedOrigins.length === 0) {
+    return { allowed: false, normalizedAllowedOrigins, reason: "missing_allowed_origins" };
+  }
+
+  if (!reqHost) {
+    return { allowed: false, normalizedAllowedOrigins, reason: "missing_request_origin" };
+  }
+
+  if (!originAllowed(reqHost, normalizedAllowedOrigins)) {
+    return { allowed: false, normalizedAllowedOrigins, reason: "origin_not_allowed" };
+  }
+
+  return { allowed: true, normalizedAllowedOrigins };
+}
+
 export function trackingRateLimitKeys(orgId: string, publicKey: string, ip: string): { ipKey: string; publicKeyKey: string } {
   return {
     ipKey: `tracking:event:ip:${orgId}:${publicKey}:${ip}`,

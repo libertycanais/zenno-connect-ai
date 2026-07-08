@@ -9,6 +9,7 @@ import {
   safeTrackingAuditData,
   TRACKING_IP_RATE_LIMIT_PER_MINUTE,
   TRACKING_PUBLIC_KEY_RATE_LIMIT_PER_MINUTE,
+  trackingOriginDecision,
   trackingRateLimitKeys,
 } from "@/lib/tracking-security";
 
@@ -67,31 +68,15 @@ export const Route = createFileRoute("/api/public/track/event")({
           .maybeSingle();
         if (!org) return errResp(400, "invalid_pk", cors);
 
-        const allowed = normalizeAllowedOrigins(
+        const originDecision = trackingOriginDecision(
+          reqHost,
           (org as { tracking_allowed_origins?: string[] | null }).tracking_allowed_origins,
         );
-        const originIsAllowed = allowed.length > 0 && originAllowed(reqHost, allowed);
-        if (allowed.length === 0) {
+        const allowed = originDecision.normalizedAllowedOrigins;
+        if (!originDecision.allowed) {
           await auditSuspiciousTracking({
             orgId: org.id,
-            reason: "missing_allowed_origins",
-            reqHost,
-            originHeader,
-            refererHeader,
-            eventName: data.event_name,
-            sessionId: data.session_id,
-            allowedCount: allowed.length,
-            ip: request.headers.get("cf-connecting-ip")
-              || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-              || null,
-            userAgent: request.headers.get("user-agent"),
-          });
-          return errResp(403, "origin_not_allowed", cors);
-        }
-        if (!originIsAllowed) {
-          await auditSuspiciousTracking({
-            orgId: org.id,
-            reason: reqHost ? "origin_not_allowed" : "missing_request_origin",
+            reason: originDecision.reason,
             reqHost,
             originHeader,
             refererHeader,
@@ -232,7 +217,7 @@ export const Route = createFileRoute("/api/public/track/event")({
           });
         }
 
-        if (originIsAllowed
+        if (originDecision.allowed
             && (data.event_name === "lead" || data.event_name === "Lead"
               || data.event_name === "purchase" || data.event_name === "Purchase")) {
           try { await dispatchAttribution(org.id, data, ip, ua); } catch { /* silent */ }
