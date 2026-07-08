@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { clientIp, rateLimitHit, tooManyRequests } from "@/lib/rate-limit.server";
 
 // Webhook receiver for WhatsApp/Uazapi.
 // Configure your Uazapi instance webhook to POST to:
