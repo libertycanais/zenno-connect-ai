@@ -1,11 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { clientIp, rateLimitHit, tooManyRequests } from "@/lib/rate-limit.server";
 
 export const Route = createFileRoute("/api/public/google-ads/oauth/callback")({
   server: {
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);
+        const ip = clientIp(request);
+        const stateEarly = url.searchParams.get("state") ?? "";
+        const [ipHit, stateHit] = await Promise.all([
+          rateLimitHit(`oauth:${ip}`, 20, 60),
+          stateEarly ? rateLimitHit(`oauth:${stateEarly}`, 3, 60) : Promise.resolve({ limited: false }),
+        ]);
+        if (ipHit.limited || stateHit.limited) return tooManyRequests(60);
+
         const code = url.searchParams.get("code");
         const stateRaw = url.searchParams.get("state");
         const err = url.searchParams.get("error");
