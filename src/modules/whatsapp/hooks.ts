@@ -29,6 +29,15 @@ export type WAChat = {
   last_message_preview: string | null;
   unread_count: number;
   lead_id: string | null;
+  first_utm_campaign: string | null;
+  first_utm_source: string | null;
+  first_fbclid: string | null;
+  first_gclid: string | null;
+  attributed_at: string | null;
+  conversion_status: string;
+  conversion_value: number | null;
+  conversion_currency: string | null;
+  converted_at: string | null;
 };
 
 export type WAMessage = {
