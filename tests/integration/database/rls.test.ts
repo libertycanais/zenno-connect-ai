@@ -91,6 +91,7 @@ describe.skipIf(!HAS_PG)("WS-7 — RLS coverage on sensitive tables", () => {
          and tablename in (${SENSITIVE_TABLES.map((t) => `'${t}'`).join(",")})`,
     );
     for (const [table, policy, body, roles] of rows) {
+      const trimmed = body.trim();
       const hasTenantGuard =
         /organization_id/.test(body) ||
         /auth\.uid\(\)/.test(body) ||
@@ -98,8 +99,10 @@ describe.skipIf(!HAS_PG)("WS-7 — RLS coverage on sensitive tables", () => {
         /current_org_id\(/.test(body);
       // Service-role-only policies are permissive by design (RLS is bypassed).
       const isServiceRoleOnly = roles === "service_role";
+      // Deny-all policies (qual = false) require no tenant guard.
+      const isDenyAll = trimmed === "false" || trimmed === "false false";
       expect(
-        hasTenantGuard || isServiceRoleOnly,
+        hasTenantGuard || isServiceRoleOnly || isDenyAll,
         `${table}.${policy} (roles=${roles}) lacks tenant guard`,
       ).toBe(true);
     }
