@@ -22,19 +22,19 @@ Server Functions (domínio)
 
 ### Domínios
 
-| Domínio  | Interface              | Providers | ENV switch          |
-| -------- | ---------------------- | --------- | ------------------- |
-| Ads      | `AdsProvider`          | `meta`, `google_ads`               | `ADS_PROVIDER`      |
-| WhatsApp | `WhatsAppProvider`     | `uazapi` (WABA pluggable)          | `WHATSAPP_PROVIDER` |
-| Payments | `PaymentProvider`      | `stripe`, `mercadopago`            | `PAYMENT_PROVIDER`  |
-| AI       | `AIProvider`           | `lovable` (OpenAI/Anthropic prontos p/ adapter) | `AI_PROVIDER` |
+| Domínio  | Interface          | Providers                                       | ENV switch          |
+| -------- | ------------------ | ----------------------------------------------- | ------------------- |
+| Ads      | `AdsProvider`      | `meta`, `google_ads`                            | `ADS_PROVIDER`      |
+| WhatsApp | `WhatsAppProvider` | `uazapi` (WABA pluggable)                       | `WHATSAPP_PROVIDER` |
+| Payments | `PaymentProvider`  | `stripe`, `mercadopago`                         | `PAYMENT_PROVIDER`  |
+| AI       | `AIProvider`       | `lovable` (OpenAI/Anthropic prontos p/ adapter) | `AI_PROVIDER`       |
 
 ### Uso em consumers de domínio
 
 ```ts
 import { getWhatsAppProvider } from "@/providers/whatsapp/whatsapp-provider.factory";
 
-const wa = getWhatsAppProvider();               // usa ENV
+const wa = getWhatsAppProvider(); // usa ENV
 await wa.sendMessage(ctx, instanceId, { to, text });
 ```
 
@@ -63,6 +63,35 @@ Regra: server functions e handlers importam **somente** a factory + tipos da int
 - `src/providers/` — camada de abstração para fornecedores externos ← **novo**
 - `src/integrations/supabase/` — clients gerados (não editar)
 - `supabase/migrations/` — schema versionado
+
+## Tracking público
+
+Fluxo atual do pixel público:
+
+```
+site do cliente
+      │  Origin / Referer
+      ▼
+/api/public/track/event
+      │  valida pk + allowlist fail-closed
+      │  aplica rate limit por IP e por chave pública
+      ▼
+tracking_events / tracking_leads
+      │  somente se origem permitida
+      ▼
+meta_conversion_events / google_ads_conversions
+      │
+      ▼
+audit_log
+```
+
+Invariantes da camada:
+
+- Chave pública identifica a organização, mas não autoriza ingestão sozinha.
+- Allowlist vazia significa **bloqueado**, não modo permissivo.
+- Requests públicos sem origem/referer não são aceitos para evitar ingestão server-to-server não autenticada.
+- CORS é derivado do `Origin` recebido e nunca usa wildcard no endpoint de evento.
+- Conversões continuam no modelo atual de consumers; a migração completa para Provider Layer permanece como etapa posterior.
 
 ## Deploy independente
 
