@@ -141,6 +141,81 @@ export type Database = {
           },
         ]
       }
+      ai_copilot_pending_actions: {
+        Row: {
+          account_id: string | null
+          conversation_id: string
+          created_at: string
+          error: string | null
+          executed_at: string | null
+          id: string
+          message_id: string | null
+          organization_id: string
+          platform: string | null
+          preview: string
+          result: Json | null
+          status: string
+          tool_args: Json
+          tool_call_id: string | null
+          tool_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_id?: string | null
+          conversation_id: string
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          message_id?: string | null
+          organization_id: string
+          platform?: string | null
+          preview: string
+          result?: Json | null
+          status?: string
+          tool_args?: Json
+          tool_call_id?: string | null
+          tool_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_id?: string | null
+          conversation_id?: string
+          created_at?: string
+          error?: string | null
+          executed_at?: string | null
+          id?: string
+          message_id?: string | null
+          organization_id?: string
+          platform?: string | null
+          preview?: string
+          result?: Json | null
+          status?: string
+          tool_args?: Json
+          tool_call_id?: string | null
+          tool_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_copilot_pending_actions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_copilot_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_copilot_pending_actions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "ai_copilot_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_runs: {
         Row: {
           actions_result: Json | null
