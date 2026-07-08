@@ -112,12 +112,15 @@ const TOOLS = [
 const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget"]);
 
 // ---------- Tool executor (runs server-side with user's supabase client) ----------
+type ToolCtx = { supabase: any; orgId: string; userId: string; convId: string; toolCallId: string };
+
 async function runTool(
   name: string,
   args: Record<string, unknown>,
-  supabase: any,
-  orgId: string,
+  ctx: ToolCtx,
 ): Promise<unknown> {
+  const { supabase, orgId, userId, convId, toolCallId } = ctx;
+
   if (name === "list_client_accounts") {
     const [meta, google] = await Promise.all([
       supabase
