@@ -2775,26 +2775,24 @@ export type Database = {
         }
         Returns: boolean
       }
-      track_rate_limit_hit:
-        | {
-            Args: {
-              _ip: string
-              _max: number
-              _org: string
-              _window_seconds?: number
-            }
-            Returns: boolean
-          }
-        | {
-            Args: {
-              _ip: string
-              _key?: string
-              _max: number
-              _org: string
-              _window_seconds?: number
-            }
-            Returns: boolean
-          }
+      track_compound_rate_limit_hit: {
+        Args: {
+          _key: string
+          _max: number
+          _org: string
+          _window_seconds?: number
+        }
+        Returns: boolean
+      }
+      track_rate_limit_hit: {
+        Args: {
+          _ip: string
+          _max: number
+          _org: string
+          _window_seconds?: number
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "owner" | "admin" | "manager" | "agent"
