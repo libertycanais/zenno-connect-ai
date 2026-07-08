@@ -33,6 +33,9 @@ function CopilotoPage() {
   const chat = useServerFn(copilotChat);
   const listConv = useServerFn(listCopilotConversations);
   const getConv = useServerFn(getCopilotConversation);
+  const listPending = useServerFn(listPendingActions);
+  const approveFn = useServerFn(approvePendingAction);
+  const rejectFn = useServerFn(rejectPendingAction);
   const qc = useQueryClient();
 
   const [convId, setConvId] = useState<string | null>(null);
