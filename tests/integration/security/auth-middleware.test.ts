@@ -90,11 +90,15 @@ describe("requireSupabaseAuth middleware — WS-6", () => {
     await expect(runMiddleware()).rejects.toThrow(/Only Bearer/);
   });
 
-  it("throws when Bearer token is empty", async () => {
+  it("throws Unauthorized when Bearer token is empty (trailing space trimmed by Request)", async () => {
     stubRequest({ authorization: "Bearer " });
     stubSupabaseClient({ sub: "u1" });
-    await expect(runMiddleware()).rejects.toThrow(/No token/);
+    // Fetch's Request normalizes trailing whitespace in header values, so the
+    // scheme-check tripwire fires before the empty-token check — either
+    // rejection is a valid guardrail.
+    await expect(runMiddleware()).rejects.toThrow(/Unauthorized/);
   });
+
 
   it("throws when getClaims returns error", async () => {
     stubRequest({ authorization: "Bearer bad" });

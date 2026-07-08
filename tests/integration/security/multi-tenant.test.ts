@@ -99,7 +99,9 @@ describe("multi-tenant isolation — WS-6", () => {
         Route,
         "POST",
         makeJsonRequest("http://api/api/public/track/event", {
-          pk: "pk_a", session_id: "sess_A", event_name: "pageview",
+          pk: "pk_tenant_A_valid_1234",
+          session_id: "sess_A_isolation",
+          event_name: "pageview",
         }, { headers: { origin: "https://a.example.com" } }),
       );
       expect(res.status).toBe(200);
@@ -121,7 +123,9 @@ describe("multi-tenant isolation — WS-6", () => {
       Route,
       "POST",
       makeJsonRequest("http://api/api/public/track/event", {
-        pk: "pk_x", session_id: "sess_x", event_name: "pageview",
+        pk: "pk_valid_1234567",
+        session_id: "sess_x_isolation",
+        event_name: "pageview",
       }, { headers: { origin: "https://evil.tenant2.com" } }),
     );
     expect(res.status).toBe(403);
