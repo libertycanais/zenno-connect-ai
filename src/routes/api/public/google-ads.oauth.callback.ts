@@ -155,7 +155,23 @@ export const Route = createFileRoute("/api/public/google-ads/oauth/callback")({
           .upsert(rows, { onConflict: "organization_id,customer_id" });
         if (error) return redir(`/app/google-ads?error=${encodeURIComponent(error.message)}`);
 
-        return redir(`/app/google-ads?connected=${ids.length}`);
+        // Backfill parent_account_id (UUID) for children whose manager_customer_id matches a MCC row.
+        const { data: allRows } = await supabaseAdmin
+          .from("google_ad_accounts")
+          .select("id, customer_id, manager_customer_id")
+          .eq("organization_id", state.o);
+        if (allRows) {
+          const byCust: Record<string, string> = {};
+          for (const r of allRows) byCust[r.customer_id] = r.id;
+          const updates = allRows
+            .filter((r) => r.manager_customer_id && byCust[r.manager_customer_id])
+            .map((r) => ({ id: r.id, parent_account_id: byCust[r.manager_customer_id!] }));
+          for (const u of updates) {
+            await supabaseAdmin.from("google_ad_accounts").update({ parent_account_id: u.parent_account_id }).eq("id", u.id);
+          }
+        }
+
+        return redir(`/app/google-ads?connected=${rows.length}`);
       },
     },
   },
