@@ -23,14 +23,19 @@ function randomCode(len = 6) {
 export const Route = createFileRoute("/api/public/track/wa-link")({
   server: {
     handlers: {
-      OPTIONS: async ({ request }) => new Response(null, { status: 204, headers: corsFor(request.headers.get("origin")) }),
+      OPTIONS: async ({ request }) =>
+        new Response(null, { status: 204, headers: corsFor(request.headers.get("origin")) }),
       POST: async ({ request }) => {
         const originHeader = request.headers.get("origin");
         const reqHost = hostOf(originHeader) ?? hostOf(request.headers.get("referer"));
         const cors = corsFor(originHeader);
 
         let json: unknown;
-        try { json = await request.json(); } catch { return err(400, "invalid_json", cors); }
+        try {
+          json = await request.json();
+        } catch {
+          return err(400, "invalid_json", cors);
+        }
         const parsed = schema.safeParse(json);
         if (!parsed.success) return err(400, "invalid_payload", cors);
         const { pk, phone, session_id, message } = parsed.data;
@@ -42,16 +47,21 @@ export const Route = createFileRoute("/api/public/track/wa-link")({
           .maybeSingle();
         if (!org) return err(400, "invalid_pk", cors);
 
-        const allowed = normalizeAllowedOrigins(org.tracking_allowed_origins as string[] | null | undefined);
+        const allowed = normalizeAllowedOrigins(
+          org.tracking_allowed_origins as string[] | null | undefined,
+        );
         if (allowed.length === 0 || !originAllowed(reqHost, allowed)) {
           return err(403, "origin_not_allowed", cors);
         }
 
-        const ip = request.headers.get("cf-connecting-ip")
-          || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-          || "unknown";
+        const ip =
+          request.headers.get("cf-connecting-ip") ||
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+          "unknown";
         const { data: throttled } = await supabaseAdmin.rpc("track_rate_limit_hit", {
-          _org: org.id, _ip: ip, _max: 30,
+          _org: org.id,
+          _ip: ip,
+          _max: 30,
         });
         if (throttled === true) return err(429, "rate_limited", cors);
 
@@ -61,7 +71,10 @@ export const Route = createFileRoute("/api/public/track/wa-link")({
         for (let attempt = 0; attempt < 5; attempt++) {
           code = randomCode(6);
           const { error } = await supabaseAdmin.from("whatsapp_tracking_codes").insert({
-            code, organization_id: org.id, session_id, phone: cleanPhone,
+            code,
+            organization_id: org.id,
+            session_id,
+            phone: cleanPhone,
           });
           if (!error) break;
           code = "";
@@ -83,6 +96,7 @@ export const Route = createFileRoute("/api/public/track/wa-link")({
 
 function err(status: number, code: string, cors: Record<string, string>) {
   return new Response(JSON.stringify({ ok: false, error: code }), {
-    status, headers: { ...cors, "Content-Type": "application/json" },
+    status,
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }

@@ -22,19 +22,19 @@ Server Functions (domínio)
 
 ### Domínios
 
-| Domínio  | Interface              | Providers | ENV switch          |
-| -------- | ---------------------- | --------- | ------------------- |
-| Ads      | `AdsProvider`          | `meta`, `google_ads`               | `ADS_PROVIDER`      |
-| WhatsApp | `WhatsAppProvider`     | `uazapi` (WABA pluggable)          | `WHATSAPP_PROVIDER` |
-| Payments | `PaymentProvider`      | `stripe`, `mercadopago`            | `PAYMENT_PROVIDER`  |
-| AI       | `AIProvider`           | `lovable` (OpenAI/Anthropic prontos p/ adapter) | `AI_PROVIDER` |
+| Domínio  | Interface          | Providers                                       | ENV switch          |
+| -------- | ------------------ | ----------------------------------------------- | ------------------- |
+| Ads      | `AdsProvider`      | `meta`, `google_ads`                            | `ADS_PROVIDER`      |
+| WhatsApp | `WhatsAppProvider` | `uazapi` (WABA pluggable)                       | `WHATSAPP_PROVIDER` |
+| Payments | `PaymentProvider`  | `stripe`, `mercadopago`                         | `PAYMENT_PROVIDER`  |
+| AI       | `AIProvider`       | `lovable` (OpenAI/Anthropic prontos p/ adapter) | `AI_PROVIDER`       |
 
 ### Uso em consumers de domínio
 
 ```ts
 import { getWhatsAppProvider } from "@/providers/whatsapp/whatsapp-provider.factory";
 
-const wa = getWhatsAppProvider();               // usa ENV
+const wa = getWhatsAppProvider(); // usa ENV
 await wa.sendMessage(ctx, instanceId, { to, text });
 ```
 

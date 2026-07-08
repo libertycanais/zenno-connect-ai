@@ -30,12 +30,14 @@ describe("tracking security hardening", () => {
   });
 
   it("normalizes origin allowlists before matching", () => {
-    expect(normalizeAllowedOrigins([
-      " HTTPS://Example.COM/path ",
-      "example.com",
-      "invalid",
-      "*.Shop.Example.com/checkout",
-    ])).toEqual(["*.shop.example.com", "example.com"]);
+    expect(
+      normalizeAllowedOrigins([
+        " HTTPS://Example.COM/path ",
+        "example.com",
+        "invalid",
+        "*.Shop.Example.com/checkout",
+      ]),
+    ).toEqual(["*.shop.example.com", "example.com"]);
   });
 
   it("allows exact and wildcard host matches only", () => {
@@ -47,7 +49,9 @@ describe("tracking security hardening", () => {
 
   it("never emits wildcard CORS for tracking events", () => {
     expect(corsFor(null)).not.toHaveProperty("Access-Control-Allow-Origin");
-    expect(corsFor("https://example.com")["Access-Control-Allow-Origin"]).toBe("https://example.com");
+    expect(corsFor("https://example.com")["Access-Control-Allow-Origin"]).toBe(
+      "https://example.com",
+    );
   });
 
   it("builds separate botnet-resistant limiter keys for ip and public key", () => {

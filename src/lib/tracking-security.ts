@@ -37,7 +37,11 @@ export function normalizeAllowedOrigin(entry: string): string | null {
 
 export function normalizeAllowedOrigins(entries: readonly string[] | null | undefined): string[] {
   return Array.from(
-    new Set((entries ?? []).map(normalizeAllowedOrigin).filter((entry): entry is string => entry !== null)),
+    new Set(
+      (entries ?? [])
+        .map(normalizeAllowedOrigin)
+        .filter((entry): entry is string => entry !== null),
+    ),
   ).sort();
 }
 
@@ -56,9 +60,16 @@ export function originAllowed(reqHost: string | null, allowed: readonly string[]
 
 export type TrackingOriginDecision =
   | { allowed: true; normalizedAllowedOrigins: string[] }
-  | { allowed: false; normalizedAllowedOrigins: string[]; reason: "missing_allowed_origins" | "missing_request_origin" | "origin_not_allowed" };
+  | {
+      allowed: false;
+      normalizedAllowedOrigins: string[];
+      reason: "missing_allowed_origins" | "missing_request_origin" | "origin_not_allowed";
+    };
 
-export function trackingOriginDecision(reqHost: string | null, allowedOrigins: readonly string[] | null | undefined): TrackingOriginDecision {
+export function trackingOriginDecision(
+  reqHost: string | null,
+  allowedOrigins: readonly string[] | null | undefined,
+): TrackingOriginDecision {
   const normalizedAllowedOrigins = normalizeAllowedOrigins(allowedOrigins);
 
   if (normalizedAllowedOrigins.length === 0) {
@@ -76,7 +87,11 @@ export function trackingOriginDecision(reqHost: string | null, allowedOrigins: r
   return { allowed: true, normalizedAllowedOrigins };
 }
 
-export function trackingRateLimitKeys(orgId: string, publicKey: string, ip: string): { ipKey: string; publicKeyKey: string } {
+export function trackingRateLimitKeys(
+  orgId: string,
+  publicKey: string,
+  ip: string,
+): { ipKey: string; publicKeyKey: string } {
   return {
     ipKey: `tracking:event:ip:${orgId}:${publicKey}:${ip}`,
     publicKeyKey: `tracking:event:pk:${orgId}:${publicKey}`,
