@@ -107,9 +107,32 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "create_campaign",
+      description: "Cria uma nova campanha (por enquanto, apenas Meta Ads). A campanha nasce PAUSADA para revisão. Requer aprovação humana.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta"] },
+          account_id: { type: "string", description: "UUID local (id) da conta em meta_ad_accounts (use list_client_accounts para descobrir)" },
+          name: { type: "string", description: "Nome da campanha" },
+          objective: {
+            type: "string",
+            enum: ["OUTCOME_TRAFFIC", "OUTCOME_LEADS", "OUTCOME_SALES", "OUTCOME_ENGAGEMENT", "OUTCOME_AWARENESS", "OUTCOME_APP_PROMOTION"],
+            description: "Objetivo Meta ODAX",
+          },
+          daily_budget_brl: { type: "number", description: "Orçamento diário em BRL" },
+        },
+        required: ["platform", "account_id", "name", "objective", "daily_budget_brl"],
+        additionalProperties: false,
+      },
+    },
+  },
 ] as const;
 
-const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget"]);
+const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget", "create_campaign"]);
 
 // ---------- Tool executor (runs server-side with user's supabase client) ----------
 type ToolCtx = { supabase: any; orgId: string; userId: string; convId: string; toolCallId: string };
@@ -232,40 +255,56 @@ async function stagePendingAction(
 ): Promise<unknown> {
   const { supabase, orgId, userId, convId, toolCallId } = ctx;
   const platform = String(args.platform ?? "");
-  const campaignId = String(args.campaign_id ?? "");
-  if (!platform || !campaignId) {
-    return { error: "missing_platform_or_campaign_id" };
-  }
 
-  // resolve campaign name + ownership check
-  let campaignName = campaignId;
+  let campaignName = "";
   let accountRowId: string | null = null;
-  if (platform === "meta") {
-    const { data } = await supabase
-      .from("meta_campaigns")
-      .select("id, name, ad_account_id, organization_id, daily_budget, status")
-      .eq("id", campaignId).maybeSingle();
-    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
-    campaignName = data.name;
-    accountRowId = data.ad_account_id;
-  } else if (platform === "google") {
-    const { data } = await supabase
-      .from("google_ads_campaigns")
-      .select("id, name, account_id, organization_id, budget_amount, status")
-      .eq("id", campaignId).maybeSingle();
-    if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
-    campaignName = data.name;
-    accountRowId = data.account_id;
-  } else {
-    return { error: "invalid_platform" };
-  }
-
   let preview = "";
-  if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
-  else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
-  else if (name === "update_daily_budget") {
-    const brl = Number(args.new_daily_budget_brl ?? 0);
-    preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+
+  if (name === "create_campaign") {
+    if (platform !== "meta") return { error: "create_campaign_meta_only" };
+    accountRowId = String(args.account_id ?? "");
+    if (!accountRowId) return { error: "missing_account_id" };
+    const { data: acc } = await supabase
+      .from("meta_ad_accounts")
+      .select("id, name, organization_id")
+      .eq("id", accountRowId).maybeSingle();
+    if (!acc || acc.organization_id !== orgId) return { error: "account_not_found_or_forbidden" };
+    const nm = String(args.name ?? "");
+    const obj = String(args.objective ?? "");
+    const brl = Number(args.daily_budget_brl ?? 0);
+    if (!nm || !obj || !(brl > 0)) return { error: "missing_fields" };
+    preview = `Criar campanha Meta "${nm}" na conta ${acc.name} — objetivo ${obj}, R$ ${brl.toFixed(2)}/dia (nasce PAUSADA)`;
+  } else {
+    const campaignId = String(args.campaign_id ?? "");
+    if (!platform || !campaignId) return { error: "missing_platform_or_campaign_id" };
+    campaignName = campaignId;
+
+    if (platform === "meta") {
+      const { data } = await supabase
+        .from("meta_campaigns")
+        .select("id, name, ad_account_id, organization_id, daily_budget, status")
+        .eq("id", campaignId).maybeSingle();
+      if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+      campaignName = data.name;
+      accountRowId = data.ad_account_id;
+    } else if (platform === "google") {
+      const { data } = await supabase
+        .from("google_ads_campaigns")
+        .select("id, name, account_id, organization_id, budget_amount, status")
+        .eq("id", campaignId).maybeSingle();
+      if (!data || data.organization_id !== orgId) return { error: "campaign_not_found_or_forbidden" };
+      campaignName = data.name;
+      accountRowId = data.account_id;
+    } else {
+      return { error: "invalid_platform" };
+    }
+
+    if (name === "pause_campaign") preview = `Pausar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+    else if (name === "resume_campaign") preview = `Reativar a campanha "${campaignName}" (${platform.toUpperCase()})`;
+    else if (name === "update_daily_budget") {
+      const brl = Number(args.new_daily_budget_brl ?? 0);
+      preview = `Alterar orçamento diário de "${campaignName}" (${platform.toUpperCase()}) para R$ ${brl.toFixed(2)}/dia`;
+    }
   }
 
   const { data: pending, error } = await supabase
@@ -549,6 +588,13 @@ export const approvePendingAction = createServerFn({ method: "POST" })
         result = platform === "meta"
           ? await exec.metaUpdateCampaign(supabase, campaignId, { daily_budget_cents: Math.round(brl * 100) })
           : await exec.googleUpdateCampaignBudget(supabase, campaignId, Math.round(brl * 1_000_000));
+      } else if (pa.tool_name === "create_campaign") {
+        if (platform !== "meta") throw new Error("create_campaign: apenas Meta por enquanto.");
+        result = await exec.metaCreateCampaign(supabase, String(args.account_id ?? ""), {
+          name: String(args.name ?? ""),
+          objective: String(args.objective ?? ""),
+          daily_budget_cents: Math.round(Number(args.daily_budget_brl ?? 0) * 100),
+        });
       } else {
         throw new Error(`Ferramenta desconhecida: ${pa.tool_name}`);
       }

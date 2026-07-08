@@ -42,9 +42,11 @@ import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
 import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
 import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tracking'
+import { Route as AppMetaAdsCriativosRouteImport } from './routes/app.meta-ads.criativos'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
+import { Route as AppLeadsCobrancasRouteImport } from './routes/app.leads.cobrancas'
 import { Route as AppLeadsAtribuicaoRouteImport } from './routes/app.leads.atribuicao'
 import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
 import { Route as AppIaCopilotoRouteImport } from './routes/app.ia.copiloto'
@@ -226,6 +228,11 @@ const AppMetaAdsTrackingRoute = AppMetaAdsTrackingRouteImport.update({
   path: '/tracking',
   getParentRoute: () => AppMetaAdsRoute,
 } as any)
+const AppMetaAdsCriativosRoute = AppMetaAdsCriativosRouteImport.update({
+  id: '/criativos',
+  path: '/criativos',
+  getParentRoute: () => AppMetaAdsRoute,
+} as any)
 const AppMetaAdsConversionsRoute = AppMetaAdsConversionsRouteImport.update({
   id: '/conversions',
   path: '/conversions',
@@ -239,6 +246,11 @@ const AppMetaAdsCampaignsRoute = AppMetaAdsCampaignsRouteImport.update({
 const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
   path: '/leads/kanban',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLeadsCobrancasRoute = AppLeadsCobrancasRouteImport.update({
+  id: '/leads/cobrancas',
+  path: '/leads/cobrancas',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLeadsAtribuicaoRoute = AppLeadsAtribuicaoRouteImport.update({
@@ -350,9 +362,11 @@ export interface FileRoutesByFullPath {
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
+  '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
   '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
@@ -393,9 +407,11 @@ export interface FileRoutesByTo {
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
+  '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
   '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
@@ -447,9 +463,11 @@ export interface FileRoutesById {
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
+  '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
+  '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
   '/app/meta-ads/tracking': typeof AppMetaAdsTrackingRoute
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
@@ -502,9 +520,11 @@ export interface FileRouteTypes {
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
     | '/app/leads/atribuicao'
+    | '/app/leads/cobrancas'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/criativos'
     | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
@@ -545,9 +565,11 @@ export interface FileRouteTypes {
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
     | '/app/leads/atribuicao'
+    | '/app/leads/cobrancas'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/criativos'
     | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
@@ -598,9 +620,11 @@ export interface FileRouteTypes {
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
     | '/app/leads/atribuicao'
+    | '/app/leads/cobrancas'
     | '/app/leads/kanban'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
+    | '/app/meta-ads/criativos'
     | '/app/meta-ads/tracking'
     | '/app/sigma/console'
     | '/app/sigma/logs'
@@ -870,6 +894,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMetaAdsTrackingRouteImport
       parentRoute: typeof AppMetaAdsRoute
     }
+    '/app/meta-ads/criativos': {
+      id: '/app/meta-ads/criativos'
+      path: '/criativos'
+      fullPath: '/app/meta-ads/criativos'
+      preLoaderRoute: typeof AppMetaAdsCriativosRouteImport
+      parentRoute: typeof AppMetaAdsRoute
+    }
     '/app/meta-ads/conversions': {
       id: '/app/meta-ads/conversions'
       path: '/conversions'
@@ -889,6 +920,13 @@ declare module '@tanstack/react-router' {
       path: '/leads/kanban'
       fullPath: '/app/leads/kanban'
       preLoaderRoute: typeof AppLeadsKanbanRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/leads/cobrancas': {
+      id: '/app/leads/cobrancas'
+      path: '/leads/cobrancas'
+      fullPath: '/app/leads/cobrancas'
+      preLoaderRoute: typeof AppLeadsCobrancasRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/leads/atribuicao': {
@@ -1076,6 +1114,7 @@ const AppIaRouteWithChildren = AppIaRoute._addFileChildren(AppIaRouteChildren)
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
+  AppMetaAdsCriativosRoute: typeof AppMetaAdsCriativosRoute
   AppMetaAdsTrackingRoute: typeof AppMetaAdsTrackingRoute
   AppMetaAdsIndexRoute: typeof AppMetaAdsIndexRoute
 }
@@ -1083,6 +1122,7 @@ interface AppMetaAdsRouteChildren {
 const AppMetaAdsRouteChildren: AppMetaAdsRouteChildren = {
   AppMetaAdsCampaignsRoute: AppMetaAdsCampaignsRoute,
   AppMetaAdsConversionsRoute: AppMetaAdsConversionsRoute,
+  AppMetaAdsCriativosRoute: AppMetaAdsCriativosRoute,
   AppMetaAdsTrackingRoute: AppMetaAdsTrackingRoute,
   AppMetaAdsIndexRoute: AppMetaAdsIndexRoute,
 }
@@ -1149,6 +1189,7 @@ interface AppRouteChildren {
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppLeadsAtribuicaoRoute: typeof AppLeadsAtribuicaoRoute
+  AppLeadsCobrancasRoute: typeof AppLeadsCobrancasRoute
   AppLeadsKanbanRoute: typeof AppLeadsKanbanRoute
   AppLeadsIndexRoute: typeof AppLeadsIndexRoute
 }
@@ -1169,6 +1210,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppLeadsAtribuicaoRoute: AppLeadsAtribuicaoRoute,
+  AppLeadsCobrancasRoute: AppLeadsCobrancasRoute,
   AppLeadsKanbanRoute: AppLeadsKanbanRoute,
   AppLeadsIndexRoute: AppLeadsIndexRoute,
 }

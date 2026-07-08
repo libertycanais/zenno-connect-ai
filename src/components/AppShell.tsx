@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, KanbanSquare, MessageSquare, Megaphone,
   Search, Server, DollarSign, Zap, Bot, Ticket, Settings, LogOut, ShieldCheck,
-  Menu, X, Plug, CreditCard, Sparkles, Target,
+  Menu, X, Plug, CreditCard, Sparkles, Target, TrendingUp,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import logo from "@/assets/zenno-logo.png";
@@ -14,9 +14,11 @@ const nav = [
   { to: "/app/clientes", label: "Clientes", icon: Users },
   { to: "/app/leads", label: "Leads", icon: Users },
   { to: "/app/leads/atribuicao", label: "Atribuição", icon: Target },
+  { to: "/app/leads/cobrancas", label: "Cobranças", icon: DollarSign },
   { to: "/app/leads/kanban", label: "Pipeline", icon: KanbanSquare },
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
   { to: "/app/meta-ads", label: "Meta Ads", icon: Megaphone },
+  { to: "/app/meta-ads/criativos", label: "ROI Criativos", icon: TrendingUp },
   { to: "/app/google-ads", label: "Google Ads", icon: Search },
   { to: "/app/sigma", label: "Sigma", icon: Server },
   { to: "/app/financeiro", label: "Financeiro", icon: DollarSign },

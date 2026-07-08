@@ -89,6 +89,49 @@ export async function metaUpdateCampaign(
   return { ok: true, campaign: camp.name, result: j };
 }
 
+export async function metaCreateCampaign(
+  supabase: Supa,
+  accountRowId: string,
+  input: { name: string; objective: string; daily_budget_cents: number },
+) {
+  if (!input.name || !input.objective || !(input.daily_budget_cents > 0)) {
+    throw new Error("Campos inválidos para criar campanha.");
+  }
+  const acc = await ensureMetaAccount(supabase, accountRowId);
+  const url = `https://graph.facebook.com/v20.0/act_${acc.ad_account_id}/campaigns`;
+  const body = new URLSearchParams({
+    access_token: acc.access_token,
+    name: input.name,
+    objective: input.objective,
+    status: "PAUSED",
+    special_ad_categories: "[]",
+    daily_budget: String(input.daily_budget_cents),
+  });
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error(`Meta API: ${j?.error?.message ?? r.statusText}`);
+
+  // reflect locally
+  await supabase.from("meta_campaigns").insert({
+    organization_id: acc.organization_id,
+    ad_account_id: acc.id,
+    external_id: j.id,
+    name: input.name,
+    objective: input.objective,
+    daily_budget: input.daily_budget_cents,
+    status: "PAUSED",
+    synced_at: new Date().toISOString(),
+  });
+
+  return { ok: true, external_id: j.id, name: input.name };
+}
+
+
+
 // ============ GOOGLE ============
 export async function googleUpdateCampaignStatus(
   supabase: Supa,
