@@ -56,6 +56,9 @@ import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-a
 import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
 import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as AppAutomacoesExecucoesRouteImport } from './routes/app.automacoes.execucoes'
+import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
+import { Route as ApiPublicLiveRouteImport } from './routes/api/public/live'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicTrackWaLinkRouteImport } from './routes/api/public/track.wa-link'
 import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/public/track.script[.]js'
 import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
@@ -298,6 +301,21 @@ const AppAutomacoesExecucoesRoute = AppAutomacoesExecucoesRouteImport.update({
   path: '/execucoes',
   getParentRoute: () => AppAutomacoesRoute,
 } as any)
+const ApiPublicReadyRoute = ApiPublicReadyRouteImport.update({
+  id: '/api/public/ready',
+  path: '/api/public/ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLiveRoute = ApiPublicLiveRouteImport.update({
+  id: '/api/public/live',
+  path: '/api/public/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTrackWaLinkRoute = ApiPublicTrackWaLinkRouteImport.update({
   id: '/api/public/track/wa-link',
   path: '/api/public/track/wa-link',
@@ -353,6 +371,9 @@ export interface FileRoutesByFullPath {
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -398,6 +419,9 @@ export interface FileRoutesByTo {
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -454,6 +478,9 @@ export interface FileRoutesById {
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/live': typeof ApiPublicLiveRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -511,6 +538,9 @@ export interface FileRouteTypes {
     | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
+    | '/api/public/health'
+    | '/api/public/live'
+    | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -556,6 +586,9 @@ export interface FileRouteTypes {
     | '/app/integracoes'
     | '/app/settings'
     | '/app'
+    | '/api/public/health'
+    | '/api/public/live'
+    | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -611,6 +644,9 @@ export interface FileRouteTypes {
     | '/app/tickets'
     | '/app/whatsapp'
     | '/app/'
+    | '/api/public/health'
+    | '/api/public/live'
+    | '/api/public/ready'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -653,6 +689,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
+  ApiPublicLiveRoute: typeof ApiPublicLiveRoute
+  ApiPublicReadyRoute: typeof ApiPublicReadyRoute
   ApiPublicTrackEventRoute: typeof ApiPublicTrackEventRoute
   ApiPublicTrackScriptDotjsRoute: typeof ApiPublicTrackScriptDotjsRoute
   ApiPublicTrackWaLinkRoute: typeof ApiPublicTrackWaLinkRoute
@@ -992,6 +1031,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAutomacoesExecucoesRouteImport
       parentRoute: typeof AppAutomacoesRoute
     }
+    '/api/public/ready': {
+      id: '/api/public/ready'
+      path: '/api/public/ready'
+      fullPath: '/api/public/ready'
+      preLoaderRoute: typeof ApiPublicReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/live': {
+      id: '/api/public/live'
+      path: '/api/public/live'
+      fullPath: '/api/public/live'
+      preLoaderRoute: typeof ApiPublicLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/track/wa-link': {
       id: '/api/public/track/wa-link'
       path: '/api/public/track/wa-link'
@@ -1223,6 +1283,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
+  ApiPublicLiveRoute: ApiPublicLiveRoute,
+  ApiPublicReadyRoute: ApiPublicReadyRoute,
   ApiPublicTrackEventRoute: ApiPublicTrackEventRoute,
   ApiPublicTrackScriptDotjsRoute: ApiPublicTrackScriptDotjsRoute,
   ApiPublicTrackWaLinkRoute: ApiPublicTrackWaLinkRoute,

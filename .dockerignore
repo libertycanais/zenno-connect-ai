@@ -1,0 +1,38 @@
+.git
+.gitignore
+.github
+.vscode
+.idea
+.DS_Store
+
+# Build outputs
+node_modules
+.output
+.nitro
+.tanstack
+.vinxi
+.wrangler
+dist
+dist-ssr
+*.tsbuildinfo
+
+# Env — DEVE ser passado em runtime (--env-file / compose env), não copiado
+.env
+.env.*
+.dev.vars
+*.local
+
+# Docs/dev-only
+mem
+.workspace
+.lovable
+.prettierignore
+.prettierrc
+eslint.config.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
