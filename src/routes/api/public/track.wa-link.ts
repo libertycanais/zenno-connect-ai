@@ -1,28 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-
-const baseCors = {
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Max-Age": "600",
-  Vary: "Origin",
-};
-const corsFor = (o: string | null) => ({ ...baseCors, "Access-Control-Allow-Origin": o ?? "*" });
-
-const hostOf = (u: string | null) => {
-  if (!u) return null;
-  try { return new URL(u).hostname.toLowerCase(); } catch { return null; }
-};
-const norm = (e: string) => e.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
-function originAllowed(host: string | null, allowed: string[]) {
-  if (!host) return false;
-  return allowed.some((a) => {
-    const n = norm(a); if (!n) return false;
-    if (n.startsWith("*.")) return host === n.slice(2) || host.endsWith(n.slice(1));
-    return host === n;
-  });
-}
+import { corsFor, hostOf, normalizeAllowedOrigins, originAllowed } from "@/lib/tracking-security";
 
 const schema = z.object({
   pk: z.string().min(8).max(80),
@@ -63,7 +42,7 @@ export const Route = createFileRoute("/api/public/track/wa-link")({
           .maybeSingle();
         if (!org) return err(400, "invalid_pk", cors);
 
-        const allowed = (org.tracking_allowed_origins ?? []) as string[];
+        const allowed = normalizeAllowedOrigins(org.tracking_allowed_origins as string[] | null | undefined);
         if (allowed.length === 0 || !originAllowed(reqHost, allowed)) {
           return err(403, "origin_not_allowed", cors);
         }
