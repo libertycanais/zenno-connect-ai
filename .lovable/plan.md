@@ -1,83 +1,100 @@
 
-# IMPLEMENTATION PLAN — ZENNO CRM AI (Fundação / Fase 1)
+# Contas gerenciadoras + Copiloto Claude
 
-O escopo solicitado é gigantesco (CRM + WhatsApp/Uazapi + Meta Ads + Google Ads + Sigma + Financeiro + Automações + IA + Tickets + Equipe + Notificações). Não é viável — nem seguro — entregar tudo numa única iteração. Proponho construir em fases, começando pela **fundação multi-tenant** + **módulo CRM (Leads + Pipeline Kanban)**, que é o coração do produto e desbloqueia todos os outros módulos.
-
-Cada módulo seguinte (WhatsApp, Meta Ads, Google Ads, Sigma, Financeiro, IA, etc.) será entregue em iterações separadas, cada uma com seu próprio Implementation Plan completo (3.A → 3.F).
+Dois blocos independentes que se combinam: **(1)** permitir que gestores de tráfego conectem uma conta **gerenciadora** (Google Ads MCC e Meta Business Manager) e enxerguem/gerenciem várias contas de clientes a partir dela, e **(2)** um copiloto Claude que lê dados dessas contas, sugere e (com aprovação) sobe/otimiza campanhas.
 
 ---
 
-## Fase 1 — Fundação + CRM
+## Parte 1 — Contas gerenciadoras (MCC / Business Manager)
 
-### 3.A Análise de Arquitetura
-- Projeto vazio. Vamos usar o template padrão Lovable (React + Vite + TS + Tailwind + Shadcn). *Observação: Next.js não é suportado no Lovable; usamos React/Vite, que cobre todos os requisitos de UI/SSR-light necessários.*
-- Backend: **Lovable Cloud** (Supabase gerenciado) — Auth, Postgres, RLS, Edge Functions, Storage, Secrets.
-- Arquitetura **multi-tenant por `organization_id`** com RLS em todas as tabelas.
-- Papéis isolados em tabela `user_roles` + função `has_role` SECURITY DEFINER (evita recursão de RLS e escalonamento de privilégio).
-- Estrutura modular de pastas: `src/modules/{crm,whatsapp,ads,financeiro,...}` para escalar.
+Hoje o app conecta 1 conta por OAuth e salva em `google_ad_accounts` / `meta_ad_accounts`. Vou estender para gerenciadoras:
 
-### 3.B Banco de Dados
-Tabelas criadas nesta fase (todas com RLS + GRANTs):
-- `organizations` — tenants
-- `profiles` — perfil do usuário (1:1 com `auth.users`), vinculado a `organization_id`
-- `app_role` enum (`owner`, `admin`, `manager`, `agent`)
-- `user_roles` — papéis por usuário/org
-- `leads` — campos: nome, telefone, email, origem, campanha, responsável, status, observações, created_at
-- `lead_status` enum: `novo`, `primeiro_contato`, `teste_enviado`, `negociacao`, `cliente`, `renovacao`, `cancelado`
-- `lead_tags`, `lead_tag_assignments`
-- `lead_activities` (histórico/tarefas/agendamentos)
-- Índices em `organization_id`, `status`, `responsavel_id`, `created_at`
-- Trigger `handle_new_user` cria profile + organization na primeira autenticação
+**Google Ads (MCC)**
+- No callback OAuth, além de `customers:listAccessibleCustomers`, chamar `customer/{id}/googleAds:searchStream` com `SELECT customer_client.* FROM customer_client` para descobrir todos os clientes vinculados ao MCC.
+- Novo campo `is_manager` + `manager_customer_id` (já existe) em `google_ad_accounts`. Cada cliente é uma linha filha do MCC.
+- Todas as chamadas de API dos clientes usam header `login-customer-id: <mcc_id>`.
 
-### 3.C Backend
-- Função `has_role(uuid, app_role)` SECURITY DEFINER
-- Função `current_org_id()` SECURITY DEFINER (lê org do usuário logado)
-- RLS: `USING (organization_id = current_org_id())` em todas as tabelas de domínio
-- Trigger de criação automática de profile/org no signup
-- Sem Edge Functions nesta fase (não há integração externa ainda)
+**Meta (Business Manager)**
+- Após OAuth, chamar `GET /me/businesses` → para cada business, `GET /{business_id}/owned_ad_accounts` e `/client_ad_accounts`.
+- Novos campos `business_id`, `business_name`, `is_client_account` em `meta_ad_accounts`.
 
-### 3.D Frontend
-- Auth: login/cadastro (email+senha), proteção de rotas
-- Layout principal com sidebar modular (preparado para futuros módulos)
-- Páginas:
-  - `/` Dashboard (cards placeholder de métricas)
-  - `/leads` Lista de leads + filtros + busca
-  - `/leads/kanban` Pipeline Kanban arrastável (dnd-kit)
-  - `/leads/:id` Detalhe do lead (histórico, tarefas, tags)
-  - `/settings` Org/usuários
-- Hooks: `useAuth`, `useOrg`, `useLeads` (React Query)
-- Design responsivo desktop/mobile
+**UI**
+- Nova tela `/app/clientes` com:
+  - Lista agrupada por gerenciadora (MCC / BM).
+  - Badge de plataforma, status, moeda, gasto do mês.
+  - Botão "Definir como cliente ativo" (contexto global salvo em `localStorage` + `current_client_account_id` na sessão).
+- Tabelas de campanhas passam a filtrar pelo cliente ativo automaticamente.
+- Botão "Sincronizar todos os clientes" no MCC/BM (job em background que popula `meta_campaigns` e `google_ads_campaigns` para cada filho).
 
-### 3.E Segurança
-| Risco | Nível | Impacto | Mitigação |
-|---|---|---|---|
-| Escalonamento de privilégio | 18 | Crítico | Roles em tabela separada + `has_role` SECURITY DEFINER |
-| Vazamento cross-tenant | 20 | Crítico | RLS obrigatório com `current_org_id()` em toda tabela |
-| SQL Injection | 5 | Baixo | Apenas client tipado Supabase, sem SQL cru |
-| XSS | 6 | Médio | React escapa por padrão; sem `dangerouslySetInnerHTML` |
-| CSRF | 4 | Baixo | JWT Bearer + SameSite |
-| Falha de auth | 10 | Alto | `onAuthStateChange` + `getUser()` server-trusted |
-| Race condition no signup | 8 | Médio | Trigger atômico cria profile+org+role |
-
-### 3.F Revisão de Impacto
-- Projeto vazio — sem regressão possível nesta fase.
-- Estrutura de pastas e tabelas projetadas para acomodar todos os módulos futuros sem refactor.
+**Segurança**
+- RLS por `organization_id` mantida.
+- Só quem tem role `owner`/`admin` na org pode conectar/desconectar gerenciadora.
 
 ---
 
-## Roadmap das próximas fases (cada uma = novo plano)
-2. WhatsApp/Uazapi (instâncias + chat)
-3. Meta Ads (OAuth + Conversion API)
-4. Google Ads (OAuth + Offline Conversions)
-5. Sigma (integração API)
-6. Financeiro
-7. Automações (fluxos WhatsApp)
-8. IA (OpenAI via Lovable AI Gateway)
-9. Tickets + Notificações + Comissões/Metas
+## Parte 2 — Copiloto Claude para campanhas
+
+Sub-agente de IA especializado em tráfego pago, com **ferramentas** (tool use) que ele mesmo invoca — o usuário aprova antes de qualquer escrita.
+
+**Backend**
+- `POST /api/public/ai/traffic-copilot` (server function autenticada, `createServerFn` com `requireSupabaseAuth`).
+- Provedor: **Lovable AI Gateway** com modelo Anthropic (`anthropic/claude-sonnet-4.5`). Sem pedir API key do usuário — usa `LOVABLE_API_KEY` já configurada.
+- Streaming via AI SDK (`streamText`) com `stopWhen: stepCountIs(50)`.
+
+**Ferramentas expostas ao Claude** (todas com `needsApproval` nas de escrita):
+| Tool | Tipo | O que faz |
+|---|---|---|
+| `list_client_accounts` | leitura | Retorna contas do cliente ativo |
+| `get_campaign_performance` | leitura | Métricas (CTR, CPA, ROAS, gasto) por período |
+| `get_creatives` | leitura | Lista anúncios + preview |
+| `search_audiences` | leitura | Públicos salvos do BM |
+| `create_campaign` | **escrita** | Cria campanha rascunho (Meta/Google) |
+| `create_adset` | **escrita** | Cria conjunto com segmentação + orçamento |
+| `create_ad` | **escrita** | Sobe criativo + copy |
+| `pause_campaign` / `resume_campaign` | **escrita** | Liga/desliga |
+| `update_budget` | **escrita** | Ajusta orçamento diário |
+| `duplicate_and_test` | **escrita** | Duplica adset trocando 1 variável (teste A/B) |
+
+Cada tool de escrita retorna um **card de confirmação** no chat: "Vou criar campanha X com R$ 50/dia mirando público Y. Confirmar?" — só executa após clique.
+
+**Auto-otimização (opcional, off por padrão)**
+- Nova tabela `ai_optimization_rules`: `{ account_id, trigger (ex: CPA > 30 por 3 dias), action (ex: reduzir budget 20%), enabled }`.
+- Cron diário (pg_cron → endpoint público assinado) roda regras e loga ações em `ai_optimization_runs`.
+
+**UI**
+- Nova rota `/app/ia/copiloto` — chat estilo Claude com:
+  - Seletor de cliente ativo no topo.
+  - Sugestões rápidas: "Analisar contas que estão gastando sem converter", "Sugerir 3 novas campanhas para cliente X", "Otimizar orçamentos da semana".
+  - Renderização de tool calls com badges (🔍 lendo dados / ⚡ vai executar / ✅ executado).
+  - Timeline de ações executadas por conta.
 
 ---
 
-## Confirmações antes de codificar
-1. **Confirma começarmos pela Fase 1 (Fundação + CRM Leads/Kanban)?**
-2. **Confirma usar React + Vite** (Next.js não roda no Lovable) e **Lovable Cloud** como backend (Supabase gerenciado, sem você precisar de conta externa)?
-3. Algum nome/branding/cor específica para a UI ou pode seguir um tema dark moderno padrão ZENNO?
+## Tabelas novas
+
+```sql
+ai_copilot_conversations (id, org_id, user_id, client_account_id, title, created_at)
+ai_copilot_messages (id, conversation_id, role, content jsonb, tool_calls jsonb, created_at)
+ai_optimization_rules (id, org_id, account_id, platform, trigger jsonb, action jsonb, enabled, created_at)
+ai_optimization_runs (id, rule_id, triggered_at, result jsonb, status)
+```
+Todas com RLS por `organization_id` e GRANTs para `authenticated` + `service_role`.
+
+---
+
+## Ordem de entrega
+
+1. **MCC/BM discovery** — expandir OAuth callbacks + migration com campos novos.
+2. **Tela `/app/clientes`** + contexto de cliente ativo.
+3. **Sync em lote** de campanhas dos filhos.
+4. **Copiloto (leitura)** — chat + tools de leitura, sem escrita ainda.
+5. **Copiloto (escrita)** — tools de create/pause/update com cards de aprovação.
+6. **Regras de auto-otimização** (opcional, ligar depois).
+
+---
+
+## Perguntas antes de começar
+
+1. **Escopo inicial:** entrego **tudo** (Parte 1 + 2 completas) ou começo só pela **Parte 1** (gerenciadoras) e o copiloto vem depois?
+2. **Auto-otimização automática** (regras que rodam sozinhas no cron) você quer nessa fase ou só o copiloto assistido por chat?
+3. Confirma usar **Claude via Lovable AI Gateway** (sem você precisar dar API key da Anthropic)? Custo sai dos créditos Lovable.

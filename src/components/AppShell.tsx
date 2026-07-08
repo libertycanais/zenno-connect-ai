@@ -11,6 +11,7 @@ import logo from "@/assets/zenno-logo.png";
 
 const nav = [
   { to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/app/clientes", label: "Clientes", icon: Users },
   { to: "/app/leads", label: "Leads", icon: Users },
   { to: "/app/leads/kanban", label: "Pipeline", icon: KanbanSquare },
   { to: "/app/whatsapp", label: "WhatsApp", icon: MessageSquare },
