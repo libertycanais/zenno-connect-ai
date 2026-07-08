@@ -192,6 +192,54 @@ function CopilotoPage() {
 
           {messages.map((m, i) => {
             if (m.role === "tool") {
+              const pa = m.tool_call_id ? pendingByCallId.get(m.tool_call_id) : undefined;
+              if (pa) {
+                const isPending = pa.status === "pending";
+                const isExecuted = pa.status === "executed";
+                const isRejected = pa.status === "rejected";
+                const isFailed = pa.status === "failed";
+                return (
+                  <Card key={m.id ?? i} className="p-4 border-primary/40 bg-primary/5">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="text-primary shrink-0 mt-0.5" size={18} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                          {isPending && "Aguardando aprovação"}
+                          {isExecuted && "Executado"}
+                          {isRejected && "Rejeitado"}
+                          {isFailed && "Falhou"}
+                        </div>
+                        <div className="text-sm font-medium">{pa.preview}</div>
+                        {isFailed && pa.error && (
+                          <div className="text-xs text-destructive mt-1">{pa.error}</div>
+                        )}
+                        {isPending && (
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              size="sm"
+                              onClick={() => approveMut.mutate(pa.id)}
+                              disabled={approveMut.isPending}
+                              className="gap-1"
+                            >
+                              {approveMut.isPending ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                              Aprovar e executar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => rejectMut.mutate(pa.id)}
+                              disabled={rejectMut.isPending}
+                              className="gap-1"
+                            >
+                              <X size={14} /> Rejeitar
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                );
+              }
               return (
                 <div key={m.id ?? i} className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Wrench size={12} />
