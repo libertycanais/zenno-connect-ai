@@ -109,7 +109,7 @@ await timed("oauth_callback_duration_ms", { provider: "google" }, async () => {
 | `supabase_query_duration_ms` | histogram | fn | server functions |
 | `whatsapp_webhook_total` | counter | instance_id, status | `whatsapp.webhook.$instanceId.ts` |
 | `whatsapp_webhook_duration_ms` | histogram | instance_id | idem |
-| `queue_job_total` | counter | queue, status | (N/A hoje — sem BullMQ) |
+| `queue_jobs_total` | counter | queue, status | reservado — sem fila na baseline v1.0 |
 
 > ⚠️ Instrumentação real dos endpoints é responsabilidade da Sprint 5.4 (aditivo, sem alterar contratos). Sprint 5.3 entrega apenas as primitivas.
 
