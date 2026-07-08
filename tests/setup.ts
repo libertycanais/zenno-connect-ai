@@ -47,7 +47,5 @@ class MockObserver {
   disconnect = vi.fn();
   takeRecords = vi.fn(() => []);
 }
-// @ts-expect-error jsdom lacks these globals
 globalThis.IntersectionObserver ??= MockObserver as unknown as typeof IntersectionObserver;
-// @ts-expect-error jsdom lacks these globals
 globalThis.ResizeObserver ??= MockObserver as unknown as typeof ResizeObserver;
