@@ -2739,6 +2739,10 @@ export type Database = {
         }
         Returns: string
       }
+      audit_log_ensure_partition: {
+        Args: { _month: string }
+        Returns: undefined
+      }
       audit_redact: { Args: { payload: Json }; Returns: Json }
       current_org_id: { Args: never; Returns: string }
       has_role: {
