@@ -107,9 +107,32 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "create_campaign",
+      description: "Cria uma nova campanha (por enquanto, apenas Meta Ads). A campanha nasce PAUSADA para revisão. Requer aprovação humana.",
+      parameters: {
+        type: "object",
+        properties: {
+          platform: { type: "string", enum: ["meta"] },
+          account_id: { type: "string", description: "UUID local (id) da conta em meta_ad_accounts (use list_client_accounts para descobrir)" },
+          name: { type: "string", description: "Nome da campanha" },
+          objective: {
+            type: "string",
+            enum: ["OUTCOME_TRAFFIC", "OUTCOME_LEADS", "OUTCOME_SALES", "OUTCOME_ENGAGEMENT", "OUTCOME_AWARENESS", "OUTCOME_APP_PROMOTION"],
+            description: "Objetivo Meta ODAX",
+          },
+          daily_budget_brl: { type: "number", description: "Orçamento diário em BRL" },
+        },
+        required: ["platform", "account_id", "name", "objective", "daily_budget_brl"],
+        additionalProperties: false,
+      },
+    },
+  },
 ] as const;
 
-const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget"]);
+const WRITE_TOOLS = new Set(["pause_campaign", "resume_campaign", "update_daily_budget", "create_campaign"]);
 
 // ---------- Tool executor (runs server-side with user's supabase client) ----------
 type ToolCtx = { supabase: any; orgId: string; userId: string; convId: string; toolCallId: string };
