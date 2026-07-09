@@ -25,6 +25,7 @@ import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
 import { Route as AppFinanceiroRouteImport } from './routes/app.financeiro'
+import { Route as AppExecutivoRouteImport } from './routes/app.executivo'
 import { Route as AppClientesRouteImport } from './routes/app.clientes'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
 import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
@@ -148,6 +149,11 @@ const AppGoogleAdsRoute = AppGoogleAdsRouteImport.update({
 const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
   id: '/financeiro',
   path: '/financeiro',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExecutivoRoute = AppExecutivoRouteImport.update({
+  id: '/executivo',
+  path: '/executivo',
   getParentRoute: () => AppRoute,
 } as any)
 const AppClientesRoute = AppClientesRouteImport.update({
@@ -386,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/clientes': typeof AppClientesRoute
+  '/app/executivo': typeof AppExecutivoRoute
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
@@ -445,6 +452,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/clientes': typeof AppClientesRoute
+  '/app/executivo': typeof AppExecutivoRoute
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -501,6 +509,7 @@ export interface FileRoutesById {
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/automacoes': typeof AppAutomacoesRouteWithChildren
   '/app/clientes': typeof AppClientesRoute
+  '/app/executivo': typeof AppExecutivoRoute
   '/app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
@@ -565,6 +574,7 @@ export interface FileRouteTypes {
     | '/app/assinatura'
     | '/app/automacoes'
     | '/app/clientes'
+    | '/app/executivo'
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
@@ -624,6 +634,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/app/assinatura'
     | '/app/clientes'
+    | '/app/executivo'
     | '/app/integracoes'
     | '/app/organizacao'
     | '/app/settings'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/app/assinatura'
     | '/app/automacoes'
     | '/app/clientes'
+    | '/app/executivo'
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
@@ -864,6 +876,13 @@ declare module '@tanstack/react-router' {
       path: '/financeiro'
       fullPath: '/app/financeiro'
       preLoaderRoute: typeof AppFinanceiroRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/executivo': {
+      id: '/app/executivo'
+      path: '/executivo'
+      fullPath: '/app/executivo'
+      preLoaderRoute: typeof AppExecutivoRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/clientes': {
@@ -1318,6 +1337,7 @@ interface AppRouteChildren {
   AppAssinaturaRoute: typeof AppAssinaturaRoute
   AppAutomacoesRoute: typeof AppAutomacoesRouteWithChildren
   AppClientesRoute: typeof AppClientesRoute
+  AppExecutivoRoute: typeof AppExecutivoRoute
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppIaRoute: typeof AppIaRouteWithChildren
@@ -1340,6 +1360,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAssinaturaRoute: AppAssinaturaRoute,
   AppAutomacoesRoute: AppAutomacoesRouteWithChildren,
   AppClientesRoute: AppClientesRoute,
+  AppExecutivoRoute: AppExecutivoRoute,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppIaRoute: AppIaRouteWithChildren,
@@ -1382,13 +1403,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
