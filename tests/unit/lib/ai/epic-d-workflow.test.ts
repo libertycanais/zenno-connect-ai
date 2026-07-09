@@ -13,8 +13,8 @@ function input() {
     role: "owner",
     taskId: "task_wf_1",
     kpis: [
-      { kpi: "roas", value: 0.7, unit: "ratio", formula: "revenue/spend",
-        inputs: { revenue: 70, spend: 100 }, severity: "critical",
+      { kpi: "roas", value: 0.7, unit: "ratio" as const, formula: "revenue/spend",
+        inputs: { revenue: 70, spend: 100 }, severity: "critical" as const,
         warnings: [], computedAt: new Date().toISOString() },
     ],
     triggeredRules: [{
