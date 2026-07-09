@@ -9,8 +9,8 @@
 import { ClaudeAdapter, type ClaudeInvoker } from "./claude-adapter";
 import type { AdapterRequest, AdapterResponse } from "../provider-adapter";
 import { decryptApiKey } from "../crypto.server";
-import { logger } from "@/lib/logger";
-import { metrics } from "@/lib/observability";
+import { log } from "@/lib/logger";
+import { incCounter, observe } from "@/lib/observability";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_VERSION = "2023-06-01";
