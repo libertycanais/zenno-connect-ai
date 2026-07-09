@@ -15,14 +15,12 @@ const ListInput = z.object({
   limit: z.number().int().min(1).max(200).optional(),
 });
 
-async function resolveOrgId(
-  supabase: { from: (t: string) => { select: (c: string) => { eq: (col: string, v: string) => { maybeSingle: () => Promise<{ data: { organization_id: string } | null; error: unknown }> } } } },
-  userId: string,
-): Promise<string> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function resolveOrgId(supabase: any, userId: string): Promise<string> {
   const { data, error } = await supabase.from("profiles").select("organization_id")
     .eq("id", userId).maybeSingle();
   if (error || !data?.organization_id) throw new Error("No organization for current user");
-  return data.organization_id;
+  return data.organization_id as string;
 }
 
 export const listRecommendations = createServerFn({ method: "POST" })
