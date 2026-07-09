@@ -49,12 +49,10 @@ export class ClaudeAdapter implements AIProviderAdapter {
     // preserving the contract without introducing SDK-specific streaming
     // until the real wiring lands.
     const res = await this.invoker(req);
-    yield { kind: "content", text: res.text };
-    yield {
-      kind: "finish",
-      finishReason: res.finishReason,
-      usage: { tokensIn: res.tokensIn, tokensOut: res.tokensOut },
-    };
+    yield { kind: "start", provider: this.providerId, model: req.model };
+    yield { kind: "delta", text: res.text };
+    yield { kind: "usage", tokensIn: res.tokensIn, tokensOut: res.tokensOut };
+    yield { kind: "end", reason: res.finishReason === "length" ? "length" : "stop" };
   }
 
   async ping(): Promise<{ ok: boolean; latencyMs: number; errorCode?: string }> {
