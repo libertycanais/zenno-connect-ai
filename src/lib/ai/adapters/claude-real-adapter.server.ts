@@ -65,14 +65,14 @@ export function buildClaudeInvoker(cred: ClaudeCredential): ClaudeInvoker {
       });
     } catch (err) {
       incCounter("ai.provider.error", { provider: "anthropic", kind: "network" });
-      log.error("claude.fetch_failed", { fingerprint: cred.fingerprint, err: String(err) });
+      log.error({ event: "claude.fetch_failed", fingerprint: cred.fingerprint, err: String(err) });
       throw err;
     }
     const latencyMs = Date.now() - started;
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       incCounter("ai.provider.error", { provider: "anthropic", kind: `http_${res.status}` });
-      log.warn("claude.non_ok", { status: res.status, latencyMs, fingerprint: cred.fingerprint });
+      log.warn({ event: "claude.non_ok", status: res.status, latencyMs, fingerprint: cred.fingerprint });
       throw new Error(`anthropic_http_${res.status}: ${text.slice(0, 200)}`);
     }
     const json = (await res.json()) as {
