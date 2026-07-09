@@ -328,6 +328,50 @@ export type Database = {
           },
         ]
       }
+      ai_evidence: {
+        Row: {
+          confidence: number
+          created_at: string
+          evidence_id: string
+          expert_id: string
+          id: string
+          missing: Json
+          organization_id: string
+          sources: Json
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          evidence_id: string
+          expert_id: string
+          id?: string
+          missing?: Json
+          organization_id: string
+          sources?: Json
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          evidence_id?: string
+          expert_id?: string
+          id?: string
+          missing?: Json
+          organization_id?: string
+          sources?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_evidence_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_memory: {
         Row: {
           confidence: number | null
@@ -442,6 +486,87 @@ export type Database = {
           },
         ]
       }
+      ai_playbooks: {
+        Row: {
+          action_plan: Json
+          checklist: Json
+          complexity: string
+          created_at: string
+          diagnosis: string
+          evidence_id: string | null
+          expected_outcome: string
+          financial_estimate: Json
+          id: string
+          impact: string
+          next_steps: Json
+          organization_id: string
+          playbook_id: string
+          problem: string
+          success_criteria: Json
+          title: string
+          updated_at: string
+          urgency: string
+          version: string
+        }
+        Insert: {
+          action_plan?: Json
+          checklist?: Json
+          complexity: string
+          created_at?: string
+          diagnosis: string
+          evidence_id?: string | null
+          expected_outcome?: string
+          financial_estimate?: Json
+          id?: string
+          impact: string
+          next_steps?: Json
+          organization_id: string
+          playbook_id: string
+          problem: string
+          success_criteria?: Json
+          title: string
+          updated_at?: string
+          urgency: string
+          version?: string
+        }
+        Update: {
+          action_plan?: Json
+          checklist?: Json
+          complexity?: string
+          created_at?: string
+          diagnosis?: string
+          evidence_id?: string | null
+          expected_outcome?: string
+          financial_estimate?: Json
+          id?: string
+          impact?: string
+          next_steps?: Json
+          organization_id?: string
+          playbook_id?: string
+          problem?: string
+          success_criteria?: Json
+          title?: string
+          updated_at?: string
+          urgency?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_playbooks_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "ai_evidence"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_playbooks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_provider_credentials: {
         Row: {
           api_key_ciphertext: string
@@ -506,6 +631,97 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_recommendations: {
+        Row: {
+          checklist: Json
+          complexity: string
+          confidence: number
+          created_at: string
+          diagnosis: string
+          evidence_id: string | null
+          expert_id: string
+          financial_value_cents: number
+          id: string
+          impact: string
+          organization_id: string
+          playbook_id: string | null
+          problem: string
+          recommendation_id: string
+          status: string
+          summary: string
+          task_id: string | null
+          updated_at: string
+          urgency: string
+          workflow_id: string | null
+        }
+        Insert: {
+          checklist?: Json
+          complexity: string
+          confidence?: number
+          created_at?: string
+          diagnosis: string
+          evidence_id?: string | null
+          expert_id: string
+          financial_value_cents?: number
+          id?: string
+          impact: string
+          organization_id: string
+          playbook_id?: string | null
+          problem: string
+          recommendation_id: string
+          status?: string
+          summary: string
+          task_id?: string | null
+          updated_at?: string
+          urgency: string
+          workflow_id?: string | null
+        }
+        Update: {
+          checklist?: Json
+          complexity?: string
+          confidence?: number
+          created_at?: string
+          diagnosis?: string
+          evidence_id?: string | null
+          expert_id?: string
+          financial_value_cents?: number
+          id?: string
+          impact?: string
+          organization_id?: string
+          playbook_id?: string | null
+          problem?: string
+          recommendation_id?: string
+          status?: string
+          summary?: string
+          task_id?: string | null
+          updated_at?: string
+          urgency?: string
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendations_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "ai_evidence"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_recommendations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_recommendations_playbook_id_fkey"
+            columns: ["playbook_id"]
+            isOneToOne: false
+            referencedRelation: "ai_playbooks"
             referencedColumns: ["id"]
           },
         ]
