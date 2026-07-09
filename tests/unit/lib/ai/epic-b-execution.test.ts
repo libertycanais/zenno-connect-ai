@@ -18,11 +18,11 @@ function makeWorkflow(): Workflow {
     steps: [
       { id: "s1", skill: "campaign_analysis", provider: "anthropic",
         model: "claude-3-5-sonnet-latest", dependencies: [],
-        estimatedCost: 5, estimatedLatencyMs: 200, priority: 1,
+        estimatedCost: 5, estimatedLatency: 200, priority: 1,
         status: "ready", requiredCapabilities: [] },
       { id: "s2", skill: "campaign_analysis", provider: "anthropic",
         model: "claude-3-5-sonnet-latest", dependencies: ["s1"],
-        estimatedCost: 5, estimatedLatencyMs: 200, priority: 1,
+        estimatedCost: 5, estimatedLatency: 200, priority: 1,
         status: "pending", requiredCapabilities: [] },
     ],
     createdAt: new Date().toISOString(),
@@ -33,7 +33,7 @@ function makeAdapter() {
   return new ClaudeAdapter({
     invoker: async (req) => ({
       text: `ok:${req.model}`, tokensIn: 100, tokensOut: 200,
-      finishReason: "stop", raw: null,
+      finishReason: "stop", raw: null, toolCalls: [],
     }),
   });
 }
@@ -52,7 +52,7 @@ describe("EPIC B · WorkflowExecutor", () => {
     });
 
     const result = await exec.execute(makeWorkflow(),
-      { organizationId: "org_1", agent: "strategist", plan: "pro", role: "admin", taskId: "task_1" },
+      { organizationId: "org_1", agent: "campaign_analyst", plan: "pro", role: "admin", taskId: "task_1" },
       { budget: { maxCostCents: 100, maxLatencyMs: 60_000, maxSteps: 10 }, parallelism: 2 });
 
     expect(result.status).toBe("completed");
@@ -67,7 +67,7 @@ describe("EPIC B · WorkflowExecutor", () => {
     const bridge = new ProviderBridge(); bridge.register(makeAdapter());
     const exec = new WorkflowExecutor({ bridge });
     const result = await exec.execute(makeWorkflow(),
-      { organizationId: "org_1", agent: "strategist", plan: "pro", role: "admin", taskId: "task_1" },
+      { organizationId: "org_1", agent: "campaign_analyst", plan: "pro", role: "admin", taskId: "task_1" },
       { budget: { maxCostCents: 0, maxLatencyMs: 60_000, maxSteps: 10 } });
     expect(result.status === "failed" || result.status === "partial").toBe(true);
     expect(result.reasonCodes.length).toBeGreaterThan(0);
@@ -78,7 +78,7 @@ describe("EPIC B · WorkflowExecutor", () => {
     const exec = new WorkflowExecutor({ bridge });
     const ac = new AbortController(); ac.abort();
     const result = await exec.execute(makeWorkflow(),
-      { organizationId: "org_1", agent: "strategist", plan: "pro", role: "admin", taskId: "task_1" },
+      { organizationId: "org_1", agent: "campaign_analyst", plan: "pro", role: "admin", taskId: "task_1" },
       { budget: { maxCostCents: 100, maxLatencyMs: 60_000, maxSteps: 10 }, abortSignal: ac.signal });
     expect(result.status).toBe("cancelled");
   });
@@ -122,9 +122,9 @@ describe("EPIC B · SkillRouter + Fallback", () => {
   it("router returns null when no capability matches", () => {
     const route = skillRouter.route({
       step: { id: "s", skill: "unknown_skill", provider: null, model: null,
-        dependencies: [], estimatedCost: 0, estimatedLatencyMs: 0, priority: 1,
+        dependencies: [], estimatedCost: 0, estimatedLatency: 0, priority: 1,
         status: "ready", requiredCapabilities: [] },
-      agent: "strategist", plan: "pro", role: "admin",
+      agent: "campaign_analyst", plan: "pro", role: "admin",
     });
     expect(route).toBeNull();
   });
