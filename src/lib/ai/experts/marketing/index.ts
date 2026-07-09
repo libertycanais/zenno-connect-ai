@@ -52,7 +52,7 @@ export class MarketingExpert implements Expert {
     });
 
     const recommendations = input.triggeredRules.map((rule) => {
-      const urgency = rule.severity === "critical" ? "critical" : rule.severity === "warn" ? "high" : "medium";
+      const urgency: "critical" | "high" | "medium" = rule.severity === "critical" ? "critical" : rule.severity === "warn" ? "high" : "medium";
       const checklist: ChecklistItem[] = rule.recommend.map((r, i) => ({
         id: `${rule.id}.chk.${i}`, title: humanize(r), done: false,
       }));
