@@ -61,9 +61,9 @@ function OrgTab() {
     mutationFn: (payload: Record<string, string>) => updateOrg({ data: payload as never }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["organization"] });
-      toast({ title: "Salvo" });
+      toast.success("Salvo");
     },
-    onError: (e: unknown) => toast({ title: "Erro", description: String(e), variant: "destructive" }),
+    onError: (e: unknown) => toast.error(String(e)),
   });
   const org = data?.organization;
   const [form, setForm] = useState<Record<string, string>>({});
@@ -105,8 +105,8 @@ function TeamTab() {
   });
   const mut = useMutation({
     mutationFn: (uid: string) => remove({ data: { target_user_id: uid } }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["members"] }); toast({ title: "Removido" }); },
-    onError: (e) => toast({ title: "Erro", description: String(e), variant: "destructive" }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["members"] }); toast.success("Removido"); },
+    onError: (e) => toast.error(String(e)),
   });
   if (isLoading) return <div className="text-sm text-muted-foreground">Carregando…</div>;
   return (
@@ -146,10 +146,10 @@ function InvitesTab() {
     mutationFn: () => create({ data: { email, role: role as never } }),
     onSuccess: (r) => {
       qc.invalidateQueries({ queryKey: ["invitations"] });
-      toast({ title: "Convite criado", description: `Token: ${r.token.slice(0, 8)}…` });
+      toast.success(`Convite criado. Token: ${r.token.slice(0, 8)}…`);
       setEmail("");
     },
-    onError: (e) => toast({ title: "Erro", description: String(e), variant: "destructive" }),
+    onError: (e) => toast.error(String(e)),
   });
   const revokeMut = useMutation({
     mutationFn: (id: string) => revoke({ data: { invitation_id: id } }),
