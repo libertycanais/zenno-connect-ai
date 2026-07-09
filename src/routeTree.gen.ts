@@ -60,6 +60,8 @@ import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
 import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicLiveRouteImport } from './routes/api/public/live'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks.stripe'
+import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks.mercadopago'
 import { Route as ApiPublicTrackWaLinkRouteImport } from './routes/api/public/track.wa-link'
 import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/public/track.script[.]js'
 import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
@@ -322,6 +324,17 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
+  id: '/api/public/webhooks/stripe',
+  path: '/api/public/webhooks/stripe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksMercadopagoRoute =
+  ApiPublicWebhooksMercadopagoRouteImport.update({
+    id: '/api/public/webhooks/mercadopago',
+    path: '/api/public/webhooks/mercadopago',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicTrackWaLinkRoute = ApiPublicTrackWaLinkRouteImport.update({
   id: '/api/public/track/wa-link',
   path: '/api/public/track/wa-link',
@@ -412,6 +425,8 @@ export interface FileRoutesByFullPath {
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -461,6 +476,8 @@ export interface FileRoutesByTo {
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -521,6 +538,8 @@ export interface FileRoutesById {
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -582,6 +601,8 @@ export interface FileRouteTypes {
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
+    | '/api/public/webhooks/mercadopago'
+    | '/api/public/webhooks/stripe'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -631,6 +652,8 @@ export interface FileRouteTypes {
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
+    | '/api/public/webhooks/mercadopago'
+    | '/api/public/webhooks/stripe'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -690,6 +713,8 @@ export interface FileRouteTypes {
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
+    | '/api/public/webhooks/mercadopago'
+    | '/api/public/webhooks/stripe'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -708,6 +733,8 @@ export interface RootRouteChildren {
   ApiPublicTrackEventRoute: typeof ApiPublicTrackEventRoute
   ApiPublicTrackScriptDotjsRoute: typeof ApiPublicTrackScriptDotjsRoute
   ApiPublicTrackWaLinkRoute: typeof ApiPublicTrackWaLinkRoute
+  ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
+  ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -1072,6 +1099,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/stripe': {
+      id: '/api/public/webhooks/stripe'
+      path: '/api/public/webhooks/stripe'
+      fullPath: '/api/public/webhooks/stripe'
+      preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/mercadopago': {
+      id: '/api/public/webhooks/mercadopago'
+      path: '/api/public/webhooks/mercadopago'
+      fullPath: '/api/public/webhooks/mercadopago'
+      preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/track/wa-link': {
       id: '/api/public/track/wa-link'
       path: '/api/public/track/wa-link'
@@ -1310,6 +1351,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicTrackEventRoute: ApiPublicTrackEventRoute,
   ApiPublicTrackScriptDotjsRoute: ApiPublicTrackScriptDotjsRoute,
   ApiPublicTrackWaLinkRoute: ApiPublicTrackWaLinkRoute,
+  ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
+  ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
