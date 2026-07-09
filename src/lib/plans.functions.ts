@@ -8,6 +8,9 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabase as browserPublic } from "@/integrations/supabase/client";
 
+type JsonPrimitive = string | number | boolean | null;
+export type JsonValue = JsonPrimitive | JsonValue[] | { [k: string]: JsonValue };
+
 export type PlanRow = {
   id: string;
   code: string;
@@ -17,8 +20,8 @@ export type PlanRow = {
   currency: string;
   interval: "month" | "year";
   trial_days: number;
-  features: Record<string, unknown>;
-  limits: Record<string, unknown>;
+  features: { [k: string]: JsonValue };
+  limits: { [k: string]: JsonValue };
   active: boolean;
   sort_order: number;
 };
