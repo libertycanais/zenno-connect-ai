@@ -72,7 +72,7 @@ export class MarketingExpert implements Expert {
         diagnosis: `${rule.title} identificado em ${rule.domain}.`,
         evidence,
         impact: "Redução de eficiência de mídia e desperdício de orçamento.",
-        urgency: urgency as "critical" | "high" | "medium",
+        urgency,
         complexity: "medium",
         checklist,
         actionPlan,
