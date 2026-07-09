@@ -1923,6 +1923,57 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json
+          id: string
+          interval: string
+          limits: Json
+          name: string
+          price_cents: number
+          sort_order: number
+          trial_days: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          limits?: Json
+          name: string
+          price_cents?: number
+          sort_order?: number
+          trial_days?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          limits?: Json
+          name?: string
+          price_cents?: number
+          sort_order?: number
+          trial_days?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -2051,41 +2102,118 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          from_plan_code: string | null
+          id: string
+          metadata: Json
+          organization_id: string
+          provider: string | null
+          subscription_id: string | null
+          to_plan_code: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          from_plan_code?: string | null
+          id?: string
+          metadata?: Json
+          organization_id: string
+          provider?: string | null
+          subscription_id?: string | null
+          to_plan_code?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          from_plan_code?: string | null
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          provider?: string | null
+          subscription_id?: string | null
+          to_plan_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
+          cancel_at_period_end: boolean
+          canceled_at: string | null
           created_at: string
           current_period_end: string | null
           id: string
           organization_id: string
           plan: string
+          plan_id: string | null
           price_cents: number
+          provider: string | null
+          provider_customer_id: string | null
+          provider_subscription_id: string | null
           status: string
           trial_ends_at: string
           updated_at: string
         }
         Insert: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
           created_at?: string
           current_period_end?: string | null
           id?: string
           organization_id: string
           plan?: string
+          plan_id?: string | null
           price_cents?: number
+          provider?: string | null
+          provider_customer_id?: string | null
+          provider_subscription_id?: string | null
           status?: string
           trial_ends_at?: string
           updated_at?: string
         }
         Update: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
           created_at?: string
           current_period_end?: string | null
           id?: string
           organization_id?: string
           plan?: string
+          plan_id?: string | null
           price_cents?: number
+          provider?: string | null
+          provider_customer_id?: string | null
+          provider_subscription_id?: string | null
           status?: string
           trial_ends_at?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ticket_messages: {
         Row: {
