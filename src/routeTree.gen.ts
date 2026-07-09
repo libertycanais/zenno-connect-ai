@@ -21,6 +21,7 @@ import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppOrganizacaoRouteImport } from './routes/app.organizacao'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppInteligenciaRouteImport } from './routes/app.inteligencia'
 import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
 import { Route as AppGoogleAdsRouteImport } from './routes/app.google-ads'
@@ -35,6 +36,7 @@ import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
+import { Route as AppInteligenciaIndexRouteImport } from './routes/app.inteligencia.index'
 import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
 import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.index'
 import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
@@ -50,6 +52,9 @@ import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.c
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppLeadsCobrancasRouteImport } from './routes/app.leads.cobrancas'
 import { Route as AppLeadsAtribuicaoRouteImport } from './routes/app.leads.atribuicao'
+import { Route as AppInteligenciaRecomendacoesRouteImport } from './routes/app.inteligencia.recomendacoes'
+import { Route as AppInteligenciaPlaybooksRouteImport } from './routes/app.inteligencia.playbooks'
+import { Route as AppInteligenciaEvidenciasRouteImport } from './routes/app.inteligencia.evidencias'
 import { Route as AppIaQualificarRouteImport } from './routes/app.ia.qualificar'
 import { Route as AppIaCopilotoRouteImport } from './routes/app.ia.copiloto'
 import { Route as AppGoogleAdsTrackingRouteImport } from './routes/app.google-ads.tracking'
@@ -62,6 +67,9 @@ import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
 import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicLiveRouteImport } from './routes/api/public/live'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as AppInteligenciaRecomendacoesIdRouteImport } from './routes/app.inteligencia.recomendacoes.$id'
+import { Route as AppInteligenciaPlaybooksIdRouteImport } from './routes/app.inteligencia.playbooks.$id'
+import { Route as AppInteligenciaEvidenciasIdRouteImport } from './routes/app.inteligencia.evidencias.$id'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks.stripe'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks.mercadopago'
 import { Route as ApiPublicTrackWaLinkRouteImport } from './routes/api/public/track.wa-link'
@@ -129,6 +137,11 @@ const AppOrganizacaoRoute = AppOrganizacaoRouteImport.update({
 const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   id: '/meta-ads',
   path: '/meta-ads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInteligenciaRoute = AppInteligenciaRouteImport.update({
+  id: '/inteligencia',
+  path: '/inteligencia',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIntegracoesRoute = AppIntegracoesRouteImport.update({
@@ -200,6 +213,11 @@ const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   id: '/leads/',
   path: '/leads/',
   getParentRoute: () => AppRoute,
+} as any)
+const AppInteligenciaIndexRoute = AppInteligenciaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppInteligenciaRoute,
 } as any)
 const AppIaIndexRoute = AppIaIndexRouteImport.update({
   id: '/',
@@ -276,6 +294,24 @@ const AppLeadsAtribuicaoRoute = AppLeadsAtribuicaoRouteImport.update({
   path: '/leads/atribuicao',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInteligenciaRecomendacoesRoute =
+  AppInteligenciaRecomendacoesRouteImport.update({
+    id: '/recomendacoes',
+    path: '/recomendacoes',
+    getParentRoute: () => AppInteligenciaRoute,
+  } as any)
+const AppInteligenciaPlaybooksRoute =
+  AppInteligenciaPlaybooksRouteImport.update({
+    id: '/playbooks',
+    path: '/playbooks',
+    getParentRoute: () => AppInteligenciaRoute,
+  } as any)
+const AppInteligenciaEvidenciasRoute =
+  AppInteligenciaEvidenciasRouteImport.update({
+    id: '/evidencias',
+    path: '/evidencias',
+    getParentRoute: () => AppInteligenciaRoute,
+  } as any)
 const AppIaQualificarRoute = AppIaQualificarRouteImport.update({
   id: '/qualificar',
   path: '/qualificar',
@@ -336,6 +372,24 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppInteligenciaRecomendacoesIdRoute =
+  AppInteligenciaRecomendacoesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AppInteligenciaRecomendacoesRoute,
+  } as any)
+const AppInteligenciaPlaybooksIdRoute =
+  AppInteligenciaPlaybooksIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AppInteligenciaPlaybooksRoute,
+  } as any)
+const AppInteligenciaEvidenciasIdRoute =
+  AppInteligenciaEvidenciasIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AppInteligenciaEvidenciasRoute,
+  } as any)
 const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   id: '/api/public/webhooks/stripe',
   path: '/api/public/webhooks/stripe',
@@ -397,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
+  '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -416,6 +471,9 @@ export interface FileRoutesByFullPath {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/inteligencia/evidencias': typeof AppInteligenciaEvidenciasRouteWithChildren
+  '/app/inteligencia/playbooks': typeof AppInteligenciaPlaybooksRouteWithChildren
+  '/app/inteligencia/recomendacoes': typeof AppInteligenciaRecomendacoesRouteWithChildren
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
@@ -431,6 +489,7 @@ export interface FileRoutesByFullPath {
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/ia/': typeof AppIaIndexRoute
+  '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
@@ -441,6 +500,9 @@ export interface FileRoutesByFullPath {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
+  '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
+  '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -469,6 +531,9 @@ export interface FileRoutesByTo {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/inteligencia/evidencias': typeof AppInteligenciaEvidenciasRouteWithChildren
+  '/app/inteligencia/playbooks': typeof AppInteligenciaPlaybooksRouteWithChildren
+  '/app/inteligencia/recomendacoes': typeof AppInteligenciaRecomendacoesRouteWithChildren
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
@@ -484,6 +549,7 @@ export interface FileRoutesByTo {
   '/app/financeiro': typeof AppFinanceiroIndexRoute
   '/app/google-ads': typeof AppGoogleAdsIndexRoute
   '/app/ia': typeof AppIaIndexRoute
+  '/app/inteligencia': typeof AppInteligenciaIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
   '/app/sigma': typeof AppSigmaIndexRoute
@@ -494,6 +560,9 @@ export interface FileRoutesByTo {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
+  '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
+  '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -514,6 +583,7 @@ export interface FileRoutesById {
   '/app/google-ads': typeof AppGoogleAdsRouteWithChildren
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
+  '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -533,6 +603,9 @@ export interface FileRoutesById {
   '/app/google-ads/tracking': typeof AppGoogleAdsTrackingRoute
   '/app/ia/copiloto': typeof AppIaCopilotoRoute
   '/app/ia/qualificar': typeof AppIaQualificarRoute
+  '/app/inteligencia/evidencias': typeof AppInteligenciaEvidenciasRouteWithChildren
+  '/app/inteligencia/playbooks': typeof AppInteligenciaPlaybooksRouteWithChildren
+  '/app/inteligencia/recomendacoes': typeof AppInteligenciaRecomendacoesRouteWithChildren
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
@@ -548,6 +621,7 @@ export interface FileRoutesById {
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
   '/app/google-ads/': typeof AppGoogleAdsIndexRoute
   '/app/ia/': typeof AppIaIndexRoute
+  '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
@@ -558,6 +632,9 @@ export interface FileRoutesById {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
+  '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
+  '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
@@ -579,6 +656,7 @@ export interface FileRouteTypes {
     | '/app/google-ads'
     | '/app/ia'
     | '/app/integracoes'
+    | '/app/inteligencia'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -598,6 +676,9 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/inteligencia/evidencias'
+    | '/app/inteligencia/playbooks'
+    | '/app/inteligencia/recomendacoes'
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
@@ -613,6 +694,7 @@ export interface FileRouteTypes {
     | '/app/financeiro/'
     | '/app/google-ads/'
     | '/app/ia/'
+    | '/app/inteligencia/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/sigma/'
@@ -623,6 +705,9 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/inteligencia/evidencias/$id'
+    | '/app/inteligencia/playbooks/$id'
+    | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -651,6 +736,9 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/inteligencia/evidencias'
+    | '/app/inteligencia/playbooks'
+    | '/app/inteligencia/recomendacoes'
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
@@ -666,6 +754,7 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/google-ads'
     | '/app/ia'
+    | '/app/inteligencia'
     | '/app/leads'
     | '/app/meta-ads'
     | '/app/sigma'
@@ -676,6 +765,9 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/inteligencia/evidencias/$id'
+    | '/app/inteligencia/playbooks/$id'
+    | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -695,6 +787,7 @@ export interface FileRouteTypes {
     | '/app/google-ads'
     | '/app/ia'
     | '/app/integracoes'
+    | '/app/inteligencia'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -714,6 +807,9 @@ export interface FileRouteTypes {
     | '/app/google-ads/tracking'
     | '/app/ia/copiloto'
     | '/app/ia/qualificar'
+    | '/app/inteligencia/evidencias'
+    | '/app/inteligencia/playbooks'
+    | '/app/inteligencia/recomendacoes'
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
@@ -729,6 +825,7 @@ export interface FileRouteTypes {
     | '/app/financeiro/'
     | '/app/google-ads/'
     | '/app/ia/'
+    | '/app/inteligencia/'
     | '/app/leads/'
     | '/app/meta-ads/'
     | '/app/sigma/'
@@ -739,6 +836,9 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/inteligencia/evidencias/$id'
+    | '/app/inteligencia/playbooks/$id'
+    | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
@@ -850,6 +950,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMetaAdsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/inteligencia': {
+      id: '/app/inteligencia'
+      path: '/inteligencia'
+      fullPath: '/app/inteligencia'
+      preLoaderRoute: typeof AppInteligenciaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/integracoes': {
       id: '/app/integracoes'
       path: '/integracoes'
@@ -947,6 +1054,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/leads/'
       preLoaderRoute: typeof AppLeadsIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/inteligencia/': {
+      id: '/app/inteligencia/'
+      path: '/'
+      fullPath: '/app/inteligencia/'
+      preLoaderRoute: typeof AppInteligenciaIndexRouteImport
+      parentRoute: typeof AppInteligenciaRoute
     }
     '/app/ia/': {
       id: '/app/ia/'
@@ -1053,6 +1167,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLeadsAtribuicaoRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/inteligencia/recomendacoes': {
+      id: '/app/inteligencia/recomendacoes'
+      path: '/recomendacoes'
+      fullPath: '/app/inteligencia/recomendacoes'
+      preLoaderRoute: typeof AppInteligenciaRecomendacoesRouteImport
+      parentRoute: typeof AppInteligenciaRoute
+    }
+    '/app/inteligencia/playbooks': {
+      id: '/app/inteligencia/playbooks'
+      path: '/playbooks'
+      fullPath: '/app/inteligencia/playbooks'
+      preLoaderRoute: typeof AppInteligenciaPlaybooksRouteImport
+      parentRoute: typeof AppInteligenciaRoute
+    }
+    '/app/inteligencia/evidencias': {
+      id: '/app/inteligencia/evidencias'
+      path: '/evidencias'
+      fullPath: '/app/inteligencia/evidencias'
+      preLoaderRoute: typeof AppInteligenciaEvidenciasRouteImport
+      parentRoute: typeof AppInteligenciaRoute
+    }
     '/app/ia/qualificar': {
       id: '/app/ia/qualificar'
       path: '/qualificar'
@@ -1136,6 +1271,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/health'
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/inteligencia/recomendacoes/$id': {
+      id: '/app/inteligencia/recomendacoes/$id'
+      path: '/$id'
+      fullPath: '/app/inteligencia/recomendacoes/$id'
+      preLoaderRoute: typeof AppInteligenciaRecomendacoesIdRouteImport
+      parentRoute: typeof AppInteligenciaRecomendacoesRoute
+    }
+    '/app/inteligencia/playbooks/$id': {
+      id: '/app/inteligencia/playbooks/$id'
+      path: '/$id'
+      fullPath: '/app/inteligencia/playbooks/$id'
+      preLoaderRoute: typeof AppInteligenciaPlaybooksIdRouteImport
+      parentRoute: typeof AppInteligenciaPlaybooksRoute
+    }
+    '/app/inteligencia/evidencias/$id': {
+      id: '/app/inteligencia/evidencias/$id'
+      path: '/$id'
+      fullPath: '/app/inteligencia/evidencias/$id'
+      preLoaderRoute: typeof AppInteligenciaEvidenciasIdRouteImport
+      parentRoute: typeof AppInteligenciaEvidenciasRoute
     }
     '/api/public/webhooks/stripe': {
       id: '/api/public/webhooks/stripe'
@@ -1270,6 +1426,67 @@ const AppIaRouteChildren: AppIaRouteChildren = {
 
 const AppIaRouteWithChildren = AppIaRoute._addFileChildren(AppIaRouteChildren)
 
+interface AppInteligenciaEvidenciasRouteChildren {
+  AppInteligenciaEvidenciasIdRoute: typeof AppInteligenciaEvidenciasIdRoute
+}
+
+const AppInteligenciaEvidenciasRouteChildren: AppInteligenciaEvidenciasRouteChildren =
+  {
+    AppInteligenciaEvidenciasIdRoute: AppInteligenciaEvidenciasIdRoute,
+  }
+
+const AppInteligenciaEvidenciasRouteWithChildren =
+  AppInteligenciaEvidenciasRoute._addFileChildren(
+    AppInteligenciaEvidenciasRouteChildren,
+  )
+
+interface AppInteligenciaPlaybooksRouteChildren {
+  AppInteligenciaPlaybooksIdRoute: typeof AppInteligenciaPlaybooksIdRoute
+}
+
+const AppInteligenciaPlaybooksRouteChildren: AppInteligenciaPlaybooksRouteChildren =
+  {
+    AppInteligenciaPlaybooksIdRoute: AppInteligenciaPlaybooksIdRoute,
+  }
+
+const AppInteligenciaPlaybooksRouteWithChildren =
+  AppInteligenciaPlaybooksRoute._addFileChildren(
+    AppInteligenciaPlaybooksRouteChildren,
+  )
+
+interface AppInteligenciaRecomendacoesRouteChildren {
+  AppInteligenciaRecomendacoesIdRoute: typeof AppInteligenciaRecomendacoesIdRoute
+}
+
+const AppInteligenciaRecomendacoesRouteChildren: AppInteligenciaRecomendacoesRouteChildren =
+  {
+    AppInteligenciaRecomendacoesIdRoute: AppInteligenciaRecomendacoesIdRoute,
+  }
+
+const AppInteligenciaRecomendacoesRouteWithChildren =
+  AppInteligenciaRecomendacoesRoute._addFileChildren(
+    AppInteligenciaRecomendacoesRouteChildren,
+  )
+
+interface AppInteligenciaRouteChildren {
+  AppInteligenciaEvidenciasRoute: typeof AppInteligenciaEvidenciasRouteWithChildren
+  AppInteligenciaPlaybooksRoute: typeof AppInteligenciaPlaybooksRouteWithChildren
+  AppInteligenciaRecomendacoesRoute: typeof AppInteligenciaRecomendacoesRouteWithChildren
+  AppInteligenciaIndexRoute: typeof AppInteligenciaIndexRoute
+}
+
+const AppInteligenciaRouteChildren: AppInteligenciaRouteChildren = {
+  AppInteligenciaEvidenciasRoute: AppInteligenciaEvidenciasRouteWithChildren,
+  AppInteligenciaPlaybooksRoute: AppInteligenciaPlaybooksRouteWithChildren,
+  AppInteligenciaRecomendacoesRoute:
+    AppInteligenciaRecomendacoesRouteWithChildren,
+  AppInteligenciaIndexRoute: AppInteligenciaIndexRoute,
+}
+
+const AppInteligenciaRouteWithChildren = AppInteligenciaRoute._addFileChildren(
+  AppInteligenciaRouteChildren,
+)
+
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
@@ -1342,6 +1559,7 @@ interface AppRouteChildren {
   AppGoogleAdsRoute: typeof AppGoogleAdsRouteWithChildren
   AppIaRoute: typeof AppIaRouteWithChildren
   AppIntegracoesRoute: typeof AppIntegracoesRoute
+  AppInteligenciaRoute: typeof AppInteligenciaRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppOrganizacaoRoute: typeof AppOrganizacaoRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -1365,6 +1583,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppGoogleAdsRoute: AppGoogleAdsRouteWithChildren,
   AppIaRoute: AppIaRouteWithChildren,
   AppIntegracoesRoute: AppIntegracoesRoute,
+  AppInteligenciaRoute: AppInteligenciaRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppOrganizacaoRoute: AppOrganizacaoRoute,
   AppSettingsRoute: AppSettingsRoute,
