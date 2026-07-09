@@ -4,11 +4,11 @@ import { MarketingWorkflowRunner } from "@/lib/ai/experts/marketing-workflow";
 import { createInMemoryExpertRepositories } from "@/lib/ai/persistence/experts";
 import type { ExpertRunInput } from "@/lib/ai/experts/types";
 
-function input(): ExpertRunInput & { agent: "chat"; plan: "starter"; role: "owner"; taskId: string } {
+function input() {
   return {
     organizationId: "org_wf",
     focus: "diagnostic",
-    agent: "chat",
+    agent: "campaign_analyst" as const,
     plan: "starter",
     role: "owner",
     taskId: "task_wf_1",

@@ -15,11 +15,14 @@ const ListInput = z.object({
   limit: z.number().int().min(1).max(200).optional(),
 });
 
-async function resolveOrgId(supabase: Awaited<ReturnType<typeof requireSupabaseAuth>>["context"]["supabase"], userId: string): Promise<string> {
+async function resolveOrgId(
+  supabase: { from: (t: string) => { select: (c: string) => { eq: (col: string, v: string) => { maybeSingle: () => Promise<{ data: { organization_id: string } | null; error: unknown }> } } } },
+  userId: string,
+): Promise<string> {
   const { data, error } = await supabase.from("profiles").select("organization_id")
     .eq("id", userId).maybeSingle();
   if (error || !data?.organization_id) throw new Error("No organization for current user");
-  return data.organization_id as string;
+  return data.organization_id;
 }
 
 export const listRecommendations = createServerFn({ method: "POST" })
