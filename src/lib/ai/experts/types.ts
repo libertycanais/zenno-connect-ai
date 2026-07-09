@@ -5,7 +5,7 @@ import type { Playbook } from "../playbooks";
 import type { Recommendation } from "../recommendation";
 import type { KpiResult } from "@/lib/business/types";
 
-export type ExpertId = "marketing" | "sales" | "finance" | "executive" | "seo" | "growth" | "cro" | "crm";
+export type ExpertId = "marketing" | "sales" | "finance" | "executive" | "seo" | "growth" | "cro" | "crm" | "customer-success";
 
 export type ExpertConfidenceRule = {
   minSources: number;
