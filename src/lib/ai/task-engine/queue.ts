@@ -122,7 +122,7 @@ export class InMemoryTaskQueue {
     } catch (err) {
       const aborted = t.controller.signal.aborted;
       const isTimeout = aborted && String((t.controller.signal as unknown as { reason?: unknown }).reason ?? "").includes("task_timeout");
-      if (t.status === "cancelled") return snapshot(t);
+      if ((t.status as QueueTaskStatus) === "cancelled") return snapshot(t);
       if (isTimeout) {
         t.status = "timeout";
         t.errorCode = "timeout";
