@@ -1,16 +1,13 @@
-# Project Memory — Zenno SaaS
+# Project Memory
 
 ## Core
-Zenno é SaaS multi-tenant B2B (agências + WhatsApp traffic). Desenvolvido no Lovable, mas **sem lock-in** — deploy deve rodar em Docker/Coolify/Railway/Render/Fly/AWS/GCP/DO/Cloudflare.
-Nunca hardcode URLs, chaves, tokens, endpoints — sempre `process.env` (server) ou `import.meta.env.VITE_*` (client).
-Postgres puro + migrations versionadas em `supabase/migrations/`. RLS obrigatório em 100% das tabelas públicas. Multi-tenant por `organization_id`.
-Segredos apenas no backend. Server functions autenticadas via `requireSupabaseAuth`. Rotas `/api/public/*` sempre com validação (HMAC/signature + Zod).
-Toda integração externa (Meta, Google, WhatsApp, pagamentos, IA) atrás de camada de abstração — trocar fornecedor sem reescrever consumers.
-**REGRA REFORÇADA:** Nenhum módulo novo pode depender diretamente de fornecedor externo (Uazapi, Lovable AI, gateway específico, até Supabase). Consumer sempre importa a interface/provider layer, nunca o SDK/cliente do provider.
-Nunca editar arquivos auto-gerados: `src/integrations/supabase/{client,client.server,auth-middleware,auth-attacher,types}.ts`, `src/routeTree.gen.ts`, `.env` Supabase vars, `supabase/config.toml`.
-Antes de criar feature nova: validar se respeita independência de infra, env-vars, RLS, camada de abstração, e observabilidade estruturada.
+Zenno AI Suite está em **Product Evolution mode** (pós ENGINEERING PHASE COMPLETED). Architecture Freeze v1.0 vigente.
+Não criar Sprints genéricas, não alterar ADRs/RLS/Provider Layer/contratos públicos sem pedido explícito. Toda demanda = FEATURE aditiva.
+Não criar documentação redundante. Manter 313/313 testes e `tsgo --noEmit` limpos.
+Baseline oficial: Architecture Freeze v1.0, Engineering Final Report, ADRs, Engineering Handbook, Project/Production Readiness, Observability, Performance Audit.
 
 ## Memories
-- [Arquitetura de deploy independente](mem://architecture/deploy-independence) — Regras completas de portabilidade, infra, segurança, observabilidade e integrações
-- [Segurança operacional](mem://architecture/security) — audit_log append-only + partições, global_rate_limit_hit, SECURITY DEFINER com search_path fixo
-- [Provider Layer](mem://architecture/provider-layer) — camada de abstração Ads/WhatsApp/Payments/AI. Domínio nunca importa SDK direto
+- [Project mode](mem://project-mode) — Product Evolution rules, frozen baseline, feature-based workflow
+- [Deploy independence](mem://architecture/deploy-independence)
+- [Provider Layer](mem://architecture/provider-layer)
+- [Security](mem://architecture/security)
