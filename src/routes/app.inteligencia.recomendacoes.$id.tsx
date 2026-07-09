@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +20,7 @@ function fmtBRL(cents: number) {
 
 function RecommendationDetails() {
   const { id } = Route.useParams();
-  const navigate = useNavigate();
+  
   const qc = useQueryClient();
   const fetchRecs = useServerFn(listRecommendations);
   const fetchPbs = useServerFn(listPlaybooks);
