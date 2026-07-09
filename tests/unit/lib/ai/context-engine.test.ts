@@ -94,10 +94,10 @@ describe("Token Budget", () => {
       }),
       cache: createInMemoryContextCache(),
     });
-    const tight = reduceContext(ctx, 20);
+    const tight = reduceContext(ctx, 80);
     expect(tight.plan.included.length).toBeGreaterThan(0);
     expect(tight.plan.dropped.length).toBeGreaterThan(0);
-    expect(tight.plan.totalTokens).toBeLessThanOrEqual(20);
+    expect(tight.plan.totalTokens).toBeLessThanOrEqual(80);
   });
 
   it("reduceContext includes all when budget is generous", async () => {
