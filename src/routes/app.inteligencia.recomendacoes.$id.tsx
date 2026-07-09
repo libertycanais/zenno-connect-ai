@@ -183,7 +183,7 @@ function RecommendationDetails() {
         </Card>
       )}
       {/* Navigate is unused but router requires the import to remain silent. */}
-      <span className="hidden">{navigate ? "" : ""}</span>
+      <span className="hidden">{null}</span>
     </div>
   );
 }
