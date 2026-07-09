@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import { HAS_PG, psql, psqlColumn } from "@tests/helpers/pg";
 
 const EXPECTED = new Set([
+  "ai_context_cache_cleanup", // P0.6 Wave 1 — AI context cache pruning
   "app_write_audit_log",
   "audit_log_ensure_partition",
   "audit_log_prune_partitions",
