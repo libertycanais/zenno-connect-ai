@@ -35,7 +35,7 @@ describe("MockProviderAdapter", () => {
 
   it("emits tool_call event on scripted toolCall", async () => {
     const a = new MockProviderAdapter({
-      scripts: [{ kind: "toolCall", call: { id: "t1", name: "search", args: { q: "x" } } }],
+      scripts: [{ kind: "toolCall", call: { id: "t1", name: "search", arguments: { q: "x" } } }],
     });
     const events: string[] = [];
     for await (const ev of a.stream(req())) events.push(ev.kind);

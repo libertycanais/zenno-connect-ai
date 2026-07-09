@@ -99,7 +99,7 @@ export class MockProviderAdapter implements AIProviderAdapter {
       yield { kind: "delta", text: text.slice(i, i + 8) };
     }
     if (script.kind === "toolCall") {
-      yield { kind: "tool_call", id: script.call.id, name: script.call.name, args: script.call.args };
+      yield { kind: "tool_call", id: script.call.id, name: script.call.name, args: script.call.arguments };
     }
     const tokensIn = this.estimateTokens(req.userPrompt);
     const tokensOut = this.estimateTokens(text);
