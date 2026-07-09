@@ -94,7 +94,7 @@ describe.skipIf(!HAS_PG)("WS-7 — migrations", () => {
          join pg_enum e on e.enumtypid = t.oid
         where t.typname='app_role' order by e.enumsortorder`,
     ).map((r) => r[0]);
-    expect(rows).toEqual(["owner", "admin", "manager", "agent"]);
+    expect(rows).toEqual(["owner", "admin", "manager", "agent", "analyst", "viewer"]);
   });
 
   it("audit_log has month partitions covering current + next 6 months", () => {
