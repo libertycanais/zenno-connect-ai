@@ -36,7 +36,7 @@ export function buildEvidence(input: EvidenceBuilderInput): EvidenceBundle {
   for (const k of input.kpis ?? []) {
     sources.push({ kind: "kpi", kpi: k.kpi, value: k.value, unit: k.unit, formula: k.formula });
   }
-  for (const r of input.ruleIds ?? []) sources.push({ kind: "knowledge_rule", ...r });
+  for (const r of input.ruleIds ?? []) sources.push({ kind: "knowledge_rule", ruleId: r.id, domain: r.domain, version: r.version });
   for (const b of input.benchmarks ?? []) sources.push({ kind: "benchmark", ...b });
   for (const s of input.snapshots ?? []) sources.push({ kind: "context_snapshot", ...s });
   for (const d of input.raw ?? []) sources.push({ kind: "raw_data", ...d });
