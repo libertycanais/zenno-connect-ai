@@ -10,7 +10,7 @@ const DEFAULT_RULES: FeatureFlagRule[] = [
   { key: "enableRecommendation", enabled: true },
   { key: "enableWorkflow", enabled: true },
   { key: "enableStreaming", enabled: true },
-  { key: "enableConsensus", enabled: false, environments: ["development", "staging"] },
+  { key: "enableConsensus", enabled: true, environments: ["development", "staging"] },
   { key: "enableArtifacts", enabled: true },
   { key: "enableForecast", enabled: true, plans: ["starter", "pro", "enterprise"] },
   { key: "enableReasoning", enabled: true, plans: ["pro", "enterprise"] },
