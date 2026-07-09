@@ -1,0 +1,23 @@
+// Business · Facade única
+export * from "./types";
+export { cac } from "./cac";
+export { ltv } from "./ltv";
+export { roi } from "./roi";
+export { roas } from "./roas";
+export { cpa } from "./cpa";
+export { ctr } from "./ctr";
+export { cpm } from "./cpm";
+export { cpc } from "./cpc";
+export { mrr } from "./mrr";
+export { arr } from "./arr";
+export { arpu } from "./arpu";
+export { payback } from "./payback";
+export { burn } from "./burn";
+export { runway } from "./runway";
+export { retention } from "./retention";
+export { churn } from "./churn";
+export { ticket } from "./ticket";
+export { pipeline } from "./pipeline";
+export { healthScore } from "./health-score";
+export * from "./scoring";
+export * from "./benchmarks";
