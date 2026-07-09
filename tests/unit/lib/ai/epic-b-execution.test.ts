@@ -26,7 +26,7 @@ function makeWorkflow(): Workflow {
         status: "pending", requiredCapabilities: [] },
     ],
     createdAt: new Date().toISOString(),
-    version: 1, status: "ready",
+    version: "1.0.0", status: "ready",
   };
 }
 
