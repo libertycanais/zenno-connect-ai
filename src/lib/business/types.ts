@@ -9,7 +9,7 @@ export type KpiWarning = {
   message: string;
 };
 
-export type KpiResult<TInputs extends Record<string, number> = Record<string, number>> = {
+export type KpiResult<TInputs = Record<string, number>> = {
   kpi: string;                  // canonical id (cac, ltv, roas...)
   value: number | null;         // null when computation is not possible
   unit: "currency_cents" | "ratio" | "percent" | "days" | "months" | "count" | "score";
