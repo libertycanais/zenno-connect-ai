@@ -28,9 +28,9 @@ export function createInMemoryContextCache(now: () => number = Date.now): Contex
       }
       return hit.value as T;
     },
-    set<T>(orgId, module, value, ttlSeconds) {
+    set<T>(orgId: string, module: ContextModuleName, value: T, ttlSeconds: number) {
       const ttl = Math.max(1, Math.min(ttlSeconds, 86_400));
-      store.set(key(orgId, module), { value, expiresAt: now() + ttl * 1000 });
+      store.set(key(orgId, module), { value: value as unknown, expiresAt: now() + ttl * 1000 });
     },
     invalidate(orgId, module) {
       if (module) {

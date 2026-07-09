@@ -33,7 +33,7 @@ export function serializeSlice(name: ContextModuleName, slice: unknown): string 
 
 /** Truncate arrays inside a slice to at most `max` entries. */
 export function truncateLists<T extends object>(slice: T, max: number): T {
-  const out: Record<string, unknown> = { ...slice };
+  const out: Record<string, unknown> = { ...(slice as Record<string, unknown>) };
   for (const [k, v] of Object.entries(out)) {
     if (Array.isArray(v) && v.length > max) out[k] = v.slice(0, max);
   }
