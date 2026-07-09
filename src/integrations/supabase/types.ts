@@ -49,6 +49,118 @@ export type Database = {
           },
         ]
       }
+      ai_context_cache: {
+        Row: {
+          cache_key: string
+          created_at: string
+          expires_at: string
+          hit_count: number
+          id: string
+          organization_id: string
+          payload: Json
+          scope: string
+          ttl_seconds: number
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          created_at?: string
+          expires_at: string
+          hit_count?: number
+          id?: string
+          organization_id: string
+          payload: Json
+          scope?: string
+          ttl_seconds?: number
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          created_at?: string
+          expires_at?: string
+          hit_count?: number
+          id?: string
+          organization_id?: string
+          payload?: Json
+          scope?: string
+          ttl_seconds?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_context_cache_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_conversations: {
+        Row: {
+          agent: string | null
+          created_at: string
+          id: string
+          last_message_at: string | null
+          message_count: number
+          metadata: Json
+          model: string | null
+          organization_id: string
+          provider: string | null
+          status: string
+          task_count: number
+          title: string
+          total_cost_cents: number
+          total_tokens: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          message_count?: number
+          metadata?: Json
+          model?: string | null
+          organization_id: string
+          provider?: string | null
+          status?: string
+          task_count?: number
+          title?: string
+          total_cost_cents?: number
+          total_tokens?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          message_count?: number
+          metadata?: Json
+          model?: string | null
+          organization_id?: string
+          provider?: string | null
+          status?: string
+          task_count?: number
+          title?: string
+          total_cost_cents?: number
+          total_tokens?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_copilot_conversations: {
         Row: {
           active_client_account_id: string | null
@@ -212,6 +324,267 @@ export type Database = {
             columns: ["message_id"]
             isOneToOne: false
             referencedRelation: "ai_copilot_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_memory: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_pinned: boolean
+          key: string
+          organization_id: string
+          scope: string
+          source: string | null
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_pinned?: boolean
+          key: string
+          organization_id: string
+          scope: string
+          source?: string | null
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_pinned?: boolean
+          key?: string
+          organization_id?: string
+          scope?: string
+          source?: string | null
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_memory_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json
+          organization_id: string
+          role: string
+          task_id: string | null
+          tokens_in: number
+          tokens_out: number
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          organization_id: string
+          role: string
+          task_id?: string | null
+          tokens_in?: number
+          tokens_out?: number
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          role?: string
+          task_id?: string | null
+          tokens_in?: number
+          tokens_out?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_messages_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_provider_credentials: {
+        Row: {
+          api_key_ciphertext: string
+          api_key_fingerprint: string
+          api_key_last4: string
+          api_key_nonce: string
+          created_at: string
+          created_by: string | null
+          default_model: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          last_used_at: string | null
+          max_tokens: number
+          organization_id: string
+          provider: string
+          temperature: number
+          timeout_ms: number
+          updated_at: string
+        }
+        Insert: {
+          api_key_ciphertext: string
+          api_key_fingerprint: string
+          api_key_last4: string
+          api_key_nonce: string
+          created_at?: string
+          created_by?: string | null
+          default_model?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_used_at?: string | null
+          max_tokens?: number
+          organization_id: string
+          provider: string
+          temperature?: number
+          timeout_ms?: number
+          updated_at?: string
+        }
+        Update: {
+          api_key_ciphertext?: string
+          api_key_fingerprint?: string
+          api_key_last4?: string
+          api_key_nonce?: string
+          created_at?: string
+          created_by?: string | null
+          default_model?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_used_at?: string | null
+          max_tokens?: number
+          organization_id?: string
+          provider?: string
+          temperature?: number
+          timeout_ms?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_provider_credentials_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_usage: {
+        Row: {
+          conversation_id: string | null
+          cost_cents: number
+          created_at: string
+          error_code: string | null
+          id: string
+          latency_ms: number
+          model: string
+          organization_id: string
+          provider: string
+          request_id: string | null
+          status: string
+          task_id: string | null
+          tokens_in: number
+          tokens_out: number
+          trace_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          conversation_id?: string | null
+          cost_cents?: number
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          latency_ms?: number
+          model: string
+          organization_id: string
+          provider: string
+          request_id?: string | null
+          status: string
+          task_id?: string | null
+          tokens_in?: number
+          tokens_out?: number
+          trace_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          conversation_id?: string | null
+          cost_cents?: number
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          latency_ms?: number
+          model?: string
+          organization_id?: string
+          provider?: string
+          request_id?: string | null
+          status?: string
+          task_id?: string | null
+          tokens_in?: number
+          tokens_out?: number
+          trace_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_usage_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_usage_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_usage_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
             referencedColumns: ["id"]
           },
         ]
@@ -2289,6 +2662,112 @@ export type Database = {
           },
         ]
       }
+      tasks: {
+        Row: {
+          category: string | null
+          context: Json
+          conversation_id: string | null
+          created_at: string
+          duration_ms: number | null
+          error_code: string | null
+          error_message: string | null
+          estimated_cost_cents: number
+          finished_at: string | null
+          id: string
+          metadata: Json
+          model: string | null
+          organization_id: string
+          parent_task_id: string | null
+          payload: Json
+          priority: number
+          provider: string | null
+          result: Json | null
+          started_at: string | null
+          status: string
+          tokens_in: number
+          tokens_out: number
+          type: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          context?: Json
+          conversation_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          error_message?: string | null
+          estimated_cost_cents?: number
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          model?: string | null
+          organization_id: string
+          parent_task_id?: string | null
+          payload?: Json
+          priority?: number
+          provider?: string | null
+          result?: Json | null
+          started_at?: string | null
+          status?: string
+          tokens_in?: number
+          tokens_out?: number
+          type: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          context?: Json
+          conversation_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_code?: string | null
+          error_message?: string | null
+          estimated_cost_cents?: number
+          finished_at?: string | null
+          id?: string
+          metadata?: Json
+          model?: string | null
+          organization_id?: string
+          parent_task_id?: string | null
+          payload?: Json
+          priority?: number
+          provider?: string | null
+          result?: Json | null
+          started_at?: string | null
+          status?: string
+          tokens_in?: number
+          tokens_out?: number
+          type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_conversation_fk"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_parent_task_id_fkey"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ticket_messages: {
         Row: {
           attachments: Json | null
@@ -2987,9 +3466,71 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ai_provider_credentials_safe: {
+        Row: {
+          api_key_fingerprint: string | null
+          api_key_last4: string | null
+          created_at: string | null
+          created_by: string | null
+          default_model: string | null
+          id: string | null
+          is_active: boolean | null
+          label: string | null
+          last_used_at: string | null
+          max_tokens: number | null
+          organization_id: string | null
+          provider: string | null
+          temperature: number | null
+          timeout_ms: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          api_key_fingerprint?: string | null
+          api_key_last4?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          default_model?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          last_used_at?: string | null
+          max_tokens?: number | null
+          organization_id?: string | null
+          provider?: string | null
+          temperature?: number | null
+          timeout_ms?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          api_key_fingerprint?: string | null
+          api_key_last4?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          default_model?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          last_used_at?: string | null
+          max_tokens?: number | null
+          organization_id?: string | null
+          provider?: string | null
+          temperature?: number | null
+          timeout_ms?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_provider_credentials_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      ai_context_cache_cleanup: { Args: never; Returns: number }
       app_write_audit_log: {
         Args: {
           _action: string
