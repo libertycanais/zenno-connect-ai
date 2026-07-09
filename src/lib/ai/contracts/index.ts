@@ -106,3 +106,19 @@ export type {
 export type {
   Recommendation, RecommendationKind,
 } from "./recommendation";
+
+// ── EPIC B — Executor / Persistence / Analyzer ──────────────────────────────
+export type {
+  ExecutionEvent, ExecutionEventName, ExecutionResult, StepExecutionResult,
+  ExecutionBudget, ExecutionOptions, ExecutionContext, StepExecutor,
+} from "./executor";
+
+export type {
+  AnalyzerDomain, AnalyzerCapability, AnalyzerDescriptor,
+  AnalyzerRequest, AnalyzerOutput, DomainAnalyzer,
+} from "./analyzer";
+
+export type {
+  WorkflowStore, TimelineStoreAsync, DecisionGraphStore, ExecutionResultStore,
+  FeatureFlagStore, CapabilityMatrixStore,
+} from "./persistence";
