@@ -4,7 +4,8 @@
 //
 // Compatible with AbortSignal (aborts short-circuit retries).
 
-import { normalizeAIError, type NormalizedAIError } from "../errors";
+import { normalizeAIError } from "../errors";
+import type { NormalizedAIError } from "../types";
 
 export type RetryPolicy = {
   maxAttempts: number;         // total attempts including the first (>=1)
