@@ -19,6 +19,7 @@ import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppTicketsRouteImport } from './routes/app.tickets'
 import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppOrganizacaoRouteImport } from './routes/app.organizacao'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
 import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
@@ -117,6 +118,11 @@ const AppSigmaRoute = AppSigmaRouteImport.update({
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrganizacaoRoute = AppOrganizacaoRouteImport.update({
+  id: '/organizacao',
+  path: '/organizacao',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
+  '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
@@ -439,6 +446,7 @@ export interface FileRoutesByTo {
   '/app/assinatura': typeof AppAssinaturaRoute
   '/app/clientes': typeof AppClientesRoute
   '/app/integracoes': typeof AppIntegracoesRoute
+  '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -498,6 +506,7 @@ export interface FileRoutesById {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
+  '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
@@ -561,6 +570,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/meta-ads'
+    | '/app/organizacao'
     | '/app/settings'
     | '/app/sigma'
     | '/app/tickets'
@@ -615,6 +625,7 @@ export interface FileRouteTypes {
     | '/app/assinatura'
     | '/app/clientes'
     | '/app/integracoes'
+    | '/app/organizacao'
     | '/app/settings'
     | '/app'
     | '/api/public/health'
@@ -673,6 +684,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/meta-ads'
+    | '/app/organizacao'
     | '/app/settings'
     | '/app/sigma'
     | '/app/tickets'
@@ -810,6 +822,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/organizacao': {
+      id: '/app/organizacao'
+      path: '/organizacao'
+      fullPath: '/app/organizacao'
+      preLoaderRoute: typeof AppOrganizacaoRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/meta-ads': {
@@ -1304,6 +1323,7 @@ interface AppRouteChildren {
   AppIaRoute: typeof AppIaRouteWithChildren
   AppIntegracoesRoute: typeof AppIntegracoesRoute
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
+  AppOrganizacaoRoute: typeof AppOrganizacaoRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSigmaRoute: typeof AppSigmaRouteWithChildren
   AppTicketsRoute: typeof AppTicketsRouteWithChildren
@@ -1325,6 +1345,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIaRoute: AppIaRouteWithChildren,
   AppIntegracoesRoute: AppIntegracoesRoute,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
+  AppOrganizacaoRoute: AppOrganizacaoRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSigmaRoute: AppSigmaRouteWithChildren,
   AppTicketsRoute: AppTicketsRouteWithChildren,
