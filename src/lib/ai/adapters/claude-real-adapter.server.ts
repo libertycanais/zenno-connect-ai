@@ -64,15 +64,15 @@ export function buildClaudeInvoker(cred: ClaudeCredential): ClaudeInvoker {
         body: JSON.stringify(body),
       });
     } catch (err) {
-      metrics.increment("ai.provider.error", { provider: "anthropic", kind: "network" });
-      logger.error("claude.fetch_failed", { fingerprint: cred.fingerprint, err: String(err) });
+      incCounter("ai.provider.error", { provider: "anthropic", kind: "network" });
+      log.error("claude.fetch_failed", { fingerprint: cred.fingerprint, err: String(err) });
       throw err;
     }
     const latencyMs = Date.now() - started;
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      metrics.increment("ai.provider.error", { provider: "anthropic", kind: `http_${res.status}` });
-      logger.warn("claude.non_ok", { status: res.status, latencyMs, fingerprint: cred.fingerprint });
+      incCounter("ai.provider.error", { provider: "anthropic", kind: `http_${res.status}` });
+      log.warn("claude.non_ok", { status: res.status, latencyMs, fingerprint: cred.fingerprint });
       throw new Error(`anthropic_http_${res.status}: ${text.slice(0, 200)}`);
     }
     const json = (await res.json()) as {
@@ -85,9 +85,9 @@ export function buildClaudeInvoker(cred: ClaudeCredential): ClaudeInvoker {
       .map((c) => c.text as string).join("");
     const tokensIn = json.usage?.input_tokens ?? 0;
     const tokensOut = json.usage?.output_tokens ?? 0;
-    metrics.observe("ai.provider.latency_ms", latencyMs, { provider: "anthropic" });
-    metrics.increment("ai.provider.tokens_in", { provider: "anthropic" }, tokensIn);
-    metrics.increment("ai.provider.tokens_out", { provider: "anthropic" }, tokensOut);
+    observe("ai.provider.latency_ms", latencyMs, { provider: "anthropic" });
+    incCounter("ai.provider.tokens_in", { provider: "anthropic" }, tokensIn);
+    incCounter("ai.provider.tokens_out", { provider: "anthropic" }, tokensOut);
     return {
       text,
       toolCalls: [],
