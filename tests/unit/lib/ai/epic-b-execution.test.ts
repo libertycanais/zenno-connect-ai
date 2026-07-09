@@ -16,11 +16,11 @@ function makeWorkflow(): Workflow {
     workflowId: "wf_test", planId: "plan_1", organizationId: "org_1",
     fingerprint: "abc123def4567890",
     steps: [
-      { id: "s1", skill: "campaign_analysis", provider: "anthropic",
+      { id: "s1", name: "S1", skill: "campaign_analysis", provider: "anthropic",
         model: "claude-3-5-sonnet-latest", dependencies: [],
         estimatedCost: 5, estimatedLatency: 200, priority: 1,
         status: "ready", requiredCapabilities: [] },
-      { id: "s2", skill: "campaign_analysis", provider: "anthropic",
+      { id: "s2", name: "S2", skill: "campaign_analysis", provider: "anthropic",
         model: "claude-3-5-sonnet-latest", dependencies: ["s1"],
         estimatedCost: 5, estimatedLatency: 200, priority: 1,
         status: "pending", requiredCapabilities: [] },
@@ -121,7 +121,7 @@ describe("EPIC B · Scheduler", () => {
 describe("EPIC B · SkillRouter + Fallback", () => {
   it("router returns null when no capability matches", () => {
     const route = skillRouter.route({
-      step: { id: "s", skill: "unknown_skill", provider: null, model: null,
+      step: { id: "s", name: "S", skill: "unknown_skill", provider: null, model: null,
         dependencies: [], estimatedCost: 0, estimatedLatency: 0, priority: 1,
         status: "ready", requiredCapabilities: [] },
       agent: "campaign_analyst", plan: "pro", role: "admin",
