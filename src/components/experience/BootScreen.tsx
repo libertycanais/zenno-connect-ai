@@ -1,8 +1,8 @@
-// PX 1.0 — Boot Experience
+// PX 1.0 — Boot Experience · Refreshed for PX 1.2 Brand Identity
 // Cinematic post-login boot overlay. 100% client-side, no backend calls.
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import logo from "@/assets/zenno-logo.png";
+import { ZennoMark } from "@/components/brand/ZennoMark";
 
 const MODULES = [
   "Workspace", "CRM", "Executive AI", "Marketing AI", "Finance AI",
@@ -51,15 +51,19 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
         style={{ background: "radial-gradient(600px 400px at 50% 40%, oklch(0.72 0.18 235 / 0.35), transparent 65%)" }} />
 
       <div className="relative w-full max-w-md px-8 text-center">
-        <div className="mx-auto mb-6 relative">
-          <div className="absolute inset-0 rounded-full bg-primary/30 blur-2xl zenno-pulse-dot" aria-hidden />
-          <img src={logo} alt="Zenno" className="relative mx-auto h-20 w-auto drop-shadow-[0_0_28px_oklch(0.72_0.18_235/0.55)]" />
+        <div className="mx-auto mb-6 relative flex items-center justify-center">
+          <div className="absolute inset-0 mx-auto h-24 w-24 rounded-full bg-primary/25 blur-2xl zenno-pulse-dot" aria-hidden />
+          <ZennoMark className="relative h-24 w-24 drop-shadow-[0_0_28px_oklch(0.72_0.18_235/0.55)]" />
         </div>
 
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">ZENNO</h1>
-        <p className="mt-1 text-[11px] uppercase tracking-[0.28em] text-primary/80">
+        <h1 className="text-3xl font-semibold tracking-[0.28em] zenno-gradient-text">ZENNO</h1>
+        <p className="mt-1 text-[11px] uppercase tracking-[0.32em] text-primary/80">
           Enterprise Intelligence OS
         </p>
+        <p className="mt-1 text-[10px] uppercase tracking-[0.34em] text-muted-foreground/70">
+          Powered by Zenno AI
+        </p>
+
 
         {phase === "boot" && (
           <>
