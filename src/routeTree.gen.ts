@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppWorkspaceRouteImport } from './routes/app.workspace'
 import { Route as AppWhatsappRouteImport } from './routes/app.whatsapp'
 import { Route as AppTicketsRouteImport } from './routes/app.tickets'
 import { Route as AppSigmaRouteImport } from './routes/app.sigma'
@@ -31,6 +32,7 @@ import { Route as AppClientesRouteImport } from './routes/app.clientes'
 import { Route as AppAutomacoesRouteImport } from './routes/app.automacoes'
 import { Route as AppAssinaturaRouteImport } from './routes/app.assinatura'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
+import { Route as AppWorkspaceIndexRouteImport } from './routes/app.workspace.index'
 import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.index'
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
@@ -42,6 +44,12 @@ import { Route as AppGoogleAdsIndexRouteImport } from './routes/app.google-ads.i
 import { Route as AppFinanceiroIndexRouteImport } from './routes/app.financeiro.index'
 import { Route as AppAutomacoesIndexRouteImport } from './routes/app.automacoes.index'
 import { Route as AppAdminIndexRouteImport } from './routes/app.admin.index'
+import { Route as AppWorkspaceReportsRouteImport } from './routes/app.workspace.reports'
+import { Route as AppWorkspaceRecommendationsRouteImport } from './routes/app.workspace.recommendations'
+import { Route as AppWorkspaceMemoryRouteImport } from './routes/app.workspace.memory'
+import { Route as AppWorkspaceInsightsRouteImport } from './routes/app.workspace.insights'
+import { Route as AppWorkspaceDashboardRouteImport } from './routes/app.workspace.dashboard'
+import { Route as AppWorkspaceActionsRouteImport } from './routes/app.workspace.actions'
 import { Route as AppWhatsappChatRouteImport } from './routes/app.whatsapp.chat'
 import { Route as AppSigmaLogsRouteImport } from './routes/app.sigma.logs'
 import { Route as AppSigmaConsoleRouteImport } from './routes/app.sigma.console'
@@ -107,6 +115,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWorkspaceRoute = AppWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWhatsappRoute = AppWhatsappRouteImport.update({
@@ -189,6 +202,11 @@ const AppAdminRoute = AppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWorkspaceIndexRoute = AppWorkspaceIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppWorkspaceRoute,
+} as any)
 const AppWhatsappIndexRoute = AppWhatsappIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -243,6 +261,37 @@ const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppAdminRoute,
+} as any)
+const AppWorkspaceReportsRoute = AppWorkspaceReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppWorkspaceRoute,
+} as any)
+const AppWorkspaceRecommendationsRoute =
+  AppWorkspaceRecommendationsRouteImport.update({
+    id: '/recommendations',
+    path: '/recommendations',
+    getParentRoute: () => AppWorkspaceRoute,
+  } as any)
+const AppWorkspaceMemoryRoute = AppWorkspaceMemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => AppWorkspaceRoute,
+} as any)
+const AppWorkspaceInsightsRoute = AppWorkspaceInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => AppWorkspaceRoute,
+} as any)
+const AppWorkspaceDashboardRoute = AppWorkspaceDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppWorkspaceRoute,
+} as any)
+const AppWorkspaceActionsRoute = AppWorkspaceActionsRouteImport.update({
+  id: '/actions',
+  path: '/actions',
+  getParentRoute: () => AppWorkspaceRoute,
 } as any)
 const AppWhatsappChatRoute = AppWhatsappChatRouteImport.update({
   id: '/chat',
@@ -458,6 +507,7 @@ export interface FileRoutesByFullPath {
   '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
+  '/app/workspace': typeof AppWorkspaceRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/live': typeof ApiPublicLiveRoute
@@ -484,6 +534,12 @@ export interface FileRoutesByFullPath {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/workspace/actions': typeof AppWorkspaceActionsRoute
+  '/app/workspace/dashboard': typeof AppWorkspaceDashboardRoute
+  '/app/workspace/insights': typeof AppWorkspaceInsightsRoute
+  '/app/workspace/memory': typeof AppWorkspaceMemoryRoute
+  '/app/workspace/recommendations': typeof AppWorkspaceRecommendationsRoute
+  '/app/workspace/reports': typeof AppWorkspaceReportsRoute
   '/app/admin/': typeof AppAdminIndexRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
@@ -495,6 +551,7 @@ export interface FileRoutesByFullPath {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/app/workspace/': typeof AppWorkspaceIndexRoute
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
@@ -544,6 +601,12 @@ export interface FileRoutesByTo {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/workspace/actions': typeof AppWorkspaceActionsRoute
+  '/app/workspace/dashboard': typeof AppWorkspaceDashboardRoute
+  '/app/workspace/insights': typeof AppWorkspaceInsightsRoute
+  '/app/workspace/memory': typeof AppWorkspaceMemoryRoute
+  '/app/workspace/recommendations': typeof AppWorkspaceRecommendationsRoute
+  '/app/workspace/reports': typeof AppWorkspaceReportsRoute
   '/app/admin': typeof AppAdminIndexRoute
   '/app/automacoes': typeof AppAutomacoesIndexRoute
   '/app/financeiro': typeof AppFinanceiroIndexRoute
@@ -555,6 +618,7 @@ export interface FileRoutesByTo {
   '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
   '/app/whatsapp': typeof AppWhatsappIndexRoute
+  '/app/workspace': typeof AppWorkspaceIndexRoute
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
@@ -590,6 +654,7 @@ export interface FileRoutesById {
   '/app/sigma': typeof AppSigmaRouteWithChildren
   '/app/tickets': typeof AppTicketsRouteWithChildren
   '/app/whatsapp': typeof AppWhatsappRouteWithChildren
+  '/app/workspace': typeof AppWorkspaceRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/live': typeof ApiPublicLiveRoute
@@ -616,6 +681,12 @@ export interface FileRoutesById {
   '/app/sigma/console': typeof AppSigmaConsoleRoute
   '/app/sigma/logs': typeof AppSigmaLogsRoute
   '/app/whatsapp/chat': typeof AppWhatsappChatRoute
+  '/app/workspace/actions': typeof AppWorkspaceActionsRoute
+  '/app/workspace/dashboard': typeof AppWorkspaceDashboardRoute
+  '/app/workspace/insights': typeof AppWorkspaceInsightsRoute
+  '/app/workspace/memory': typeof AppWorkspaceMemoryRoute
+  '/app/workspace/recommendations': typeof AppWorkspaceRecommendationsRoute
+  '/app/workspace/reports': typeof AppWorkspaceReportsRoute
   '/app/admin/': typeof AppAdminIndexRoute
   '/app/automacoes/': typeof AppAutomacoesIndexRoute
   '/app/financeiro/': typeof AppFinanceiroIndexRoute
@@ -627,6 +698,7 @@ export interface FileRoutesById {
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
   '/app/whatsapp/': typeof AppWhatsappIndexRoute
+  '/app/workspace/': typeof AppWorkspaceIndexRoute
   '/api/public/track/event': typeof ApiPublicTrackEventRoute
   '/api/public/track/script.js': typeof ApiPublicTrackScriptDotjsRoute
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
@@ -663,6 +735,7 @@ export interface FileRouteTypes {
     | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
+    | '/app/workspace'
     | '/app/'
     | '/api/public/health'
     | '/api/public/live'
@@ -689,6 +762,12 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/workspace/actions'
+    | '/app/workspace/dashboard'
+    | '/app/workspace/insights'
+    | '/app/workspace/memory'
+    | '/app/workspace/recommendations'
+    | '/app/workspace/reports'
     | '/app/admin/'
     | '/app/automacoes/'
     | '/app/financeiro/'
@@ -700,6 +779,7 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/app/workspace/'
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
@@ -749,6 +829,12 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/workspace/actions'
+    | '/app/workspace/dashboard'
+    | '/app/workspace/insights'
+    | '/app/workspace/memory'
+    | '/app/workspace/recommendations'
+    | '/app/workspace/reports'
     | '/app/admin'
     | '/app/automacoes'
     | '/app/financeiro'
@@ -760,6 +846,7 @@ export interface FileRouteTypes {
     | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
+    | '/app/workspace'
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
@@ -794,6 +881,7 @@ export interface FileRouteTypes {
     | '/app/sigma'
     | '/app/tickets'
     | '/app/whatsapp'
+    | '/app/workspace'
     | '/app/'
     | '/api/public/health'
     | '/api/public/live'
@@ -820,6 +908,12 @@ export interface FileRouteTypes {
     | '/app/sigma/console'
     | '/app/sigma/logs'
     | '/app/whatsapp/chat'
+    | '/app/workspace/actions'
+    | '/app/workspace/dashboard'
+    | '/app/workspace/insights'
+    | '/app/workspace/memory'
+    | '/app/workspace/recommendations'
+    | '/app/workspace/reports'
     | '/app/admin/'
     | '/app/automacoes/'
     | '/app/financeiro/'
@@ -831,6 +925,7 @@ export interface FileRouteTypes {
     | '/app/sigma/'
     | '/app/tickets/'
     | '/app/whatsapp/'
+    | '/app/workspace/'
     | '/api/public/track/event'
     | '/api/public/track/script.js'
     | '/api/public/track/wa-link'
@@ -906,6 +1001,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/workspace': {
+      id: '/app/workspace'
+      path: '/workspace'
+      fullPath: '/app/workspace'
+      preLoaderRoute: typeof AppWorkspaceRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/whatsapp': {
@@ -1020,6 +1122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/workspace/': {
+      id: '/app/workspace/'
+      path: '/'
+      fullPath: '/app/workspace/'
+      preLoaderRoute: typeof AppWorkspaceIndexRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
     '/app/whatsapp/': {
       id: '/app/whatsapp/'
       path: '/'
@@ -1096,6 +1205,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/admin/'
       preLoaderRoute: typeof AppAdminIndexRouteImport
       parentRoute: typeof AppAdminRoute
+    }
+    '/app/workspace/reports': {
+      id: '/app/workspace/reports'
+      path: '/reports'
+      fullPath: '/app/workspace/reports'
+      preLoaderRoute: typeof AppWorkspaceReportsRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
+    '/app/workspace/recommendations': {
+      id: '/app/workspace/recommendations'
+      path: '/recommendations'
+      fullPath: '/app/workspace/recommendations'
+      preLoaderRoute: typeof AppWorkspaceRecommendationsRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
+    '/app/workspace/memory': {
+      id: '/app/workspace/memory'
+      path: '/memory'
+      fullPath: '/app/workspace/memory'
+      preLoaderRoute: typeof AppWorkspaceMemoryRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
+    '/app/workspace/insights': {
+      id: '/app/workspace/insights'
+      path: '/insights'
+      fullPath: '/app/workspace/insights'
+      preLoaderRoute: typeof AppWorkspaceInsightsRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
+    '/app/workspace/dashboard': {
+      id: '/app/workspace/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/workspace/dashboard'
+      preLoaderRoute: typeof AppWorkspaceDashboardRouteImport
+      parentRoute: typeof AppWorkspaceRoute
+    }
+    '/app/workspace/actions': {
+      id: '/app/workspace/actions'
+      path: '/actions'
+      fullPath: '/app/workspace/actions'
+      preLoaderRoute: typeof AppWorkspaceActionsRouteImport
+      parentRoute: typeof AppWorkspaceRoute
     }
     '/app/whatsapp/chat': {
       id: '/app/whatsapp/chat'
@@ -1549,6 +1700,30 @@ const AppWhatsappRouteWithChildren = AppWhatsappRoute._addFileChildren(
   AppWhatsappRouteChildren,
 )
 
+interface AppWorkspaceRouteChildren {
+  AppWorkspaceActionsRoute: typeof AppWorkspaceActionsRoute
+  AppWorkspaceDashboardRoute: typeof AppWorkspaceDashboardRoute
+  AppWorkspaceInsightsRoute: typeof AppWorkspaceInsightsRoute
+  AppWorkspaceMemoryRoute: typeof AppWorkspaceMemoryRoute
+  AppWorkspaceRecommendationsRoute: typeof AppWorkspaceRecommendationsRoute
+  AppWorkspaceReportsRoute: typeof AppWorkspaceReportsRoute
+  AppWorkspaceIndexRoute: typeof AppWorkspaceIndexRoute
+}
+
+const AppWorkspaceRouteChildren: AppWorkspaceRouteChildren = {
+  AppWorkspaceActionsRoute: AppWorkspaceActionsRoute,
+  AppWorkspaceDashboardRoute: AppWorkspaceDashboardRoute,
+  AppWorkspaceInsightsRoute: AppWorkspaceInsightsRoute,
+  AppWorkspaceMemoryRoute: AppWorkspaceMemoryRoute,
+  AppWorkspaceRecommendationsRoute: AppWorkspaceRecommendationsRoute,
+  AppWorkspaceReportsRoute: AppWorkspaceReportsRoute,
+  AppWorkspaceIndexRoute: AppWorkspaceIndexRoute,
+}
+
+const AppWorkspaceRouteWithChildren = AppWorkspaceRoute._addFileChildren(
+  AppWorkspaceRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssinaturaRoute: typeof AppAssinaturaRoute
@@ -1566,6 +1741,7 @@ interface AppRouteChildren {
   AppSigmaRoute: typeof AppSigmaRouteWithChildren
   AppTicketsRoute: typeof AppTicketsRouteWithChildren
   AppWhatsappRoute: typeof AppWhatsappRouteWithChildren
+  AppWorkspaceRoute: typeof AppWorkspaceRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppLeadsAtribuicaoRoute: typeof AppLeadsAtribuicaoRoute
   AppLeadsCobrancasRoute: typeof AppLeadsCobrancasRoute
@@ -1590,6 +1766,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSigmaRoute: AppSigmaRouteWithChildren,
   AppTicketsRoute: AppTicketsRouteWithChildren,
   AppWhatsappRoute: AppWhatsappRouteWithChildren,
+  AppWorkspaceRoute: AppWorkspaceRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppLeadsAtribuicaoRoute: AppLeadsAtribuicaoRoute,
   AppLeadsCobrancasRoute: AppLeadsCobrancasRoute,
