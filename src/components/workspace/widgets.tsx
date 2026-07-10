@@ -34,12 +34,13 @@ export function ExecutiveScoreWidget() {
         !q.data ? <WidgetEmpty /> :
         (() => {
           const b = q.data.billing;
+          const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
           return (
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <Stat label="MRR" value={money(b.mrrCents ?? 0)} />
-              <Stat label="Ativos" value={String(b.activeSubscriptions ?? 0)} />
-              <Stat label="Churn" value={`${((b.churnRate ?? 0) * 100).toFixed(1)}%`} />
-              <Stat label="ARR" value={money((b.mrrCents ?? 0) * 12)} />
+              <Stat label="MRR" value={brl(b.mrr)} />
+              <Stat label="Ativos" value={String(b.active)} />
+              <Stat label="Churn" value={`${(b.churnRate * 100).toFixed(1)}%`} />
+              <Stat label="ARR" value={brl(b.arr)} />
             </div>
           );
         })()

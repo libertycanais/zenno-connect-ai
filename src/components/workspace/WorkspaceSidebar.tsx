@@ -4,7 +4,9 @@ import {
   LayoutDashboard, FileBarChart, Lightbulb, Sparkles, Brain, PlayCircle, Layers,
 } from "lucide-react";
 
-const items = [
+type NavItem = { to: string; label: string; icon: typeof Layers; exact?: boolean };
+
+const items: readonly NavItem[] = [
   { to: "/app/workspace", label: "Visão Geral", icon: Layers, exact: true },
   { to: "/app/workspace/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app/workspace/reports", label: "Relatórios", icon: FileBarChart },
@@ -12,7 +14,7 @@ const items = [
   { to: "/app/workspace/insights", label: "Insights", icon: Sparkles },
   { to: "/app/workspace/memory", label: "Memória", icon: Brain },
   { to: "/app/workspace/actions", label: "Action Center", icon: PlayCircle },
-] as const;
+];
 
 export function WorkspaceSidebar() {
   const loc = useLocation();
@@ -26,9 +28,12 @@ export function WorkspaceSidebar() {
           ? loc.pathname === it.to
           : loc.pathname === it.to || loc.pathname.startsWith(`${it.to}/`);
         return (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const to = it.to as any;
+          return (
           <Link
             key={it.to}
-            to={it.to}
+            to={to}
             className={
               "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors " +
               (active
