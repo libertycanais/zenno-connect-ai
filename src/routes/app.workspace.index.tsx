@@ -32,6 +32,7 @@ function WorkspaceOverview() {
   const opps = q.data?.totals.open ?? 3;
   const roi = q.data?.financial.estimatedRoiCents ?? 1_843_000;
   const savings = Math.round(roi * 0.15);
+  const miSnapshot = getSnapshot(user?.id ?? "");
 
   return (
     <WorkspaceShell title="Command Center">
