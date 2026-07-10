@@ -3821,6 +3821,582 @@ export type Database = {
         }
         Relationships: []
       }
+      workspace_bookmarks: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          label: string | null
+          metadata: Json
+          organization_id: string
+          position: number
+          ref_id: string
+          ref_type: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          label?: string | null
+          metadata?: Json
+          organization_id: string
+          position?: number
+          ref_id: string
+          ref_type: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          label?: string | null
+          metadata?: Json
+          organization_id?: string
+          position?: number
+          ref_id?: string
+          ref_type?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_bookmarks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_dashboards: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_default: boolean
+          layout_id: string | null
+          metadata: Json
+          name: string
+          organization_id: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          layout_id?: string | null
+          metadata?: Json
+          name: string
+          organization_id: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          layout_id?: string | null
+          metadata?: Json
+          name?: string
+          organization_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_dashboards_layout_id_fkey"
+            columns: ["layout_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_layouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_dashboards_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_feature_flags: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          enabled: boolean
+          flag: string
+          id: string
+          metadata: Json
+          organization_id: string
+          rollout: number
+          scope: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+          widget: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          flag: string
+          id?: string
+          metadata?: Json
+          organization_id: string
+          rollout?: number
+          scope?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          widget: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          flag?: string
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          rollout?: number
+          scope?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          widget?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_feature_flags_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_layouts: {
+        Row: {
+          collapsed: Json
+          created_at: string
+          created_by: string | null
+          density: string | null
+          grid: Json
+          id: string
+          layout_version: number
+          metadata: Json
+          name: string
+          organization_id: string
+          positions: Json
+          sizes: Json
+          theme: string | null
+          updated_at: string
+          updated_by: string | null
+          version: number
+          visibility: Json
+          widgets: Json
+          workspace_id: string
+        }
+        Insert: {
+          collapsed?: Json
+          created_at?: string
+          created_by?: string | null
+          density?: string | null
+          grid?: Json
+          id?: string
+          layout_version?: number
+          metadata?: Json
+          name: string
+          organization_id: string
+          positions?: Json
+          sizes?: Json
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          visibility?: Json
+          widgets?: Json
+          workspace_id: string
+        }
+        Update: {
+          collapsed?: Json
+          created_at?: string
+          created_by?: string | null
+          density?: string | null
+          grid?: Json
+          id?: string
+          layout_version?: number
+          metadata?: Json
+          name?: string
+          organization_id?: string
+          positions?: Json
+          sizes?: Json
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          visibility?: Json
+          widgets?: Json
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_layouts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_preferences: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          density: string | null
+          id: string
+          metadata: Json
+          organization_id: string
+          preferences: Json
+          shortcuts: Json
+          sidebar: Json
+          theme: string | null
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          density?: string | null
+          id?: string
+          metadata?: Json
+          organization_id: string
+          preferences?: Json
+          shortcuts?: Json
+          sidebar?: Json
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          density?: string | null
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          preferences?: Json
+          shortcuts?: Json
+          sidebar?: Json
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_preferences_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_recent_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          item_ref: string
+          item_type: string
+          label: string | null
+          metadata: Json
+          organization_id: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+          version: number
+          visited_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_ref: string
+          item_type: string
+          label?: string | null
+          metadata?: Json
+          organization_id: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+          version?: number
+          visited_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_ref?: string
+          item_type?: string
+          label?: string | null
+          metadata?: Json
+          organization_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+          version?: number
+          visited_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_recent_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_share_tokens: {
+        Row: {
+          audience: string
+          created_at: string
+          created_by: string | null
+          expires_at: string
+          id: string
+          issued_at: string
+          metadata: Json
+          nonce: string
+          organization_id: string
+          revoked_at: string | null
+          snapshot_id: string | null
+          token_hash: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+          workspace_id: string
+        }
+        Insert: {
+          audience: string
+          created_at?: string
+          created_by?: string | null
+          expires_at: string
+          id?: string
+          issued_at?: string
+          metadata?: Json
+          nonce: string
+          organization_id: string
+          revoked_at?: string | null
+          snapshot_id?: string | null
+          token_hash: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id: string
+        }
+        Update: {
+          audience?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          metadata?: Json
+          nonce?: string
+          organization_id?: string
+          revoked_at?: string | null
+          snapshot_id?: string | null
+          token_hash?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_share_tokens_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_share_tokens_snapshot_id_fkey"
+            columns: ["snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_snapshots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_snapshots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          integrity_hash: string
+          metadata: Json
+          organization_id: string
+          origin: string
+          schema_version: number
+          snapshot: Json
+          updated_at: string
+          updated_by: string | null
+          version: number
+          workspace_id: string
+          workspace_version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          integrity_hash: string
+          metadata?: Json
+          organization_id: string
+          origin?: string
+          schema_version?: number
+          snapshot: Json
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id: string
+          workspace_version?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          integrity_hash?: string
+          metadata?: Json
+          organization_id?: string
+          origin?: string
+          schema_version?: number
+          snapshot?: Json
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          workspace_id?: string
+          workspace_version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_snapshots_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_widgets: {
+        Row: {
+          collapsed: boolean
+          created_at: string
+          created_by: string | null
+          id: string
+          instance_id: string
+          layout_id: string | null
+          manifest_id: string
+          manifest_version: string
+          metadata: Json
+          organization_id: string
+          position: number
+          props: Json
+          size: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+          visible: boolean
+          workspace_id: string
+        }
+        Insert: {
+          collapsed?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          instance_id: string
+          layout_id?: string | null
+          manifest_id: string
+          manifest_version: string
+          metadata?: Json
+          organization_id: string
+          position?: number
+          props?: Json
+          size?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          visible?: boolean
+          workspace_id: string
+        }
+        Update: {
+          collapsed?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          instance_id?: string
+          layout_id?: string | null
+          manifest_id?: string
+          manifest_version?: string
+          metadata?: Json
+          organization_id?: string
+          position?: number
+          props?: Json
+          size?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+          visible?: boolean
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_widgets_layout_id_fkey"
+            columns: ["layout_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_layouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_widgets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       ai_provider_credentials_safe: {
