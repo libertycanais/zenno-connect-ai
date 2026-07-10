@@ -63,4 +63,3 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
     </div>
   );
 }
-}
