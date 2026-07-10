@@ -22,6 +22,7 @@ import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppOrganizacaoRouteImport } from './routes/app.organizacao'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppMarketingRouteImport } from './routes/app.marketing'
 import { Route as AppInteligenciaRouteImport } from './routes/app.inteligencia'
 import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
@@ -37,6 +38,7 @@ import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.inde
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
+import { Route as AppMarketingIndexRouteImport } from './routes/app.marketing.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppInteligenciaIndexRouteImport } from './routes/app.inteligencia.index'
 import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
@@ -57,6 +59,8 @@ import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tr
 import { Route as AppMetaAdsCriativosRouteImport } from './routes/app.meta-ads.criativos'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
+import { Route as AppMarketingConnectRouteImport } from './routes/app.marketing.connect'
+import { Route as AppMarketingProviderRouteImport } from './routes/app.marketing.$provider'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppLeadsCobrancasRouteImport } from './routes/app.leads.cobrancas'
 import { Route as AppLeadsAtribuicaoRouteImport } from './routes/app.leads.atribuicao'
@@ -87,6 +91,7 @@ import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/publ
 import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
+import { Route as ApiPublicMarketingOauthCallbackRouteImport } from './routes/api/public/marketing.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -152,6 +157,11 @@ const AppOrganizacaoRoute = AppOrganizacaoRouteImport.update({
 const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   id: '/meta-ads',
   path: '/meta-ads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingRoute = AppMarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInteligenciaRoute = AppInteligenciaRouteImport.update({
@@ -228,6 +238,11 @@ const AppMetaAdsIndexRoute = AppMetaAdsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppMetaAdsRoute,
+} as any)
+const AppMarketingIndexRoute = AppMarketingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMarketingRoute,
 } as any)
 const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   id: '/leads/',
@@ -329,6 +344,16 @@ const AppMetaAdsCampaignsRoute = AppMetaAdsCampaignsRouteImport.update({
   id: '/campaigns',
   path: '/campaigns',
   getParentRoute: () => AppMetaAdsRoute,
+} as any)
+const AppMarketingConnectRoute = AppMarketingConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
+  getParentRoute: () => AppMarketingRoute,
+} as any)
+const AppMarketingProviderRoute = AppMarketingProviderRouteImport.update({
+  id: '/$provider',
+  path: '/$provider',
+  getParentRoute: () => AppMarketingRoute,
 } as any)
 const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
@@ -490,6 +515,12 @@ const ApiPublicMetaOauthCallbackRoute =
     path: '/api/public/meta/oauth/callback',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMarketingOauthCallbackRoute =
+  ApiPublicMarketingOauthCallbackRouteImport.update({
+    id: '/api/public/marketing/oauth/callback',
+    path: '/api/public/marketing/oauth/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicGoogleAdsOauthCallbackRoute =
   ApiPublicGoogleAdsOauthCallbackRouteImport.update({
     id: '/api/public/google-ads/oauth/callback',
@@ -513,6 +544,7 @@ export interface FileRoutesByFullPath {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
+  '/app/marketing': typeof AppMarketingRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -540,6 +572,8 @@ export interface FileRoutesByFullPath {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/$provider': typeof AppMarketingProviderRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -560,6 +594,7 @@ export interface FileRoutesByFullPath {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -575,6 +610,7 @@ export interface FileRoutesByFullPath {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -609,6 +645,8 @@ export interface FileRoutesByTo {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/$provider': typeof AppMarketingProviderRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -629,6 +667,7 @@ export interface FileRoutesByTo {
   '/app/ia': typeof AppIaIndexRoute
   '/app/inteligencia': typeof AppInteligenciaIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
+  '/app/marketing': typeof AppMarketingIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
   '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
@@ -644,6 +683,7 @@ export interface FileRoutesByTo {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -664,6 +704,7 @@ export interface FileRoutesById {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
+  '/app/marketing': typeof AppMarketingRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -691,6 +732,8 @@ export interface FileRoutesById {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/$provider': typeof AppMarketingProviderRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -711,6 +754,7 @@ export interface FileRoutesById {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -726,6 +770,7 @@ export interface FileRoutesById {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -747,6 +792,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/inteligencia'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -774,6 +820,8 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/$provider'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -794,6 +842,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/inteligencia/'
     | '/app/leads/'
+    | '/app/marketing/'
     | '/app/meta-ads/'
     | '/app/sigma/'
     | '/app/tickets/'
@@ -809,6 +858,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesByTo: FileRoutesByTo
@@ -843,6 +893,8 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/$provider'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -863,6 +915,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/inteligencia'
     | '/app/leads'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/sigma'
     | '/app/tickets'
@@ -878,6 +931,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   id:
@@ -897,6 +951,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/inteligencia'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -924,6 +979,8 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/$provider'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -944,6 +1001,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/inteligencia/'
     | '/app/leads/'
+    | '/app/marketing/'
     | '/app/meta-ads/'
     | '/app/sigma/'
     | '/app/tickets/'
@@ -959,6 +1017,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesById: FileRoutesById
@@ -979,6 +1038,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
+  ApiPublicMarketingOauthCallbackRoute: typeof ApiPublicMarketingOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -1074,6 +1134,13 @@ declare module '@tanstack/react-router' {
       path: '/meta-ads'
       fullPath: '/app/meta-ads'
       preLoaderRoute: typeof AppMetaAdsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketing': {
+      id: '/app/marketing'
+      path: '/marketing'
+      fullPath: '/app/marketing'
+      preLoaderRoute: typeof AppMarketingRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/inteligencia': {
@@ -1180,6 +1247,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/meta-ads/'
       preLoaderRoute: typeof AppMetaAdsIndexRouteImport
       parentRoute: typeof AppMetaAdsRoute
+    }
+    '/app/marketing/': {
+      id: '/app/marketing/'
+      path: '/'
+      fullPath: '/app/marketing/'
+      preLoaderRoute: typeof AppMarketingIndexRouteImport
+      parentRoute: typeof AppMarketingRoute
     }
     '/app/leads/': {
       id: '/app/leads/'
@@ -1320,6 +1394,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/meta-ads/campaigns'
       preLoaderRoute: typeof AppMetaAdsCampaignsRouteImport
       parentRoute: typeof AppMetaAdsRoute
+    }
+    '/app/marketing/connect': {
+      id: '/app/marketing/connect'
+      path: '/connect'
+      fullPath: '/app/marketing/connect'
+      preLoaderRoute: typeof AppMarketingConnectRouteImport
+      parentRoute: typeof AppMarketingRoute
+    }
+    '/app/marketing/$provider': {
+      id: '/app/marketing/$provider'
+      path: '/$provider'
+      fullPath: '/app/marketing/$provider'
+      preLoaderRoute: typeof AppMarketingProviderRouteImport
+      parentRoute: typeof AppMarketingRoute
     }
     '/app/leads/kanban': {
       id: '/app/leads/kanban'
@@ -1531,6 +1619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaOauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/marketing/oauth/callback': {
+      id: '/api/public/marketing/oauth/callback'
+      path: '/api/public/marketing/oauth/callback'
+      fullPath: '/api/public/marketing/oauth/callback'
+      preLoaderRoute: typeof ApiPublicMarketingOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/google-ads/oauth/callback': {
       id: '/api/public/google-ads/oauth/callback'
       path: '/api/public/google-ads/oauth/callback'
@@ -1690,6 +1785,22 @@ const AppInteligenciaRouteWithChildren = AppInteligenciaRoute._addFileChildren(
   AppInteligenciaRouteChildren,
 )
 
+interface AppMarketingRouteChildren {
+  AppMarketingProviderRoute: typeof AppMarketingProviderRoute
+  AppMarketingConnectRoute: typeof AppMarketingConnectRoute
+  AppMarketingIndexRoute: typeof AppMarketingIndexRoute
+}
+
+const AppMarketingRouteChildren: AppMarketingRouteChildren = {
+  AppMarketingProviderRoute: AppMarketingProviderRoute,
+  AppMarketingConnectRoute: AppMarketingConnectRoute,
+  AppMarketingIndexRoute: AppMarketingIndexRoute,
+}
+
+const AppMarketingRouteWithChildren = AppMarketingRoute._addFileChildren(
+  AppMarketingRouteChildren,
+)
+
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
@@ -1787,6 +1898,7 @@ interface AppRouteChildren {
   AppIaRoute: typeof AppIaRouteWithChildren
   AppIntegracoesRoute: typeof AppIntegracoesRoute
   AppInteligenciaRoute: typeof AppInteligenciaRouteWithChildren
+  AppMarketingRoute: typeof AppMarketingRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppOrganizacaoRoute: typeof AppOrganizacaoRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -1812,6 +1924,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIaRoute: AppIaRouteWithChildren,
   AppIntegracoesRoute: AppIntegracoesRoute,
   AppInteligenciaRoute: AppInteligenciaRouteWithChildren,
+  AppMarketingRoute: AppMarketingRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppOrganizacaoRoute: AppOrganizacaoRoute,
   AppSettingsRoute: AppSettingsRoute,
@@ -1844,6 +1957,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
+  ApiPublicMarketingOauthCallbackRoute: ApiPublicMarketingOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
     ApiPublicWhatsappWebhookInstanceIdRoute,
