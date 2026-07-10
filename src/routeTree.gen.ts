@@ -87,6 +87,7 @@ import { Route as ApiPublicTrackScriptDotjsRouteImport } from './routes/api/publ
 import { Route as ApiPublicTrackEventRouteImport } from './routes/api/public/track.event'
 import { Route as ApiPublicWhatsappWebhookInstanceIdRouteImport } from './routes/api/public/whatsapp.webhook.$instanceId'
 import { Route as ApiPublicMetaOauthCallbackRouteImport } from './routes/api/public/meta.oauth.callback'
+import { Route as ApiPublicMarketingOauthCallbackRouteImport } from './routes/api/public/marketing.oauth.callback'
 import { Route as ApiPublicGoogleAdsOauthCallbackRouteImport } from './routes/api/public/google-ads.oauth.callback'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -490,6 +491,12 @@ const ApiPublicMetaOauthCallbackRoute =
     path: '/api/public/meta/oauth/callback',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMarketingOauthCallbackRoute =
+  ApiPublicMarketingOauthCallbackRouteImport.update({
+    id: '/api/public/marketing/oauth/callback',
+    path: '/api/public/marketing/oauth/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicGoogleAdsOauthCallbackRoute =
   ApiPublicGoogleAdsOauthCallbackRouteImport.update({
     id: '/api/public/google-ads/oauth/callback',
@@ -575,6 +582,7 @@ export interface FileRoutesByFullPath {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -644,6 +652,7 @@ export interface FileRoutesByTo {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -726,6 +735,7 @@ export interface FileRoutesById {
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
   '/api/public/google-ads/oauth/callback': typeof ApiPublicGoogleAdsOauthCallbackRoute
+  '/api/public/marketing/oauth/callback': typeof ApiPublicMarketingOauthCallbackRoute
   '/api/public/meta/oauth/callback': typeof ApiPublicMetaOauthCallbackRoute
   '/api/public/whatsapp/webhook/$instanceId': typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -809,6 +819,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesByTo: FileRoutesByTo
@@ -878,6 +889,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   id:
@@ -959,6 +971,7 @@ export interface FileRouteTypes {
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
     | '/api/public/google-ads/oauth/callback'
+    | '/api/public/marketing/oauth/callback'
     | '/api/public/meta/oauth/callback'
     | '/api/public/whatsapp/webhook/$instanceId'
   fileRoutesById: FileRoutesById
@@ -979,6 +992,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicGoogleAdsOauthCallbackRoute: typeof ApiPublicGoogleAdsOauthCallbackRoute
+  ApiPublicMarketingOauthCallbackRoute: typeof ApiPublicMarketingOauthCallbackRoute
   ApiPublicMetaOauthCallbackRoute: typeof ApiPublicMetaOauthCallbackRoute
   ApiPublicWhatsappWebhookInstanceIdRoute: typeof ApiPublicWhatsappWebhookInstanceIdRoute
 }
@@ -1531,6 +1545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaOauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/marketing/oauth/callback': {
+      id: '/api/public/marketing/oauth/callback'
+      path: '/api/public/marketing/oauth/callback'
+      fullPath: '/api/public/marketing/oauth/callback'
+      preLoaderRoute: typeof ApiPublicMarketingOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/google-ads/oauth/callback': {
       id: '/api/public/google-ads/oauth/callback'
       path: '/api/public/google-ads/oauth/callback'
@@ -1844,6 +1865,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicGoogleAdsOauthCallbackRoute: ApiPublicGoogleAdsOauthCallbackRoute,
+  ApiPublicMarketingOauthCallbackRoute: ApiPublicMarketingOauthCallbackRoute,
   ApiPublicMetaOauthCallbackRoute: ApiPublicMetaOauthCallbackRoute,
   ApiPublicWhatsappWebhookInstanceIdRoute:
     ApiPublicWhatsappWebhookInstanceIdRoute,
