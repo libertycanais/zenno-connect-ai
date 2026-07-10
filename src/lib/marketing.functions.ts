@@ -119,8 +119,8 @@ export const discoverConnectionAssets = createServerFn({ method: "POST" })
       name: a.name,
       currency: a.currency ?? null,
       timezone: a.timezone ?? null,
-      capabilities: a.capabilities,
-      raw: a.raw ?? {},
+      capabilities: a.capabilities as unknown as Record<string, unknown>,
+      raw: (a.raw ?? {}) as unknown as Record<string, unknown>,
     }));
     if (rows.length) {
       const { error } = await supabase
