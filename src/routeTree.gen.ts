@@ -22,6 +22,7 @@ import { Route as AppSigmaRouteImport } from './routes/app.sigma'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppOrganizacaoRouteImport } from './routes/app.organizacao'
 import { Route as AppMetaAdsRouteImport } from './routes/app.meta-ads'
+import { Route as AppMarketingRouteImport } from './routes/app.marketing'
 import { Route as AppInteligenciaRouteImport } from './routes/app.inteligencia'
 import { Route as AppIntegracoesRouteImport } from './routes/app.integracoes'
 import { Route as AppIaRouteImport } from './routes/app.ia'
@@ -153,6 +154,11 @@ const AppOrganizacaoRoute = AppOrganizacaoRouteImport.update({
 const AppMetaAdsRoute = AppMetaAdsRouteImport.update({
   id: '/meta-ads',
   path: '/meta-ads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingRoute = AppMarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInteligenciaRoute = AppInteligenciaRouteImport.update({
@@ -520,6 +526,7 @@ export interface FileRoutesByFullPath {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
+  '/app/marketing': typeof AppMarketingRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -595,6 +602,7 @@ export interface FileRoutesByTo {
   '/app/clientes': typeof AppClientesRoute
   '/app/executivo': typeof AppExecutivoRoute
   '/app/integracoes': typeof AppIntegracoesRoute
+  '/app/marketing': typeof AppMarketingRoute
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
@@ -673,6 +681,7 @@ export interface FileRoutesById {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
+  '/app/marketing': typeof AppMarketingRoute
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -757,6 +766,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/inteligencia'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -832,6 +842,7 @@ export interface FileRouteTypes {
     | '/app/clientes'
     | '/app/executivo'
     | '/app/integracoes'
+    | '/app/marketing'
     | '/app/organizacao'
     | '/app/settings'
     | '/app'
@@ -909,6 +920,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/integracoes'
     | '/app/inteligencia'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/organizacao'
     | '/app/settings'
@@ -1088,6 +1100,13 @@ declare module '@tanstack/react-router' {
       path: '/meta-ads'
       fullPath: '/app/meta-ads'
       preLoaderRoute: typeof AppMetaAdsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketing': {
+      id: '/app/marketing'
+      path: '/marketing'
+      fullPath: '/app/marketing'
+      preLoaderRoute: typeof AppMarketingRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/inteligencia': {
@@ -1808,6 +1827,7 @@ interface AppRouteChildren {
   AppIaRoute: typeof AppIaRouteWithChildren
   AppIntegracoesRoute: typeof AppIntegracoesRoute
   AppInteligenciaRoute: typeof AppInteligenciaRouteWithChildren
+  AppMarketingRoute: typeof AppMarketingRoute
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppOrganizacaoRoute: typeof AppOrganizacaoRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -1833,6 +1853,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIaRoute: AppIaRouteWithChildren,
   AppIntegracoesRoute: AppIntegracoesRoute,
   AppInteligenciaRoute: AppInteligenciaRouteWithChildren,
+  AppMarketingRoute: AppMarketingRoute,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppOrganizacaoRoute: AppOrganizacaoRoute,
   AppSettingsRoute: AppSettingsRoute,
