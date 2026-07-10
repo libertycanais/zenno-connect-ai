@@ -1,14 +1,18 @@
 // FEATURE — Marketing Intelligence Experience · Snapshot aggregator + history
 // Single object consumed by Command Center, Copilot, Executive, Workspace.
 // Additive: does not replace Health/Readiness/Executive stores; it aggregates them.
-import type { PipelineResult } from "../types";
+import type { PipelineResult, CampaignFacts, TrackingFacts } from "../types";
 import { computeIntelligenceScore, type IntelligenceScoreResult } from "../score/intelligence-score";
+import { explainIntelligenceScore, type ScoreExplanation } from "../score/score-explainer";
+import { computeAIConfidence, type AIConfidenceResult } from "../confidence/ai-confidence";
 
 export type MarketingIntelligenceSnapshot = {
   organizationId: string;
   provider: PipelineResult["provider"];
   connectionId: string;
   score: IntelligenceScoreResult;
+  explanation: ScoreExplanation;
+  confidence: AIConfidenceResult;
   health: number;
   readiness: number;
   recommendationsCount: number;
@@ -36,12 +40,10 @@ export type MarketingIntelligenceHistoryEntry = {
 const HISTORY_LIMIT = 500;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-const snapshots = new Map<string, MarketingIntelligenceSnapshot>(); // key: org
+const snapshots = new Map<string, MarketingIntelligenceSnapshot>();
 const history: MarketingIntelligenceHistoryEntry[] = [];
 
-function key(organizationId: string): string {
-  return organizationId;
-}
+function key(organizationId: string): string { return organizationId; }
 
 function computeWeeklyDelta(organizationId: string, currentScore: number): number {
   const cutoff = Date.now() - WEEK_MS;
@@ -53,7 +55,16 @@ function computeWeeklyDelta(organizationId: string, currentScore: number): numbe
   return Math.round((currentScore - baseline.score) * 10) / 10;
 }
 
-export function updateSnapshotFromPipeline(result: PipelineResult): MarketingIntelligenceSnapshot {
+export type SnapshotContext = {
+  campaigns?: CampaignFacts[];
+  tracking?: TrackingFacts;
+  historyMonths?: number;
+};
+
+export function updateSnapshotFromPipeline(
+  result: PipelineResult,
+  ctx: SnapshotContext = {},
+): MarketingIntelligenceSnapshot {
   const score = computeIntelligenceScore({
     health: result.health,
     readiness: result.aiReadiness,
@@ -63,11 +74,20 @@ export function updateSnapshotFromPipeline(result: PipelineResult): MarketingInt
   const opps = result.recommendations.filter((r) => r.priority === "low" || r.priority === "medium").length;
   const risks = result.recommendations.filter((r) => r.priority === "high" || r.priority === "critical").length;
 
+  const explanation = explainIntelligenceScore(score, { risksCount: risks, opportunitiesCount: opps });
+  const confidence = computeAIConfidence({
+    campaigns: ctx.campaigns,
+    trackingCoverage: ctx.tracking?.coverage ?? result.aiReadiness.overall / 100,
+    historyMonths: ctx.historyMonths,
+  });
+
   const snapshot: MarketingIntelligenceSnapshot = {
     organizationId: result.organizationId,
     provider: result.provider,
     connectionId: result.connectionId,
     score,
+    explanation,
+    confidence,
     health: result.health.overall,
     readiness: result.aiReadiness.overall,
     recommendationsCount: result.recommendations.length,
