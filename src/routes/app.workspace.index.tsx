@@ -15,6 +15,8 @@ import { AIStatusBar } from "@/components/experience/AIStatusBar";
 import { ExecutiveSummary } from "@/components/experience/ExecutiveSummary";
 import { AIActivityTimeline } from "@/components/experience/AIActivityTimeline";
 import { ExpertsPanel } from "@/components/experience/ExpertsPanel";
+import { MissionControlPanel } from "@/components/experience/MissionControlPanel";
+import { ExecutiveWidgetsV2 } from "@/components/experience/ExecutiveWidgetsV2";
 
 export const Route = createFileRoute("/app/workspace/")({ component: WorkspaceOverview });
 
@@ -115,8 +117,12 @@ function WorkspaceOverview() {
   return (
     <WorkspaceShell title="Command Center">
       <AIStatusBar />
+      <MissionControlPanel />
       <CommandHero />
       <ExecutiveSummary />
+
+      <SectionTitle label="Executive Widgets" badge="live" />
+      <ExecutiveWidgetsV2 />
 
       <SectionTitle label="KPIs Executivos" badge="live" />
       <WorkspaceGrid>

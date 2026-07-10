@@ -9,6 +9,8 @@ import { CommandPalette } from "./CommandPalette";
 import { CopilotDrawer } from "./CopilotDrawer";
 import { NotificationDrawer } from "./NotificationDrawer";
 import { BootScreen, BOOT_FLAG } from "@/components/experience/BootScreen";
+import { DynamicBackground } from "@/components/experience/DynamicBackground";
+import { LiveIntelligenceFeed } from "@/components/experience/LiveIntelligenceFeed";
 
 export function WorkspaceShell({ children, title }: { children: ReactNode; title?: string }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -45,7 +47,8 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
 
   return (
     <div className="flex min-h-dvh bg-background text-foreground relative">
-      <div className="pointer-events-none fixed inset-0 zenno-ambient opacity-80" aria-hidden />
+      <DynamicBackground />
+      <div className="pointer-events-none fixed inset-0 zenno-ambient opacity-60" aria-hidden />
       <WorkspaceSidebar />
       <div className="flex-1 flex flex-col min-w-0 relative">
         <WorkspaceHeader
@@ -59,6 +62,7 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <CopilotDrawer open={copilotOpen} onOpenChange={setCopilotOpen} />
       <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
+      <LiveIntelligenceFeed />
       {booting && <BootScreen onDone={() => setBooting(false)} />}
     </div>
   );
