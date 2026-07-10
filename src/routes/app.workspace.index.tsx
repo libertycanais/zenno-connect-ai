@@ -8,7 +8,7 @@ import { getIntelligenceWidgets } from "@/lib/experts-analytics.functions";
 import { useAuth } from "@/lib/auth";
 import { ArrowRight } from "lucide-react";
 import { MarketingIntelligenceCard } from "@/components/marketing/MarketingIntelligenceCard";
-import { getSnapshot } from "@/lib/marketing/intelligence";
+import { getSnapshot, getPendingBriefing, getLastTTFI, markBriefingSeen, dismissBriefing } from "@/lib/marketing/intelligence";
 
 export const Route = createFileRoute("/app/workspace/")({ component: WorkspaceOverview });
 
