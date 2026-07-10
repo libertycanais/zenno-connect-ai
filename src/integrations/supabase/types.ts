@@ -2250,6 +2250,429 @@ export type Database = {
           },
         ]
       }
+      marketing_asset_bindings: {
+        Row: {
+          asset_id: string
+          bound_at: string
+          bound_by: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          purpose: string
+          unbound_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          bound_at?: string
+          bound_by?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          purpose?: string
+          unbound_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          bound_at?: string
+          bound_by?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          purpose?: string
+          unbound_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_asset_bindings_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_asset_bindings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_asset_relationships: {
+        Row: {
+          confidence: number
+          created_at: string
+          detected_at: string
+          from_asset_id: string
+          id: string
+          organization_id: string
+          relation_kind: string
+          to_asset_id: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          detected_at?: string
+          from_asset_id: string
+          id?: string
+          organization_id: string
+          relation_kind: string
+          to_asset_id: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          detected_at?: string
+          from_asset_id?: string
+          id?: string
+          organization_id?: string
+          relation_kind?: string
+          to_asset_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_asset_relationships_from_asset_id_fkey"
+            columns: ["from_asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_asset_relationships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_asset_relationships_to_asset_id_fkey"
+            columns: ["to_asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_assets: {
+        Row: {
+          asset_kind: string
+          capabilities: Json
+          connection_id: string
+          created_at: string
+          currency: string | null
+          external_id: string
+          health_reasons: Json
+          health_score: number
+          health_status: string
+          id: string
+          last_synced_at: string | null
+          name: string | null
+          organization_id: string
+          parent_external_id: string | null
+          provider: string
+          raw: Json
+          timezone: string | null
+          updated_at: string
+        }
+        Insert: {
+          asset_kind: string
+          capabilities?: Json
+          connection_id: string
+          created_at?: string
+          currency?: string | null
+          external_id: string
+          health_reasons?: Json
+          health_score?: number
+          health_status?: string
+          id?: string
+          last_synced_at?: string | null
+          name?: string | null
+          organization_id: string
+          parent_external_id?: string | null
+          provider: string
+          raw?: Json
+          timezone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asset_kind?: string
+          capabilities?: Json
+          connection_id?: string
+          created_at?: string
+          currency?: string | null
+          external_id?: string
+          health_reasons?: Json
+          health_score?: number
+          health_status?: string
+          id?: string
+          last_synced_at?: string | null
+          name?: string | null
+          organization_id?: string
+          parent_external_id?: string | null
+          provider?: string
+          raw?: Json
+          timezone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_assets_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_assets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_connections: {
+        Row: {
+          connected_by: string | null
+          created_at: string
+          credentials_ciphertext: string | null
+          credentials_nonce: string | null
+          display_name: string | null
+          id: string
+          last_error: string | null
+          last_health_at: string | null
+          last_health_score: number | null
+          last_health_status: string | null
+          meta: Json
+          organization_id: string
+          provider: string
+          refresh_ciphertext: string | null
+          refresh_nonce: string | null
+          scopes: string[]
+          status: string
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          connected_by?: string | null
+          created_at?: string
+          credentials_ciphertext?: string | null
+          credentials_nonce?: string | null
+          display_name?: string | null
+          id?: string
+          last_error?: string | null
+          last_health_at?: string | null
+          last_health_score?: number | null
+          last_health_status?: string | null
+          meta?: Json
+          organization_id: string
+          provider: string
+          refresh_ciphertext?: string | null
+          refresh_nonce?: string | null
+          scopes?: string[]
+          status?: string
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          connected_by?: string | null
+          created_at?: string
+          credentials_ciphertext?: string | null
+          credentials_nonce?: string | null
+          display_name?: string | null
+          id?: string
+          last_error?: string | null
+          last_health_at?: string | null
+          last_health_score?: number | null
+          last_health_status?: string | null
+          meta?: Json
+          organization_id?: string
+          provider?: string
+          refresh_ciphertext?: string | null
+          refresh_nonce?: string | null
+          scopes?: string[]
+          status?: string
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_connections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_oauth_states: {
+        Row: {
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          organization_id: string
+          provider: string
+          redirect_after: string | null
+          state_hash: string
+          user_id: string
+        }
+        Insert: {
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          organization_id: string
+          provider: string
+          redirect_after?: string | null
+          state_hash: string
+          user_id: string
+        }
+        Update: {
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          organization_id?: string
+          provider?: string
+          redirect_after?: string | null
+          state_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_oauth_states_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_sync_jobs: {
+        Row: {
+          asset_id: string
+          attempts: number
+          backoff_seconds: number
+          created_at: string
+          id: string
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string | null
+          next_run_at: string
+          organization_id: string
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          attempts?: number
+          backoff_seconds?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          next_run_at?: string
+          organization_id: string
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          attempts?: number
+          backoff_seconds?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          next_run_at?: string
+          organization_id?: string
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_sync_jobs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_sync_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_timeline_events: {
+        Row: {
+          asset_id: string | null
+          connection_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          occurred_at: string
+          organization_id: string
+          payload: Json
+          provider: string | null
+          severity: string
+        }
+        Insert: {
+          asset_id?: string | null
+          connection_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          occurred_at?: string
+          organization_id: string
+          payload?: Json
+          provider?: string | null
+          severity?: string
+        }
+        Update: {
+          asset_id?: string | null
+          connection_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          occurred_at?: string
+          organization_id?: string
+          payload?: Json
+          provider?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_timeline_events_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_timeline_events_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketing_timeline_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meta_ad_accounts: {
         Row: {
           access_token: string | null
