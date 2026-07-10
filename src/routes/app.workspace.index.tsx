@@ -7,6 +7,8 @@ import { WorkspaceShell } from "@/components/workspace/WorkspaceShell";
 import { getIntelligenceWidgets } from "@/lib/experts-analytics.functions";
 import { useAuth } from "@/lib/auth";
 import { ArrowRight } from "lucide-react";
+import { MarketingIntelligenceCard } from "@/components/marketing/MarketingIntelligenceCard";
+import { getSnapshot } from "@/lib/marketing/intelligence";
 
 export const Route = createFileRoute("/app/workspace/")({ component: WorkspaceOverview });
 
@@ -30,6 +32,7 @@ function WorkspaceOverview() {
   const opps = q.data?.totals.open ?? 3;
   const roi = q.data?.financial.estimatedRoiCents ?? 1_843_000;
   const savings = Math.round(roi * 0.15);
+  const miSnapshot = getSnapshot(user?.id ?? "");
 
   return (
     <WorkspaceShell title="Command Center">
@@ -70,15 +73,11 @@ function WorkspaceOverview() {
 
       {/* Três painéis. Só três. Sem bordas pesadas. */}
       <section className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-10">
+        <MarketingIntelligenceCard snapshot={miSnapshot} />
         <Panel
           eyebrow="Executive"
           title="Receita em linha com meta"
           body="Você está 4% acima da projeção mensal. Nenhum risco crítico ativo."
-        />
-        <Panel
-          eyebrow="Marketing"
-          title="Nova oportunidade detectada"
-          body="Meta Ads · CPL caiu 22% na campanha Conversão-04. Escalar orçamento sugerido."
         />
         <Panel
           eyebrow="Financeiro"

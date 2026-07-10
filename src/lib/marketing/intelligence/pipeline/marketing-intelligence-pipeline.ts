@@ -8,6 +8,8 @@ import { runMarketingExperts } from "../analysis/expert-runner";
 import { updateMarketingContext } from "../context/context-updater";
 import { recordTimeline } from "../timeline/timeline-recorder";
 import { recordRun } from "../metrics/observability";
+import { emit } from "../events/event-bus";
+import { updateSnapshotFromPipeline } from "../snapshot/snapshot-store";
 
 // Simple cache: skip re-analysis for the same connection within TTL
 const cache = new Map<string, { at: number; result: PipelineResult }>();
@@ -94,6 +96,21 @@ export function runMarketingIntelligencePipeline(input: PipelineInput): Pipeline
   push("context.updated");
   recordRun(input.organizationId, metrics);
   cache.set(cacheKey, { at: Date.now(), result });
+
+  // Additive: emit canonical events + update snapshot aggregator.
+  const base = {
+    organizationId: input.organizationId,
+    provider: input.provider,
+    connectionId: input.connectionId,
+    at: result.completedAt,
+  };
+  emit("MarketingHealthUpdated", { ...base, health: result.health, readiness: result.aiReadiness });
+  emit("MarketingRecommendationsGenerated", { ...base, recommendations: result.recommendations });
+  emit("ExecutiveSummaryGenerated", { ...base, executive: result.executive });
+  emit("MarketingContextUpdated", base);
+  const snapshot = updateSnapshotFromPipeline(result);
+  emit("MarketingIntelligenceSnapshotUpdated", { ...base, score: snapshot.score.score });
+
   return result;
 }
 
