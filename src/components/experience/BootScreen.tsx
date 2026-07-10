@@ -1,8 +1,8 @@
-// PX 1.0 — Boot Experience
+// PX 1.0 — Boot Experience · Refreshed for PX 1.2 Brand Identity
 // Cinematic post-login boot overlay. 100% client-side, no backend calls.
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import logo from "@/assets/zenno-logo.png";
+import { ZennoMark } from "@/components/brand/ZennoMark";
 
 const MODULES = [
   "Workspace", "CRM", "Executive AI", "Marketing AI", "Finance AI",
