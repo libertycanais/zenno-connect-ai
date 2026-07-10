@@ -5,4 +5,6 @@ export * from "./consensus-runner";
 export * from "./report-builder";
 export * from "./narrative";
 export * from "./engine";
+export * from "./engine";
 export * from "./advisor";
+export * from "./persistence";
