@@ -134,12 +134,12 @@ export const discoverConnectionAssets = createServerFn({ method: "POST" })
     if (result.timeline?.length) {
       const tlRows = result.timeline.map((t) => ({
         organization_id: t.organizationId,
-        connection_id: t.connectionId,
-        asset_id: t.assetId,
-        provider: t.provider,
-        event_type: t.eventType,
-        severity: t.severity,
-        payload: t.payload,
+        connection_id: t.connectionId ?? null,
+        asset_id: t.assetId ?? null,
+        provider: (t.provider ?? null) as string | null,
+        event_type: t.eventType as string,
+        severity: t.severity as string,
+        payload: (t.payload ?? {}) as unknown as Json,
         occurred_at: t.occurredAt,
       }));
       await supabase.from("marketing_timeline_events").insert(tlRows);
