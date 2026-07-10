@@ -62,6 +62,7 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <CopilotDrawer open={copilotOpen} onOpenChange={setCopilotOpen} />
       <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
+      <LiveIntelligenceFeed />
       {booting && <BootScreen onDone={() => setBooting(false)} />}
     </div>
   );
