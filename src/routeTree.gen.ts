@@ -79,6 +79,7 @@ import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AppInteligenciaRecomendacoesIdRouteImport } from './routes/app.inteligencia.recomendacoes.$id'
 import { Route as AppInteligenciaPlaybooksIdRouteImport } from './routes/app.inteligencia.playbooks.$id'
 import { Route as AppInteligenciaEvidenciasIdRouteImport } from './routes/app.inteligencia.evidencias.$id'
+import { Route as AppAdminPilotDailyRouteImport } from './routes/app.admin.pilot.daily'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks.stripe'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks.mercadopago'
 import { Route as ApiPublicTrackWaLinkRouteImport } from './routes/api/public/track.wa-link'
@@ -445,6 +446,11 @@ const AppInteligenciaEvidenciasIdRoute =
     path: '/$id',
     getParentRoute: () => AppInteligenciaEvidenciasRoute,
   } as any)
+const AppAdminPilotDailyRoute = AppAdminPilotDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => AppAdminPilotRoute,
+} as any)
 const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   id: '/api/public/webhooks/stripe',
   path: '/api/public/webhooks/stripe',
@@ -519,7 +525,7 @@ export interface FileRoutesByFullPath {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
-  '/app/admin/pilot': typeof AppAdminPilotRoute
+  '/app/admin/pilot': typeof AppAdminPilotRouteWithChildren
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -564,6 +570,7 @@ export interface FileRoutesByFullPath {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/admin/pilot/daily': typeof AppAdminPilotDailyRoute
   '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
@@ -587,7 +594,7 @@ export interface FileRoutesByTo {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
-  '/app/admin/pilot': typeof AppAdminPilotRoute
+  '/app/admin/pilot': typeof AppAdminPilotRouteWithChildren
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -632,6 +639,7 @@ export interface FileRoutesByTo {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/admin/pilot/daily': typeof AppAdminPilotDailyRoute
   '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
@@ -668,7 +676,7 @@ export interface FileRoutesById {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
-  '/app/admin/pilot': typeof AppAdminPilotRoute
+  '/app/admin/pilot': typeof AppAdminPilotRouteWithChildren
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -713,6 +721,7 @@ export interface FileRoutesById {
   '/api/public/track/wa-link': typeof ApiPublicTrackWaLinkRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/app/admin/pilot/daily': typeof AppAdminPilotDailyRoute
   '/app/inteligencia/evidencias/$id': typeof AppInteligenciaEvidenciasIdRoute
   '/app/inteligencia/playbooks/$id': typeof AppInteligenciaPlaybooksIdRoute
   '/app/inteligencia/recomendacoes/$id': typeof AppInteligenciaRecomendacoesIdRoute
@@ -795,6 +804,7 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/admin/pilot/daily'
     | '/app/inteligencia/evidencias/$id'
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
@@ -863,6 +873,7 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/admin/pilot/daily'
     | '/app/inteligencia/evidencias/$id'
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
@@ -943,6 +954,7 @@ export interface FileRouteTypes {
     | '/api/public/track/wa-link'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/webhooks/stripe'
+    | '/app/admin/pilot/daily'
     | '/app/inteligencia/evidencias/$id'
     | '/app/inteligencia/playbooks/$id'
     | '/app/inteligencia/recomendacoes/$id'
@@ -1463,6 +1475,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInteligenciaEvidenciasIdRouteImport
       parentRoute: typeof AppInteligenciaEvidenciasRoute
     }
+    '/app/admin/pilot/daily': {
+      id: '/app/admin/pilot/daily'
+      path: '/daily'
+      fullPath: '/app/admin/pilot/daily'
+      preLoaderRoute: typeof AppAdminPilotDailyRouteImport
+      parentRoute: typeof AppAdminPilotRoute
+    }
     '/api/public/webhooks/stripe': {
       id: '/api/public/webhooks/stripe'
       path: '/api/public/webhooks/stripe'
@@ -1522,13 +1541,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppAdminPilotRouteChildren {
+  AppAdminPilotDailyRoute: typeof AppAdminPilotDailyRoute
+}
+
+const AppAdminPilotRouteChildren: AppAdminPilotRouteChildren = {
+  AppAdminPilotDailyRoute: AppAdminPilotDailyRoute,
+}
+
+const AppAdminPilotRouteWithChildren = AppAdminPilotRoute._addFileChildren(
+  AppAdminPilotRouteChildren,
+)
+
 interface AppAdminRouteChildren {
-  AppAdminPilotRoute: typeof AppAdminPilotRoute
+  AppAdminPilotRoute: typeof AppAdminPilotRouteWithChildren
   AppAdminIndexRoute: typeof AppAdminIndexRoute
 }
 
 const AppAdminRouteChildren: AppAdminRouteChildren = {
-  AppAdminPilotRoute: AppAdminPilotRoute,
+  AppAdminPilotRoute: AppAdminPilotRouteWithChildren,
   AppAdminIndexRoute: AppAdminIndexRoute,
 }
 
