@@ -9,6 +9,8 @@ import { CommandPalette } from "./CommandPalette";
 import { CopilotDrawer } from "./CopilotDrawer";
 import { NotificationDrawer } from "./NotificationDrawer";
 import { BootScreen, BOOT_FLAG } from "@/components/experience/BootScreen";
+import { DynamicBackground } from "@/components/experience/DynamicBackground";
+import { LiveIntelligenceFeed } from "@/components/experience/LiveIntelligenceFeed";
 
 export function WorkspaceShell({ children, title }: { children: ReactNode; title?: string }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
