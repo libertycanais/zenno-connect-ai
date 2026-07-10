@@ -6,7 +6,7 @@ import {
   Users, KanbanSquare, MessageSquare, UserPlus, Megaphone, Search, Target, TrendingUp,
   DollarSign, CreditCard, Building2, Settings, Bot, Activity, ShieldCheck,
 } from "lucide-react";
-import logo from "@/assets/zenno-logo.png";
+import { ZennoMark } from "@/components/brand/ZennoMark";
 
 type Item = { to: string; label: string; icon: typeof Layers; exact?: boolean };
 type Group = { label: string; icon: string; items: readonly Item[] };
@@ -75,11 +75,11 @@ export function WorkspaceSidebar() {
   const loc = useLocation();
   return (
     <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-sidebar-border/60 bg-sidebar/70 backdrop-blur-xl relative z-10">
-      <div className="px-5 pt-5 pb-3 flex items-center gap-2">
-        <img src={logo} alt="Zenno" className="h-9 w-auto drop-shadow-[0_0_16px_oklch(0.72_0.18_235/0.45)]" />
+      <div className="px-5 pt-5 pb-3 flex items-center gap-2.5">
+        <ZennoMark className="h-9 w-9" />
         <div className="flex flex-col leading-tight">
-          <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Zenno OS</span>
-          <span className="text-[10px] text-primary/80">Enterprise · v2</span>
+          <span className="text-[13px] font-semibold tracking-[0.24em] zenno-gradient-text">ZENNO</span>
+          <span className="text-[9px] uppercase tracking-[0.26em] text-muted-foreground/80">Enterprise Intelligence OS</span>
         </div>
       </div>
 
