@@ -2730,6 +2730,179 @@ export type Database = {
         }
         Relationships: []
       }
+      pilot_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          feature: string | null
+          id: string
+          kind: string
+          organization_id: string
+          resolved_at: string | null
+          score: number | null
+          sentiment: string | null
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          feature?: string | null
+          id?: string
+          kind: string
+          organization_id: string
+          resolved_at?: string | null
+          score?: number | null
+          sentiment?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          feature?: string | null
+          id?: string
+          kind?: string
+          organization_id?: string
+          resolved_at?: string | null
+          score?: number | null
+          sentiment?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_feedback_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_onboarding_progress: {
+        Row: {
+          completed_at: string
+          id: string
+          organization_id: string
+          step_key: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          organization_id: string
+          step_key: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          organization_id?: string
+          step_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_onboarding_progress_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_organizations: {
+        Row: {
+          activated_at: string | null
+          adoption_score: number
+          cohort: string
+          created_at: string
+          health_score: number
+          id: string
+          notes: string | null
+          organization_id: string
+          status: string
+          ttfv_seconds: number | null
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          adoption_score?: number
+          cohort?: string
+          created_at?: string
+          health_score?: number
+          id?: string
+          notes?: string | null
+          organization_id: string
+          status?: string
+          ttfv_seconds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          adoption_score?: number
+          cohort?: string
+          created_at?: string
+          health_score?: number
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          ttfv_seconds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_organizations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_telemetry_events: {
+        Row: {
+          category: string
+          event_name: string
+          id: string
+          latency_ms: number | null
+          occurred_at: string
+          organization_id: string
+          props: Json
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category?: string
+          event_name: string
+          id?: string
+          latency_ms?: number | null
+          occurred_at?: string
+          organization_id: string
+          props?: Json
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          event_name?: string
+          id?: string
+          latency_ms?: number | null
+          occurred_at?: string
+          organization_id?: string
+          props?: Json
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_telemetry_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           active: boolean
