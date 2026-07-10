@@ -13,6 +13,10 @@
 | [ARCHITECTURE_FREEZE.md](./ARCHITECTURE_FREEZE.md) | Declaração de congelamento da arquitetura base |
 | [MASTER_ROADMAP.md](./MASTER_ROADMAP.md) | Sprints passadas + futuras até v2.0 |
 | [VERSION_HISTORY.md](./VERSION_HISTORY.md) | Histórico de versões |
+| [DIAGRAMS.md](./DIAGRAMS.md) | Diagramas Mermaid (arquitetura, pipeline, event bus) |
+| [../PROJECT_MANIFEST.md](../PROJECT_MANIFEST.md) | Manifesto oficial do projeto (fonte única de verdade) |
+| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) | Guia de migração para stack própria |
+| [CLAUDE_CODE_HANDOFF.md](./CLAUDE_CODE_HANDOFF.md) | Handoff para agentes externos |
 
 ### 🔐 Segurança
 | Documento | Descrição |
