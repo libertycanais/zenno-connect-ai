@@ -54,14 +54,14 @@ describe("Marketing Intelligence Experience — Score", () => {
 describe("Marketing Intelligence Experience — Snapshot + Events", () => {
   it("orchestrateAfterSync emits events and updates snapshot", async () => {
     const seen: string[] = [];
-    onMarketingEvent("MarketingSyncStarted", () => seen.push("start"));
-    onMarketingEvent("MarketingSyncCompleted", () => seen.push("done"));
+    onMarketingEvent("MarketingSyncStarted", () => { seen.push("start"); });
+    onMarketingEvent("MarketingSyncCompleted", () => { seen.push("done"); });
     onMarketingEvent("MarketingIntelligenceSnapshotUpdated", (e: MarketingEvent<"MarketingIntelligenceSnapshotUpdated">) => {
       seen.push(`snap:${e.score}`);
     });
 
     await orchestrateAfterSync({
-      organizationId: "org-1", provider: "google_ads", connectionId: "conn-1",
+      organizationId: "org-1", provider: "google", connectionId: "conn-1",
       campaigns: camps, tracking,
     });
 
@@ -78,7 +78,7 @@ describe("Marketing Intelligence Experience — Snapshot + Events", () => {
   it("notifyPlatformConnected emits MarketingPlatformConnected", () => {
     let got = false;
     onMarketingEvent("MarketingPlatformConnected", () => { got = true; });
-    notifyPlatformConnected({ organizationId: "org-2", provider: "google_ads", connectionId: "c-2" });
+    notifyPlatformConnected({ organizationId: "org-2", provider: "google", connectionId: "c-2" });
     expect(got).toBe(true);
   });
 });
@@ -92,7 +92,7 @@ describe("Marketing Intelligence Experience — Proactive Briefing", () => {
 
   it("summarizes opportunities/risks when snapshot exists", () => {
     runMarketingIntelligencePipeline({
-      organizationId: "org-3", provider: "google_ads", connectionId: "conn-3",
+      organizationId: "org-3", provider: "google", connectionId: "conn-3",
       campaigns: camps, tracking,
     });
     const snap = getSnapshot("org-3");
