@@ -27,10 +27,9 @@ export function WorkspaceSidebar() {
         const active = it.exact
           ? loc.pathname === it.to
           : loc.pathname === it.to || loc.pathname.startsWith(`${it.to}/`);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const to = it.to as any;
         return (
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const to = it.to as any;
-          return (
           <Link
             key={it.to}
             to={to}
