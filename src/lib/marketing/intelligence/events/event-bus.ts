@@ -16,9 +16,10 @@ export function on<K extends MarketingEventName>(name: K, handler: Handler<K>): 
 
 export function emit<K extends MarketingEventName>(
   name: K,
-  payload: Omit<MarketingEventMap[K], never> & Partial<{ at: string }>,
+  payload: MarketingEventMap[K],
 ): MarketingEvent<K> {
-  const event = { name, at: new Date().toISOString(), ...payload } as MarketingEvent<K>;
+  const withAt = { at: new Date().toISOString(), ...payload } as MarketingEventMap[K];
+  const event = { name, ...withAt } as unknown as MarketingEvent<K>;
   const set = handlers.get(name);
   if (set) {
     for (const h of set) {
