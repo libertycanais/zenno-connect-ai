@@ -317,7 +317,7 @@ export const ingestPilotEvent = createServerFn({ method: "POST" })
       user_id: userId,
       event_name: data.eventName,
       category: data.category,
-      props: safeProps,
+      props: safeProps as unknown as import("@/integrations/supabase/types").Json,
       session_id: data.sessionId ?? null,
       latency_ms: data.latencyMs ?? null,
     });
