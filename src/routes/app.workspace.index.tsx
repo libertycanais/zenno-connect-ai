@@ -15,6 +15,8 @@ import { AIStatusBar } from "@/components/experience/AIStatusBar";
 import { ExecutiveSummary } from "@/components/experience/ExecutiveSummary";
 import { AIActivityTimeline } from "@/components/experience/AIActivityTimeline";
 import { ExpertsPanel } from "@/components/experience/ExpertsPanel";
+import { MissionControlPanel } from "@/components/experience/MissionControlPanel";
+import { ExecutiveWidgetsV2 } from "@/components/experience/ExecutiveWidgetsV2";
 
 export const Route = createFileRoute("/app/workspace/")({ component: WorkspaceOverview });
 
