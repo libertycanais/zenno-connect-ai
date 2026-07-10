@@ -8,6 +8,8 @@ import { runMarketingExperts } from "../analysis/expert-runner";
 import { updateMarketingContext } from "../context/context-updater";
 import { recordTimeline } from "../timeline/timeline-recorder";
 import { recordRun } from "../metrics/observability";
+import { emit } from "../events/event-bus";
+import { updateSnapshotFromPipeline } from "../snapshot/snapshot-store";
 
 // Simple cache: skip re-analysis for the same connection within TTL
 const cache = new Map<string, { at: number; result: PipelineResult }>();
