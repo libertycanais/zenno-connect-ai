@@ -1,16 +1,10 @@
-// EPIC K.2 — WorkspaceShell
-// Additive shell that composes header/sidebar/main + drawers.
-// Reuses AppShell auth (route already protected) and Zenno OS engines.
-
+// Invisible UI — minimal shell. AppShell already provides the single sidebar.
 import { type ReactNode, useState, useCallback, useEffect } from "react";
 import { WorkspaceHeader } from "./WorkspaceHeader";
-import { WorkspaceSidebar } from "./WorkspaceSidebar";
 import { CommandPalette } from "./CommandPalette";
 import { CopilotDrawer } from "./CopilotDrawer";
 import { NotificationDrawer } from "./NotificationDrawer";
 import { BootScreen, BOOT_FLAG } from "@/components/experience/BootScreen";
-import { DynamicBackground } from "@/components/experience/DynamicBackground";
-import { LiveIntelligenceFeed } from "@/components/experience/LiveIntelligenceFeed";
 
 export function WorkspaceShell({ children, title }: { children: ReactNode; title?: string }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -46,23 +40,17 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
   }, []);
 
   return (
-    <div className="flex min-h-dvh bg-background text-foreground relative">
-      <DynamicBackground />
-      <div className="pointer-events-none fixed inset-0 zenno-ambient opacity-60" aria-hidden />
-      <WorkspaceSidebar />
-      <div className="flex-1 flex flex-col min-w-0 relative">
-        <WorkspaceHeader
-          title={title}
-          onOpenPalette={togglePalette}
-          onOpenCopilot={toggleCopilot}
-          onOpenNotifications={() => setNotifOpen(true)}
-        />
-        <main className="flex-1 p-6 md:p-8 overflow-x-hidden zenno-fade-up">{children}</main>
-      </div>
+    <div className="min-h-dvh bg-background text-foreground">
+      <WorkspaceHeader
+        title={title}
+        onOpenPalette={togglePalette}
+        onOpenCopilot={toggleCopilot}
+        onOpenNotifications={() => setNotifOpen(true)}
+      />
+      <main className="mx-auto w-full max-w-6xl px-6 md:px-10 py-12 md:py-16">{children}</main>
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <CopilotDrawer open={copilotOpen} onOpenChange={setCopilotOpen} />
       <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
-      <LiveIntelligenceFeed />
       {booting && <BootScreen onDone={() => setBooting(false)} />}
     </div>
   );
