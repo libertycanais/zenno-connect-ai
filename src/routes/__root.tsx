@@ -50,9 +50,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ZENNO CRM AI — Plataforma SaaS de CRM" },
-      { name: "description", content: "ZENNO CRM AI: CRM multiempresa com WhatsApp, Meta Ads, Google Ads, automações e IA." },
-      { property: "og:site_name", content: "ZENNO CRM AI" },
+      { title: "ZENNO — Enterprise Intelligence OS" },
+      { name: "description", content: "ZENNO — Enterprise Intelligence OS: Copilot, decisões, memória organizacional e execução em um único plano de controle." },
+      { property: "og:site_name", content: "ZENNO" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "google-site-verification", content: "xalsAMFdth45jfL9wHPzUHgHIUKuwulnAuvRExaTNcI" },
