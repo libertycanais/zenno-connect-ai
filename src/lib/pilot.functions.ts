@@ -45,9 +45,9 @@ export const getPilotDailyDashboard = createServerFn({ method: "GET" })
       supabase.from("workspace_widgets")
         .select("widget_type, created_at").limit(1000),
       supabase.from("workspace_feature_flags")
-        .select("key, enabled, target_percentage, target_cohorts"),
+        .select("flag, enabled, rollout, scope"),
       supabase.from("ai_usage")
-        .select("provider, cost_usd, total_tokens, created_at").gte("created_at", since14d).limit(2000),
+        .select("provider, cost_cents, tokens_in, tokens_out, created_at").gte("created_at", since14d).limit(2000),
       supabase.from("pilot_telemetry_rate_hits")
         .select("blocked_count, bucket").gte("bucket", since14d),
     ]);
