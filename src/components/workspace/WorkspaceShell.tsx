@@ -49,6 +49,7 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
     <div className="flex min-h-dvh bg-background text-foreground relative">
       <DynamicBackground />
       <div className="pointer-events-none fixed inset-0 zenno-ambient opacity-60" aria-hidden />
+      <WorkspaceSidebar />
       <div className="flex-1 flex flex-col min-w-0 relative">
         <WorkspaceHeader
           title={title}
