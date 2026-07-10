@@ -68,7 +68,7 @@ describe("EPIC G · Risk + Opportunity + Consensus", () => {
     expect(opps).toHaveLength(1);
   });
   it("weighted-majority consensus flags majority recs", () => {
-    const rec = { id: "r1" } as never;
+    const rec = { recommendationId: "r1" } as never;
     const res = weightedMajority({
       organizationId: "org-1", topic: "roas",
       expertOutputs: [
