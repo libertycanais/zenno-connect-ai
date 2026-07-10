@@ -117,8 +117,12 @@ function WorkspaceOverview() {
   return (
     <WorkspaceShell title="Command Center">
       <AIStatusBar />
+      <MissionControlPanel />
       <CommandHero />
       <ExecutiveSummary />
+
+      <SectionTitle label="Executive Widgets" badge="live" />
+      <ExecutiveWidgetsV2 />
 
       <SectionTitle label="KPIs Executivos" badge="live" />
       <WorkspaceGrid>
