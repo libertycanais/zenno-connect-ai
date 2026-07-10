@@ -257,6 +257,53 @@
 
 
 
+/* ============ PX 1.2 · Enterprise Brand Identity ============
+   Additive design tokens. No existing token is redefined. */
+:root, .dark {
+  /* Brand palette (documented in docs/BRAND_BOOK.md) */
+  --zenno-brand-primary: oklch(0.72 0.18 235);   /* Zenno Blue      #0EA5FF ish */
+  --zenno-brand-accent:  oklch(0.58 0.24 295);   /* Signal Violet   #7C3AED ish */
+  --zenno-brand-cyan:    oklch(0.78 0.14 210);   /* Aperture Cyan            */
+  --zenno-brand-mint:    oklch(0.75 0.17 160);   /* Insight Mint             */
+  --zenno-brand-gold:    oklch(0.82 0.16 85);    /* Executive Gold           */
+  --zenno-brand-danger:  oklch(0.66 0.24 25);    /* Alert Red                */
+  --zenno-surface-0:     oklch(0.14 0.035 250);
+  --zenno-surface-1:     oklch(0.19 0.04 250);
+  --zenno-surface-2:     oklch(0.23 0.05 250);
+  --zenno-glass:         color-mix(in oklab, var(--zenno-surface-1) 78%, transparent);
+  --zenno-glow:          0 0 32px -8px color-mix(in oklab, var(--zenno-brand-primary) 55%, transparent);
+
+  /* Motion identity (documented in docs/MOTION_GUIDELINES.md) */
+  --zenno-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --zenno-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --zenno-dur-fast: 160ms;
+  --zenno-dur-base: 260ms;
+  --zenno-dur-slow: 480ms;
+
+  /* Elevation scale */
+  --zenno-elev-1: 0 1px 2px oklch(0 0 0 / 0.35);
+  --zenno-elev-2: 0 6px 20px -8px oklch(0 0 0 / 0.5);
+  --zenno-elev-3: 0 18px 48px -14px oklch(0 0 0 / 0.6), 0 2px 8px -2px oklch(0.72 0.18 235 / 0.14);
+}
+
+/* Enterprise wordmark helper */
+.zenno-wordmark {
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Brand-consistent focus ring */
+.zenno-focus-ring:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--zenno-brand-primary) 80%, transparent);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -267,3 +314,4 @@
     color: var(--color-foreground);
   }
 }
+
