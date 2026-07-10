@@ -98,38 +98,82 @@
 }
 
 .dark {
-  --background: oklch(0.14 0.03 250);
-  --foreground: oklch(0.97 0.01 220);
+  /* Zenno OS · Enterprise Design System v2 */
+  --background: oklch(0.14 0.035 250);
+  --foreground: oklch(0.97 0.012 230);
   --card: oklch(0.19 0.04 250);
-  --card-foreground: oklch(0.97 0.01 220);
-  --popover: oklch(0.19 0.04 250);
-  --popover-foreground: oklch(0.97 0.01 220);
+  --card-foreground: oklch(0.97 0.012 230);
+  --popover: oklch(0.17 0.04 250);
+  --popover-foreground: oklch(0.97 0.012 230);
   --primary: oklch(0.72 0.18 235);
   --primary-foreground: oklch(0.12 0.03 250);
-  --secondary: oklch(0.26 0.05 250);
-  --secondary-foreground: oklch(0.97 0.01 220);
-  --muted: oklch(0.23 0.04 250);
-  --muted-foreground: oklch(0.8 0.04 230);
-  --accent: oklch(0.65 0.2 200);
-  --accent-foreground: oklch(0.12 0.03 250);
-  --destructive: oklch(0.65 0.22 25);
+  --secondary: oklch(0.23 0.05 250);
+  --secondary-foreground: oklch(0.97 0.012 230);
+  --muted: oklch(0.21 0.04 250);
+  --muted-foreground: oklch(0.72 0.03 230);
+  --accent: oklch(0.58 0.24 295);
+  --accent-foreground: oklch(0.98 0.01 230);
+  --destructive: oklch(0.66 0.24 25);
   --destructive-foreground: oklch(0.99 0.005 220);
-  --border: oklch(0.72 0.18 235 / 18%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(0.72 0.18 235 / 12%);
+  --input: oklch(1 0 0 / 10%);
   --ring: oklch(0.72 0.18 235);
   --chart-1: oklch(0.72 0.18 235);
-  --chart-2: oklch(0.65 0.2 200);
-  --chart-3: oklch(0.78 0.15 220);
-  --chart-4: oklch(0.55 0.22 260);
-  --chart-5: oklch(0.7 0.16 190);
+  --chart-2: oklch(0.58 0.24 295);
+  --chart-3: oklch(0.75 0.17 160);
+  --chart-4: oklch(0.78 0.16 85);
+  --chart-5: oklch(0.7 0.22 25);
   --sidebar: oklch(0.16 0.035 250);
   --sidebar-foreground: oklch(0.96 0.01 220);
   --sidebar-primary: oklch(0.72 0.18 235);
   --sidebar-primary-foreground: oklch(0.12 0.03 250);
-  --sidebar-accent: oklch(0.28 0.06 240);
-  --sidebar-accent-foreground: oklch(0.97 0.01 220);
-  --sidebar-border: oklch(0.72 0.18 235 / 22%);
+  --sidebar-accent: oklch(0.23 0.05 250);
+  --sidebar-accent-foreground: oklch(0.97 0.012 230);
+  --sidebar-border: oklch(0.72 0.18 235 / 16%);
   --sidebar-ring: oklch(0.72 0.18 235);
+
+  --zenno-success: oklch(0.72 0.17 150);
+  --zenno-warning: oklch(0.78 0.16 75);
+  --zenno-danger: var(--destructive);
+  --zenno-ai: var(--accent);
+  --gradient-primary: linear-gradient(135deg, oklch(0.72 0.18 235), oklch(0.58 0.24 295));
+  --gradient-ambient: radial-gradient(1200px 600px at 10% -10%, oklch(0.72 0.18 235 / 0.18), transparent 60%),
+                      radial-gradient(900px 500px at 90% 0%, oklch(0.58 0.24 295 / 0.14), transparent 55%);
+  --shadow-elevated: 0 10px 40px -12px oklch(0 0 0 / 0.6), 0 2px 8px -2px oklch(0.72 0.18 235 / 0.12);
+  --shadow-glow: 0 0 32px -8px oklch(0.72 0.18 235 / 0.35);
+}
+
+@keyframes zenno-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 oklch(0.72 0.18 235 / 0.5); }
+  50% { opacity: 0.85; box-shadow: 0 0 0 6px oklch(0.72 0.18 235 / 0); }
+}
+@keyframes zenno-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes zenno-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.zenno-glass {
+  background: color-mix(in oklab, var(--card) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--primary) 12%, transparent);
+}
+.zenno-ambient { background-image: var(--gradient-ambient); }
+.zenno-pulse-dot { animation: zenno-pulse 2.2s ease-in-out infinite; }
+.zenno-fade-up { animation: zenno-fade-up 0.5s ease-out both; }
+.zenno-shimmer {
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--primary) 22%, transparent), transparent);
+  background-size: 200% 100%;
+  animation: zenno-shimmer 2.4s linear infinite;
+}
+.zenno-gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 

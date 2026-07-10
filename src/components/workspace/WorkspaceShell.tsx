@@ -33,16 +33,17 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
   }, []);
 
   return (
-    <div className="flex min-h-[calc(100vh-0px)] bg-background text-foreground">
+    <div className="flex min-h-dvh bg-background text-foreground relative">
+      <div className="pointer-events-none fixed inset-0 zenno-ambient opacity-80" aria-hidden />
       <WorkspaceSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         <WorkspaceHeader
           title={title}
           onOpenPalette={togglePalette}
           onOpenCopilot={toggleCopilot}
           onOpenNotifications={() => setNotifOpen(true)}
         />
-        <main className="flex-1 p-4 md:p-6 overflow-x-hidden">{children}</main>
+        <main className="flex-1 p-6 md:p-8 overflow-x-hidden zenno-fade-up">{children}</main>
       </div>
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <CopilotDrawer open={copilotOpen} onOpenChange={setCopilotOpen} />
