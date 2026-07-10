@@ -59,6 +59,7 @@ import { Route as AppMetaAdsTrackingRouteImport } from './routes/app.meta-ads.tr
 import { Route as AppMetaAdsCriativosRouteImport } from './routes/app.meta-ads.criativos'
 import { Route as AppMetaAdsConversionsRouteImport } from './routes/app.meta-ads.conversions'
 import { Route as AppMetaAdsCampaignsRouteImport } from './routes/app.meta-ads.campaigns'
+import { Route as AppMarketingConnectRouteImport } from './routes/app.marketing.connect'
 import { Route as AppLeadsKanbanRouteImport } from './routes/app.leads.kanban'
 import { Route as AppLeadsCobrancasRouteImport } from './routes/app.leads.cobrancas'
 import { Route as AppLeadsAtribuicaoRouteImport } from './routes/app.leads.atribuicao'
@@ -343,6 +344,11 @@ const AppMetaAdsCampaignsRoute = AppMetaAdsCampaignsRouteImport.update({
   path: '/campaigns',
   getParentRoute: () => AppMetaAdsRoute,
 } as any)
+const AppMarketingConnectRoute = AppMarketingConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
+  getParentRoute: () => AppMarketingRoute,
+} as any)
 const AppLeadsKanbanRoute = AppLeadsKanbanRouteImport.update({
   id: '/leads/kanban',
   path: '/leads/kanban',
@@ -560,6 +566,7 @@ export interface FileRoutesByFullPath {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -631,6 +638,7 @@ export interface FileRoutesByTo {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -716,6 +724,7 @@ export interface FileRoutesById {
   '/app/leads/atribuicao': typeof AppLeadsAtribuicaoRoute
   '/app/leads/cobrancas': typeof AppLeadsCobrancasRoute
   '/app/leads/kanban': typeof AppLeadsKanbanRoute
+  '/app/marketing/connect': typeof AppMarketingConnectRoute
   '/app/meta-ads/campaigns': typeof AppMetaAdsCampaignsRoute
   '/app/meta-ads/conversions': typeof AppMetaAdsConversionsRoute
   '/app/meta-ads/criativos': typeof AppMetaAdsCriativosRoute
@@ -802,6 +811,7 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -873,6 +883,7 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -957,6 +968,7 @@ export interface FileRouteTypes {
     | '/app/leads/atribuicao'
     | '/app/leads/cobrancas'
     | '/app/leads/kanban'
+    | '/app/marketing/connect'
     | '/app/meta-ads/campaigns'
     | '/app/meta-ads/conversions'
     | '/app/meta-ads/criativos'
@@ -1371,6 +1383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMetaAdsCampaignsRouteImport
       parentRoute: typeof AppMetaAdsRoute
     }
+    '/app/marketing/connect': {
+      id: '/app/marketing/connect'
+      path: '/connect'
+      fullPath: '/app/marketing/connect'
+      preLoaderRoute: typeof AppMarketingConnectRouteImport
+      parentRoute: typeof AppMarketingRoute
+    }
     '/app/leads/kanban': {
       id: '/app/leads/kanban'
       path: '/leads/kanban'
@@ -1748,10 +1767,12 @@ const AppInteligenciaRouteWithChildren = AppInteligenciaRoute._addFileChildren(
 )
 
 interface AppMarketingRouteChildren {
+  AppMarketingConnectRoute: typeof AppMarketingConnectRoute
   AppMarketingIndexRoute: typeof AppMarketingIndexRoute
 }
 
 const AppMarketingRouteChildren: AppMarketingRouteChildren = {
+  AppMarketingConnectRoute: AppMarketingConnectRoute,
   AppMarketingIndexRoute: AppMarketingIndexRoute,
 }
 
