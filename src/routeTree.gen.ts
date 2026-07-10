@@ -38,6 +38,7 @@ import { Route as AppWhatsappIndexRouteImport } from './routes/app.whatsapp.inde
 import { Route as AppTicketsIndexRouteImport } from './routes/app.tickets.index'
 import { Route as AppSigmaIndexRouteImport } from './routes/app.sigma.index'
 import { Route as AppMetaAdsIndexRouteImport } from './routes/app.meta-ads.index'
+import { Route as AppMarketingIndexRouteImport } from './routes/app.marketing.index'
 import { Route as AppLeadsIndexRouteImport } from './routes/app.leads.index'
 import { Route as AppInteligenciaIndexRouteImport } from './routes/app.inteligencia.index'
 import { Route as AppIaIndexRouteImport } from './routes/app.ia.index'
@@ -235,6 +236,11 @@ const AppMetaAdsIndexRoute = AppMetaAdsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppMetaAdsRoute,
+} as any)
+const AppMarketingIndexRoute = AppMarketingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMarketingRoute,
 } as any)
 const AppLeadsIndexRoute = AppLeadsIndexRouteImport.update({
   id: '/leads/',
@@ -526,7 +532,7 @@ export interface FileRoutesByFullPath {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
-  '/app/marketing': typeof AppMarketingRoute
+  '/app/marketing': typeof AppMarketingRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -574,6 +580,7 @@ export interface FileRoutesByFullPath {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -602,7 +609,6 @@ export interface FileRoutesByTo {
   '/app/clientes': typeof AppClientesRoute
   '/app/executivo': typeof AppExecutivoRoute
   '/app/integracoes': typeof AppIntegracoesRoute
-  '/app/marketing': typeof AppMarketingRoute
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
@@ -645,6 +651,7 @@ export interface FileRoutesByTo {
   '/app/ia': typeof AppIaIndexRoute
   '/app/inteligencia': typeof AppInteligenciaIndexRoute
   '/app/leads': typeof AppLeadsIndexRoute
+  '/app/marketing': typeof AppMarketingIndexRoute
   '/app/meta-ads': typeof AppMetaAdsIndexRoute
   '/app/sigma': typeof AppSigmaIndexRoute
   '/app/tickets': typeof AppTicketsIndexRoute
@@ -681,7 +688,7 @@ export interface FileRoutesById {
   '/app/ia': typeof AppIaRouteWithChildren
   '/app/integracoes': typeof AppIntegracoesRoute
   '/app/inteligencia': typeof AppInteligenciaRouteWithChildren
-  '/app/marketing': typeof AppMarketingRoute
+  '/app/marketing': typeof AppMarketingRouteWithChildren
   '/app/meta-ads': typeof AppMetaAdsRouteWithChildren
   '/app/organizacao': typeof AppOrganizacaoRoute
   '/app/settings': typeof AppSettingsRoute
@@ -729,6 +736,7 @@ export interface FileRoutesById {
   '/app/ia/': typeof AppIaIndexRoute
   '/app/inteligencia/': typeof AppInteligenciaIndexRoute
   '/app/leads/': typeof AppLeadsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
   '/app/meta-ads/': typeof AppMetaAdsIndexRoute
   '/app/sigma/': typeof AppSigmaIndexRoute
   '/app/tickets/': typeof AppTicketsIndexRoute
@@ -814,6 +822,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/inteligencia/'
     | '/app/leads/'
+    | '/app/marketing/'
     | '/app/meta-ads/'
     | '/app/sigma/'
     | '/app/tickets/'
@@ -842,7 +851,6 @@ export interface FileRouteTypes {
     | '/app/clientes'
     | '/app/executivo'
     | '/app/integracoes'
-    | '/app/marketing'
     | '/app/organizacao'
     | '/app/settings'
     | '/app'
@@ -885,6 +893,7 @@ export interface FileRouteTypes {
     | '/app/ia'
     | '/app/inteligencia'
     | '/app/leads'
+    | '/app/marketing'
     | '/app/meta-ads'
     | '/app/sigma'
     | '/app/tickets'
@@ -968,6 +977,7 @@ export interface FileRouteTypes {
     | '/app/ia/'
     | '/app/inteligencia/'
     | '/app/leads/'
+    | '/app/marketing/'
     | '/app/meta-ads/'
     | '/app/sigma/'
     | '/app/tickets/'
@@ -1213,6 +1223,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/meta-ads/'
       preLoaderRoute: typeof AppMetaAdsIndexRouteImport
       parentRoute: typeof AppMetaAdsRoute
+    }
+    '/app/marketing/': {
+      id: '/app/marketing/'
+      path: '/'
+      fullPath: '/app/marketing/'
+      preLoaderRoute: typeof AppMarketingIndexRouteImport
+      parentRoute: typeof AppMarketingRoute
     }
     '/app/leads/': {
       id: '/app/leads/'
@@ -1730,6 +1747,18 @@ const AppInteligenciaRouteWithChildren = AppInteligenciaRoute._addFileChildren(
   AppInteligenciaRouteChildren,
 )
 
+interface AppMarketingRouteChildren {
+  AppMarketingIndexRoute: typeof AppMarketingIndexRoute
+}
+
+const AppMarketingRouteChildren: AppMarketingRouteChildren = {
+  AppMarketingIndexRoute: AppMarketingIndexRoute,
+}
+
+const AppMarketingRouteWithChildren = AppMarketingRoute._addFileChildren(
+  AppMarketingRouteChildren,
+)
+
 interface AppMetaAdsRouteChildren {
   AppMetaAdsCampaignsRoute: typeof AppMetaAdsCampaignsRoute
   AppMetaAdsConversionsRoute: typeof AppMetaAdsConversionsRoute
@@ -1827,7 +1856,7 @@ interface AppRouteChildren {
   AppIaRoute: typeof AppIaRouteWithChildren
   AppIntegracoesRoute: typeof AppIntegracoesRoute
   AppInteligenciaRoute: typeof AppInteligenciaRouteWithChildren
-  AppMarketingRoute: typeof AppMarketingRoute
+  AppMarketingRoute: typeof AppMarketingRouteWithChildren
   AppMetaAdsRoute: typeof AppMetaAdsRouteWithChildren
   AppOrganizacaoRoute: typeof AppOrganizacaoRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -1853,7 +1882,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIaRoute: AppIaRouteWithChildren,
   AppIntegracoesRoute: AppIntegracoesRoute,
   AppInteligenciaRoute: AppInteligenciaRouteWithChildren,
-  AppMarketingRoute: AppMarketingRoute,
+  AppMarketingRoute: AppMarketingRouteWithChildren,
   AppMetaAdsRoute: AppMetaAdsRouteWithChildren,
   AppOrganizacaoRoute: AppOrganizacaoRoute,
   AppSettingsRoute: AppSettingsRoute,
