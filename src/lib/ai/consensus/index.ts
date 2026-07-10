@@ -26,17 +26,24 @@ export const weightedMajority: ConsensusStrategy = (input) => {
   const votes = new Map<string, number>();
   for (const out of input.expertOutputs) {
     const w = input.weights?.[out.expertId] ?? 1;
-    for (const rec of out.recommendations) votes.set(rec.id, (votes.get(rec.id) ?? 0) + w);
+    for (const rec of out.recommendations) {
+      const key = (rec as { recommendationId?: string; id?: string }).recommendationId
+        ?? (rec as { id?: string }).id
+        ?? "";
+      if (!key) continue;
+      votes.set(key, (votes.get(key) ?? 0) + w);
+    }
   }
   const total = [...votes.values()].reduce((a, b) => a + b, 0) || 1;
   const sorted = [...votes.entries()].sort((a, b) => b[1] - a[1]);
   const finalRecommendations = sorted.filter(([, v]) => v / total >= 0.5).map(([id]) => id);
   const agreements = sorted.filter(([, v]) => v >= 2).map(([id]) => id);
   const disagreements = sorted.filter(([, v]) => v < 2).map(([id]) => id);
+  const topScore = sorted[0]?.[1] ?? 0;
   return {
     organizationId: input.organizationId, topic: input.topic,
     agreements, disagreements, finalRecommendations,
-    confidence: Math.min(1, sorted[0]?.[1] / total ?? 0),
+    confidence: Math.min(1, topScore / total),
     method: "weighted", generatedAt: new Date().toISOString(),
   };
 };
