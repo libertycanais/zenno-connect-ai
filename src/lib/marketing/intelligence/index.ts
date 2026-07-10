@@ -9,5 +9,15 @@ export { updateMarketingContext, getMarketingContext, clearMarketingContext } fr
 export { recordTimeline, listTimeline, clearTimeline } from "./timeline/timeline-recorder";
 export { recordRun, getRuns, clearRuns } from "./metrics/observability";
 export { runMarketingIntelligencePipeline, clearPipelineCache } from "./pipeline/marketing-intelligence-pipeline";
-export { orchestrateAfterSync } from "./orchestrator/orchestrator";
+export { orchestrateAfterSync, notifyPlatformConnected } from "./orchestrator/orchestrator";
 export { makePipelineJob, runPipelineJob } from "./jobs/pipeline-job";
+
+// Marketing Intelligence Experience (additive)
+export { on as onMarketingEvent, emit as emitMarketingEvent, clearAllListeners as clearMarketingListeners, listenerCount as marketingListenerCount } from "./events/event-bus";
+export type { MarketingEvent, MarketingEventName, MarketingEventMap } from "./events/events";
+export { computeIntelligenceScore } from "./score/intelligence-score";
+export type { IntelligenceScoreResult, IntelligenceScoreBreakdown, IntelligenceScoreInput } from "./score/intelligence-score";
+export { getSnapshot, listSnapshotHistory, updateSnapshotFromPipeline, clearSnapshots } from "./snapshot/snapshot-store";
+export type { MarketingIntelligenceSnapshot, MarketingIntelligenceHistoryEntry } from "./snapshot/snapshot-store";
+export { buildProactiveBriefing } from "./copilot/proactive-briefing";
+export type { ProactiveBriefing } from "./copilot/proactive-briefing";
