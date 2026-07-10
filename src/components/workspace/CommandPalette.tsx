@@ -45,8 +45,9 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Buscar rotas, widgets, ações…" />
-      <CommandList>
+      <CommandInput placeholder="Buscar rotas, widgets, ações…" aria-label="Buscar" />
+      <CommandList aria-live="polite" aria-busy={false}>
+
         <CommandEmpty>Nada encontrado.</CommandEmpty>
         <CommandGroup heading="Navegar">
           {routes.map((r) => (

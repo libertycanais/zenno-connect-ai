@@ -12,7 +12,10 @@ import { getExecutiveSnapshot } from "@/lib/executive-dashboard.functions";
 import { listPendingActions } from "@/lib/copilot.functions";
 import { listAIMemory } from "@/lib/ai-copilot.functions";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { TrendingUp, TrendingDown, Info } from "lucide-react";
+
+
 
 function money(cents: number): string {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -28,7 +31,34 @@ export function ExecutiveScoreWidget() {
     staleTime: 60_000,
   });
   return (
-    <WidgetContainer title="Executive Score" subtitle="Snapshot 30 dias">
+    <WidgetContainer
+      title="Executive Score"
+      subtitle="Snapshot 30 dias"
+    >
+      <div className="mb-2 flex items-center gap-1.5">
+        <Badge variant="secondary" className="gap-1">
+          <TrendingUp className="h-3 w-3" aria-hidden />
+          <span className="text-[10px]">30D</span>
+        </Badge>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Sobre o Executive Score"
+              >
+                <Info className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-xs text-xs">
+              Agregado de MRR, ARR, ativos e churn dos últimos 30 dias. Atualizado a cada 60s.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
+
       {q.isLoading ? <WidgetLoader lines={3} /> :
         q.isError ? <WidgetError message="Falha ao carregar snapshot" onRetry={() => q.refetch()} /> :
         !q.data ? <WidgetEmpty /> :
