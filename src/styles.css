@@ -254,6 +254,109 @@
   }
 }
 
+/* ============ PX 1.3.1 · Premium Navigation ============
+   Additive. Powers the enterprise sidebar microinteractions. */
+@keyframes zenno-nav-sheen {
+  0% { transform: translateX(-120%); opacity: 0; }
+  40% { opacity: 0.85; }
+  100% { transform: translateX(220%); opacity: 0; }
+}
+@keyframes zenno-nav-rail {
+  from { transform: scaleY(0.2); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.zenno-nav-item {
+  position: relative;
+  isolation: isolate;
+  transition:
+    background-color var(--zenno-dur-fast) var(--zenno-ease-standard),
+    color var(--zenno-dur-fast) var(--zenno-ease-standard),
+    transform var(--zenno-dur-fast) var(--zenno-ease-standard);
+}
+.zenno-nav-item::before {
+  content: "";
+  position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--zenno-brand-primary), var(--zenno-brand-accent));
+  opacity: 0;
+  transform: scaleY(0.35);
+  transform-origin: center;
+  transition: opacity var(--zenno-dur-fast) var(--zenno-ease-standard),
+              transform var(--zenno-dur-base) var(--zenno-ease-emphasized);
+}
+.zenno-nav-item::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg,
+    transparent 0%,
+    color-mix(in oklab, var(--zenno-brand-primary) 22%, transparent) 45%,
+    color-mix(in oklab, var(--zenno-brand-accent) 18%, transparent) 55%,
+    transparent 100%);
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.zenno-nav-item:hover {
+  background: color-mix(in oklab, var(--zenno-brand-primary) 7%, transparent);
+  color: var(--foreground);
+}
+.zenno-nav-item:hover::before { opacity: 0.55; transform: scaleY(0.7); }
+.zenno-nav-item:hover::after { animation: zenno-nav-sheen 720ms var(--zenno-ease-emphasized); }
+.zenno-nav-item:hover .zenno-nav-icon { transform: scale(1.08); color: var(--zenno-brand-primary); }
+.zenno-nav-item:hover .zenno-nav-label { font-weight: 600; color: var(--foreground); }
+.zenno-nav-item[data-active="true"] {
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--zenno-brand-primary) 10%, transparent),
+    transparent 70%);
+  color: var(--foreground);
+}
+.zenno-nav-item[data-active="true"]::before {
+  opacity: 1;
+  transform: scaleY(1);
+  box-shadow: 0 0 12px -2px color-mix(in oklab, var(--zenno-brand-primary) 55%, transparent);
+  animation: zenno-nav-rail var(--zenno-dur-base) var(--zenno-ease-emphasized) both;
+}
+.zenno-nav-item[data-active="true"] .zenno-nav-icon { color: var(--zenno-brand-primary); }
+.zenno-nav-item[data-active="true"] .zenno-nav-label { color: #fff; font-weight: 600; }
+.zenno-nav-icon {
+  transition: transform var(--zenno-dur-fast) var(--zenno-ease-standard),
+              color var(--zenno-dur-fast) var(--zenno-ease-standard);
+}
+.zenno-nav-label {
+  transition: color var(--zenno-dur-fast) var(--zenno-ease-standard),
+              font-weight var(--zenno-dur-fast) var(--zenno-ease-standard);
+}
+.zenno-nav-group-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--muted-foreground) 88%, transparent);
+}
+.zenno-nav-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in oklab, var(--zenno-brand-primary) 20%, transparent) 40%,
+    color-mix(in oklab, var(--zenno-brand-accent) 18%, transparent) 60%,
+    transparent);
+}
+.zenno-ai-dot {
+  position: relative;
+  display: inline-block;
+  height: 6px; width: 6px; border-radius: 999px;
+  background: var(--zenno-brand-accent);
+  box-shadow: 0 0 8px -1px color-mix(in oklab, var(--zenno-brand-accent) 65%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zenno-nav-item, .zenno-nav-item::before, .zenno-nav-item::after,
+  .zenno-nav-icon, .zenno-nav-label { animation: none !important; transition: none !important; }
+  .zenno-nav-item:hover::after { display: none; }
+}
+
 
 
 
