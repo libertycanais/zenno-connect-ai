@@ -108,10 +108,13 @@ export const getPilotDailyDashboard = createServerFn({ method: "GET" })
       .map((e) => e.latency_ms as number | null).filter((v): v is number => typeof v === "number");
     const p95 = percentile(latencies, 0.95);
 
-    // AI cost aggregation (last 24h)
+    // AI cost aggregation (last 24h). ai_usage stores cents; expose USD.
     const aiRows = (aiUsage ?? []).filter((r) => new Date((r as { created_at: string }).created_at) >= new Date(since));
-    const aiCostUsd = aiRows.reduce((a, r) => a + Number((r as { cost_usd?: number }).cost_usd ?? 0), 0);
-    const aiTokens = aiRows.reduce((a, r) => a + Number((r as { total_tokens?: number }).total_tokens ?? 0), 0);
+    const aiCostUsd = aiRows.reduce((a, r) => a + Number((r as { cost_cents?: number }).cost_cents ?? 0), 0) / 100;
+    const aiTokens = aiRows.reduce((a, r) => {
+      const row = r as { tokens_in?: number; tokens_out?: number };
+      return a + Number(row.tokens_in ?? 0) + Number(row.tokens_out ?? 0);
+    }, 0);
 
     // Health/Adoption rollups
     const orgRows = orgs ?? [];
@@ -125,7 +128,7 @@ export const getPilotDailyDashboard = createServerFn({ method: "GET" })
     const flagRows = flags ?? [];
     const flagsEnabled = flagRows.filter((f) => (f as { enabled: boolean }).enabled).length;
     const avgRollout = flagRows.length
-      ? round2(flagRows.reduce((a, f) => a + Number((f as { target_percentage?: number }).target_percentage ?? 0), 0) / flagRows.length)
+      ? round2(flagRows.reduce((a, f) => a + Number((f as { rollout?: number }).rollout ?? 0), 0) / flagRows.length)
       : 0;
 
     // Rate-limit blocks in the window
