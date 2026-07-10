@@ -78,7 +78,10 @@ export function WidgetLoader({ lines = 4 }: { lines?: number }) {
 
 export function WidgetEmpty({ message = "Sem dados disponíveis." }: { message?: string }) {
   return (
-    <div className="py-6 text-center text-sm text-muted-foreground">{message}</div>
+    <div className="py-8 px-4 text-center rounded-md border border-dashed border-border/50 bg-background/30">
+      <p className="text-sm text-foreground/80">{message}</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">Conecte integrações para que os Experts iniciem as análises.</p>
+    </div>
   );
 }
 
