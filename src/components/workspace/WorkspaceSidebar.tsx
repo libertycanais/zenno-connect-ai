@@ -13,13 +13,13 @@ type Group = { label: string; icon: string; items: readonly Item[] };
 
 const groups: readonly Group[] = [
   {
-    label: "Workspace", icon: "🏠",
+    label: "Command Center", icon: "🏠",
     items: [
-      { to: "/app/workspace", label: "Visão Geral", icon: Layers, exact: true },
-      { to: "/app/workspace/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/app/executivo", label: "Executive", icon: TrendingUp },
-      { to: "/app/ia/copiloto", label: "Copilot", icon: Sparkles },
-      { to: "/app/workspace/actions", label: "Action Center", icon: PlayCircle },
+      { to: "/app/workspace", label: "Command Center", icon: Layers, exact: true },
+      { to: "/app/workspace/dashboard", label: "Executive Overview", icon: LayoutDashboard },
+      { to: "/app/executivo", label: "Executive Center", icon: TrendingUp },
+      { to: "/app/ia/copiloto", label: "AI Command", icon: Sparkles },
+      { to: "/app/workspace/actions", label: "Mission Control", icon: PlayCircle },
     ],
   },
   {
@@ -42,7 +42,7 @@ const groups: readonly Group[] = [
     ],
   },
   {
-    label: "Inteligência", icon: "🧠",
+    label: "AI Intelligence", icon: "🧠",
     items: [
       { to: "/app/inteligencia", label: "Analytics", icon: Sparkles },
       { to: "/app/workspace/insights", label: "Insights", icon: Lightbulb },
