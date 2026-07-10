@@ -81,21 +81,58 @@ export const googleConnector: MarketingPlatformConnector = {
     const assets: PlatformAsset[] = [];
     const authHeader = { Authorization: `Bearer ${tokens.accessToken}` };
 
-    // 1) Google Ads — listAccessibleCustomers (best-effort; needs dev token)
+    // 1) Google Ads — listAccessibleCustomers + auto-descend MCCs
     const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
     if (devToken) {
       const ads = await safeFetch<{ resourceNames?: string[] }>(
         "https://googleads.googleapis.com/v17/customers:listAccessibleCustomers",
         { headers: { ...authHeader, "developer-token": devToken } },
       );
-      const ids = (ads.json?.resourceNames ?? []).map((rn) => rn.split("/")[1]).filter(Boolean);
-      for (const cid of ids) {
-        assets.push({
-          provider: "google", kind: "google_ads_account", externalId: cid,
-          name: `Google Ads · ${cid}`, capabilities: { ads: true }, raw: {},
-        });
+      const rootIds = (ads.json?.resourceNames ?? []).map((rn) => rn.split("/")[1]).filter(Boolean);
+      const seen = new Set<string>();
+      for (const cid of rootIds) {
+        const headers = { ...authHeader, "developer-token": devToken, "Content-Type": "application/json", "login-customer-id": cid };
+        // Self info: is manager?
+        const selfRes = await safeFetch<{ results?: Array<{ customer?: { descriptiveName?: string; manager?: boolean; currencyCode?: string; timeZone?: string } }> }>(
+          `https://googleads.googleapis.com/v17/customers/${cid}/googleAds:search`,
+          { method: "POST", headers, body: JSON.stringify({ query: "SELECT customer.id, customer.descriptive_name, customer.manager, customer.currency_code, customer.time_zone FROM customer LIMIT 1" }) },
+        );
+        const self = selfRes.json?.results?.[0]?.customer;
+        const isManager = Boolean(self?.manager);
+        if (!seen.has(cid)) {
+          seen.add(cid);
+          assets.push({
+            provider: "google", kind: "google_ads_account", externalId: cid,
+            name: self?.descriptiveName || `Google Ads · ${cid}`,
+            currency: self?.currencyCode ?? undefined, timezone: self?.timeZone ?? undefined,
+            capabilities: { ads: true, manager: isManager }, raw: {},
+          });
+        }
+        // If MCC, enumerate children automatically
+        if (isManager) {
+          const childRes = await safeFetch<{ results?: Array<{ customerClient?: { clientCustomer?: string; descriptiveName?: string; currencyCode?: string; timeZone?: string; manager?: boolean; status?: string } }> }>(
+            `https://googleads.googleapis.com/v17/customers/${cid}/googleAds:search`,
+            { method: "POST", headers, body: JSON.stringify({ query: "SELECT customer_client.client_customer, customer_client.descriptive_name, customer_client.currency_code, customer_client.time_zone, customer_client.manager, customer_client.status FROM customer_client WHERE customer_client.level <= 1" }) },
+          );
+          for (const r of childRes.json?.results ?? []) {
+            const cc = r.customerClient;
+            if (!cc?.clientCustomer) continue;
+            const childId = cc.clientCustomer.split("/")[1];
+            if (!childId || childId === cid || seen.has(childId)) continue;
+            if (cc.status && cc.status !== "ENABLED") continue;
+            seen.add(childId);
+            assets.push({
+              provider: "google", kind: "google_ads_account", externalId: childId,
+              parentExternalId: cid,
+              name: cc.descriptiveName || `Google Ads · ${childId}`,
+              currency: cc.currencyCode ?? undefined, timezone: cc.timeZone ?? undefined,
+              capabilities: { ads: true, manager: Boolean(cc.manager), parent_mcc: cid }, raw: {},
+            });
+          }
+        }
       }
     }
+
 
     // 2) GA4 properties — list account summaries
     const ga = await safeFetch<{ accountSummaries?: Array<{ propertySummaries?: Array<{ property: string; displayName?: string }> }> }>(
