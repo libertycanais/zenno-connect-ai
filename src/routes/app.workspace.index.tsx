@@ -11,6 +11,10 @@ import {
 import { getIntelligenceWidgets } from "@/lib/experts-analytics.functions";
 import { useAuth } from "@/lib/auth";
 import { Sparkles, TrendingUp, AlertTriangle, DollarSign, ArrowRight } from "lucide-react";
+import { AIStatusBar } from "@/components/experience/AIStatusBar";
+import { ExecutiveSummary } from "@/components/experience/ExecutiveSummary";
+import { AIActivityTimeline } from "@/components/experience/AIActivityTimeline";
+import { ExpertsPanel } from "@/components/experience/ExpertsPanel";
 
 export const Route = createFileRoute("/app/workspace/")({ component: WorkspaceOverview });
 
@@ -110,7 +114,9 @@ function SectionTitle({ label, badge }: { label: string; badge?: string }) {
 function WorkspaceOverview() {
   return (
     <WorkspaceShell title="Command Center">
+      <AIStatusBar />
       <CommandHero />
+      <ExecutiveSummary />
 
       <SectionTitle label="KPIs Executivos" badge="live" />
       <WorkspaceGrid>
@@ -118,6 +124,12 @@ function WorkspaceOverview() {
         <InsightsWidget />
         <SignalsWidget />
       </WorkspaceGrid>
+
+      <SectionTitle label="AI em execução" badge="tempo real" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <AIActivityTimeline />
+        <ExpertsPanel />
+      </div>
 
       <SectionTitle label="Inteligência & Recomendações" badge="AI" />
       <WorkspaceGrid>
