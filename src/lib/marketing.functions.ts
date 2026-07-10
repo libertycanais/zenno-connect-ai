@@ -301,16 +301,16 @@ export const refreshMarketingContext = createServerFn({ method: "POST" })
       };
     });
     const slice = buildSlice(entries);
-    // Emit timeline event (informational)
-    await context.supabase.from("marketing_timeline_events").insert({
-      organization_id: (await context.supabase.from("profiles").select("organization_id").eq("id", context.userId).single()).data?.organization_id,
-      ...makeTimelineEvent({
-        organizationId: "", // rewritten above
-        eventType: "discovery.completed",
+    const { data: prof } = await context.supabase.from("profiles").select("organization_id").eq("id", context.userId).single();
+    const orgId = prof?.organization_id;
+    if (orgId) {
+      await context.supabase.from("marketing_timeline_events").insert({
+        organization_id: orgId,
+        event_type: "discovery.completed",
         severity: "info",
-        payload: { context_refreshed: true, providers: slice.connectedProviders.length },
-      }),
-      event_type: "discovery.completed",
-    });
+        payload: { context_refreshed: true, providers: slice.connectedProviders.length } as unknown as Json,
+        occurred_at: new Date().toISOString(),
+      });
+    }
     return { slice };
   });
