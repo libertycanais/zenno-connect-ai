@@ -21,3 +21,20 @@ export { getSnapshot, listSnapshotHistory, updateSnapshotFromPipeline, clearSnap
 export type { MarketingIntelligenceSnapshot, MarketingIntelligenceHistoryEntry } from "./snapshot/snapshot-store";
 export { buildProactiveBriefing } from "./copilot/proactive-briefing";
 export type { ProactiveBriefing } from "./copilot/proactive-briefing";
+
+// First Five Minutes (additive UX refinement — no arch change)
+export { computeAIConfidence, computeAIConfidenceFromPipeline } from "./confidence/ai-confidence";
+export type { AIConfidenceResult, AIConfidenceInput, AIConfidenceBasis } from "./confidence/ai-confidence";
+export { explainIntelligenceScore } from "./score/score-explainer";
+export type { ScoreExplanation } from "./score/score-explainer";
+export {
+  startTTFI, completeTTFI, getActiveTTFI, getLastTTFI, averageTTFIms, clearTTFI, formatTTFI,
+} from "./first-five-minutes/ttfi-tracker";
+export type { TTFIRun } from "./first-five-minutes/ttfi-tracker";
+export { buildOnboardingChecklist } from "./first-five-minutes/onboarding-checklist";
+export type { OnboardingChecklist, OnboardingItem, OnboardingInput } from "./first-five-minutes/onboarding-checklist";
+export {
+  enqueueBriefingNotification, getPendingBriefing, markBriefingSeen, dismissBriefing,
+  listBriefings, clearBriefings,
+} from "./first-five-minutes/briefing-notification";
+export type { BriefingNotification } from "./first-five-minutes/briefing-notification";

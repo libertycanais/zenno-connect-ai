@@ -108,7 +108,7 @@ export function runMarketingIntelligencePipeline(input: PipelineInput): Pipeline
   emit("MarketingRecommendationsGenerated", { ...base, recommendations: result.recommendations });
   emit("ExecutiveSummaryGenerated", { ...base, executive: result.executive });
   emit("MarketingContextUpdated", base);
-  const snapshot = updateSnapshotFromPipeline(result);
+  const snapshot = updateSnapshotFromPipeline(result, { campaigns, tracking });
   emit("MarketingIntelligenceSnapshotUpdated", { ...base, score: snapshot.score.score });
 
   return result;
