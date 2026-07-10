@@ -171,14 +171,13 @@ function deriveExecutivePriorities(
 }
 
 function deriveNextActions(prios: ExecutivePriorityItem[]): ExecutiveNextAction[] {
-  return prios.slice(0, 5).map((p, i) => ({
+  return prios.slice(0, 5).map((p): ExecutiveNextAction => ({
     id: `act_${p.id}`,
     title: p.title,
-    owner: "ops" as const,
+    owner: "ops",
     dueInDays: p.priority === 1 ? 3 : p.priority === 2 ? 7 : 14,
     effort: p.priority === 1 ? "high" : "medium",
-    _order: i,
-  })).map(({ _order, ...a }) => { void _order; return a; });
+  }));
 }
 
 function buildSummary(input: ExecutiveEngineInput, prios: ExecutivePriorityItem[], score: number): string {
