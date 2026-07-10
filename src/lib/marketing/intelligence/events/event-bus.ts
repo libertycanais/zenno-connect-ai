@@ -18,8 +18,8 @@ export function emit<K extends MarketingEventName>(
   name: K,
   payload: MarketingEventMap[K],
 ): MarketingEvent<K> {
-  const withAt = { at: new Date().toISOString(), ...payload } as MarketingEventMap[K];
-  const event = { name, ...withAt } as unknown as MarketingEvent<K>;
+  const base = { ...payload, at: (payload as { at?: string }).at ?? new Date().toISOString() };
+  const event = { name, ...base } as unknown as MarketingEvent<K>;
   const set = handlers.get(name);
   if (set) {
     for (const h of set) {
