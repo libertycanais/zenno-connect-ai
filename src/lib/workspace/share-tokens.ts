@@ -76,10 +76,28 @@ export class ShareTokenSigner {
   }
 }
 
-/** In-memory revocation registry (nonces). Persistence layer plugs in later. */
+/**
+ * Revocation registry (nonce-scoped). In-memory por padrão; RC1.1 permite
+ * plugar um checker persistente (Supabase workspace_share_tokens.revoked_at)
+ * via `attachAsyncChecker`.
+ */
 export class ShareTokenRevocationStore {
   private revoked = new Set<string>();
+  private asyncCheck?: (nonce: string) => Promise<boolean>;
+
   revoke(nonce: string): void { this.revoked.add(nonce); }
   isRevoked(nonce: string): boolean { return this.revoked.has(nonce); }
-  clear(): void { this.revoked.clear(); }
+  clear(): void { this.revoked.clear(); this.asyncCheck = undefined; }
+
+  /** RC1.1 — Wire a persistent revocation checker (returns true if revoked). */
+  attachAsyncChecker(fn: (nonce: string) => Promise<boolean>): void {
+    this.asyncCheck = fn;
+  }
+
+  async isRevokedAsync(nonce: string): Promise<boolean> {
+    if (this.revoked.has(nonce)) return true;
+    if (!this.asyncCheck) return false;
+    try { return await this.asyncCheck(nonce); } catch { return false; }
+  }
 }
+

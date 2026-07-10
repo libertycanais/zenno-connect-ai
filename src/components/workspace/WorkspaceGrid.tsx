@@ -7,11 +7,12 @@ import { AlertTriangle, MoreHorizontal, Pin, Settings } from "lucide-react";
 
 export function WorkspaceGrid({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 [&>[data-widget-size=xl]]:col-span-full [&>[data-widget-size=lg]]:md:col-span-2">
       {children}
     </div>
   );
 }
+
 
 type WidgetProps = {
   title: string;

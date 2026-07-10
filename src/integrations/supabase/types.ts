@@ -675,6 +675,7 @@ export type Database = {
           default_model: string | null
           id: string
           is_active: boolean
+          key_version: number
           label: string | null
           last_used_at: string | null
           max_tokens: number
@@ -694,6 +695,7 @@ export type Database = {
           default_model?: string | null
           id?: string
           is_active?: boolean
+          key_version?: number
           label?: string | null
           last_used_at?: string | null
           max_tokens?: number
@@ -713,6 +715,7 @@ export type Database = {
           default_model?: string | null
           id?: string
           is_active?: boolean
+          key_version?: number
           label?: string | null
           last_used_at?: string | null
           max_tokens?: number
