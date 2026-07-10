@@ -3,3 +3,4 @@ export * from "./telemetry";
 export * from "./scoring";
 export * from "./feature-flags";
 export * from "./onboarding";
+export * from "./backlog";
