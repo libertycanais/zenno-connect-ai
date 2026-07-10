@@ -8,11 +8,22 @@ import { WorkspaceSidebar } from "./WorkspaceSidebar";
 import { CommandPalette } from "./CommandPalette";
 import { CopilotDrawer } from "./CopilotDrawer";
 import { NotificationDrawer } from "./NotificationDrawer";
+import { BootScreen, BOOT_FLAG } from "@/components/experience/BootScreen";
 
 export function WorkspaceShell({ children, title }: { children: ReactNode; title?: string }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [copilotOpen, setCopilotOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [booting, setBooting] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(BOOT_FLAG) === "1") {
+        setBooting(true);
+        sessionStorage.removeItem(BOOT_FLAG);
+      }
+    } catch { /* noop */ }
+  }, []);
 
   const togglePalette = useCallback(() => setPaletteOpen((v) => !v), []);
   const toggleCopilot = useCallback(() => setCopilotOpen((v) => !v), []);
@@ -48,6 +59,7 @@ export function WorkspaceShell({ children, title }: { children: ReactNode; title
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <CopilotDrawer open={copilotOpen} onOpenChange={setCopilotOpen} />
       <NotificationDrawer open={notifOpen} onOpenChange={setNotifOpen} />
+      {booting && <BootScreen onDone={() => setBooting(false)} />}
     </div>
   );
 }

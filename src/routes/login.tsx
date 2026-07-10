@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import logo from "@/assets/zenno-logo.png";
+import { triggerBoot } from "@/components/experience/BootScreen";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -43,13 +44,15 @@ function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
     if (error) { toast.error(error.message); return; }
-    navigate({ to: "/app" });
+    triggerBoot();
+    navigate({ to: "/app/workspace" });
   }
 
   async function handleGoogle() {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app" });
+    triggerBoot();
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app/workspace" });
     if (result.error) { toast.error(String(result.error)); return; }
-    if (!result.redirected) navigate({ to: "/app" });
+    if (!result.redirected) navigate({ to: "/app/workspace" });
   }
 
   return (
