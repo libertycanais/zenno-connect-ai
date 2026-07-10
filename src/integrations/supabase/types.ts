@@ -2730,6 +2730,127 @@ export type Database = {
         }
         Relationships: []
       }
+      pilot_backlog_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          effort_days: number
+          evidence_ref: string | null
+          financial_impact_cents: number
+          frequency: number
+          id: string
+          operational_impact: number
+          organization_id: string
+          organizations_affected: number
+          priority_bucket: string
+          priority_score: number
+          retention_impact: number
+          source: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          effort_days?: number
+          evidence_ref?: string | null
+          financial_impact_cents?: number
+          frequency?: number
+          id?: string
+          operational_impact?: number
+          organization_id: string
+          organizations_affected?: number
+          priority_bucket?: string
+          priority_score?: number
+          retention_impact?: number
+          source: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          effort_days?: number
+          evidence_ref?: string | null
+          financial_impact_cents?: number
+          frequency?: number
+          id?: string
+          operational_impact?: number
+          organization_id?: string
+          organizations_affected?: number
+          priority_bucket?: string
+          priority_score?: number
+          retention_impact?: number
+          source?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_backlog_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_copilot_feedback: {
+        Row: {
+          comment: string | null
+          conversation_id: string | null
+          created_at: string
+          id: string
+          latency_ms: number | null
+          message_id: string | null
+          model_hint: string | null
+          organization_id: string
+          reaction: string
+          reason_code: string | null
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          message_id?: string | null
+          model_hint?: string | null
+          organization_id: string
+          reaction: string
+          reason_code?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          latency_ms?: number | null
+          message_id?: string | null
+          model_hint?: string | null
+          organization_id?: string
+          reaction?: string
+          reason_code?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_copilot_feedback_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pilot_feedback: {
         Row: {
           comment: string | null
@@ -2896,6 +3017,32 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "pilot_telemetry_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_telemetry_rate_hits: {
+        Row: {
+          blocked_count: number
+          bucket: string
+          organization_id: string
+        }
+        Insert: {
+          blocked_count?: number
+          bucket: string
+          organization_id: string
+        }
+        Update: {
+          blocked_count?: number
+          bucket?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_telemetry_rate_hits_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -4680,6 +4827,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      pilot_telemetry_prune: { Args: { _days?: number }; Returns: number }
       track_compound_rate_limit_hit: {
         Args: {
           _key: string
