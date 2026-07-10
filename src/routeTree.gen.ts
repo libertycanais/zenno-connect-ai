@@ -71,6 +71,7 @@ import { Route as AppGoogleAdsCampaignsRouteImport } from './routes/app.google-a
 import { Route as AppFinanceiroTransacoesRouteImport } from './routes/app.financeiro.transacoes'
 import { Route as AppFinanceiroCategoriasRouteImport } from './routes/app.financeiro.categorias'
 import { Route as AppAutomacoesExecucoesRouteImport } from './routes/app.automacoes.execucoes'
+import { Route as AppAdminPilotRouteImport } from './routes/app.admin.pilot'
 import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
 import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicLiveRouteImport } from './routes/api/public/live'
@@ -401,6 +402,11 @@ const AppAutomacoesExecucoesRoute = AppAutomacoesExecucoesRouteImport.update({
   path: '/execucoes',
   getParentRoute: () => AppAutomacoesRoute,
 } as any)
+const AppAdminPilotRoute = AppAdminPilotRouteImport.update({
+  id: '/pilot',
+  path: '/pilot',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 const ApiPublicReadyRoute = ApiPublicReadyRouteImport.update({
   id: '/api/public/ready',
   path: '/api/public/ready',
@@ -513,6 +519,7 @@ export interface FileRoutesByFullPath {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
+  '/app/admin/pilot': typeof AppAdminPilotRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -580,6 +587,7 @@ export interface FileRoutesByTo {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
+  '/app/admin/pilot': typeof AppAdminPilotRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -660,6 +668,7 @@ export interface FileRoutesById {
   '/api/public/live': typeof ApiPublicLiveRoute
   '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/api/public/ready': typeof ApiPublicReadyRoute
+  '/app/admin/pilot': typeof AppAdminPilotRoute
   '/app/automacoes/execucoes': typeof AppAutomacoesExecucoesRoute
   '/app/financeiro/categorias': typeof AppFinanceiroCategoriasRoute
   '/app/financeiro/transacoes': typeof AppFinanceiroTransacoesRoute
@@ -741,6 +750,7 @@ export interface FileRouteTypes {
     | '/api/public/live'
     | '/api/public/metrics'
     | '/api/public/ready'
+    | '/app/admin/pilot'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -808,6 +818,7 @@ export interface FileRouteTypes {
     | '/api/public/live'
     | '/api/public/metrics'
     | '/api/public/ready'
+    | '/app/admin/pilot'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -887,6 +898,7 @@ export interface FileRouteTypes {
     | '/api/public/live'
     | '/api/public/metrics'
     | '/api/public/ready'
+    | '/app/admin/pilot'
     | '/app/automacoes/execucoes'
     | '/app/financeiro/categorias'
     | '/app/financeiro/transacoes'
@@ -1395,6 +1407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAutomacoesExecucoesRouteImport
       parentRoute: typeof AppAutomacoesRoute
     }
+    '/app/admin/pilot': {
+      id: '/app/admin/pilot'
+      path: '/pilot'
+      fullPath: '/app/admin/pilot'
+      preLoaderRoute: typeof AppAdminPilotRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
     '/api/public/ready': {
       id: '/api/public/ready'
       path: '/api/public/ready'
@@ -1504,10 +1523,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppAdminRouteChildren {
+  AppAdminPilotRoute: typeof AppAdminPilotRoute
   AppAdminIndexRoute: typeof AppAdminIndexRoute
 }
 
 const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminPilotRoute: AppAdminPilotRoute,
   AppAdminIndexRoute: AppAdminIndexRoute,
 }
 
