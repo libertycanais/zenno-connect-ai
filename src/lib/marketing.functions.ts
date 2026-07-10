@@ -28,7 +28,7 @@ export const startMarketingConnect = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ provider: providerSchema, redirectAfter: z.string().max(255).optional() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { issueState } = await import("./marketing-security.server");
+    const { issueState } = await import("./marketing/marketing-security.server");
     const { supabase, userId } = context;
     const { data: prof } = await supabase.from("profiles").select("organization_id").eq("id", userId).single();
     if (!prof?.organization_id) throw new Error("Organização não encontrada.");
@@ -89,7 +89,7 @@ export const discoverConnectionAssets = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ connectionId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { decryptToken } = await import("./marketing-security.server");
+    const { decryptToken } = await import("./marketing/marketing-security.server");
     const { supabase, userId } = context;
 
     const { data: conn, error: e1 } = await supabase
