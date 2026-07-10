@@ -79,9 +79,9 @@ describe("First Five Minutes — Score Explainer", () => {
 
 describe("First Five Minutes — TTFI + Briefing + Snapshot enrichment", () => {
   it("measures TTFI, enqueues a briefing, enriches the snapshot", async () => {
-    notifyPlatformConnected({ organizationId: org, provider: "google_ads", connectionId: conn });
+    notifyPlatformConnected({ organizationId: org, provider: "google", connectionId: conn });
     await orchestrateAfterSync({
-      organizationId: org, provider: "google_ads", connectionId: conn,
+      organizationId: org, provider: "google", connectionId: conn,
       campaigns: camps, tracking,
     });
 
@@ -110,9 +110,9 @@ describe("First Five Minutes — TTFI + Briefing + Snapshot enrichment", () => {
 
 describe("First Five Minutes — Onboarding checklist", () => {
   it("reflects snapshot + ttfi state", async () => {
-    notifyPlatformConnected({ organizationId: org, provider: "google_ads", connectionId: conn });
+    notifyPlatformConnected({ organizationId: org, provider: "google", connectionId: conn });
     await orchestrateAfterSync({
-      organizationId: org, provider: "google_ads", connectionId: conn,
+      organizationId: org, provider: "google", connectionId: conn,
       campaigns: camps, tracking,
     });
     const list = buildOnboardingChecklist({
