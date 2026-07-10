@@ -372,6 +372,103 @@ export type Database = {
           },
         ]
       }
+      ai_executive_reports: {
+        Row: {
+          confidence: number
+          created_at: string
+          financial_impact_cents: number
+          id: string
+          organization_id: string
+          payload: Json
+          report_id: string
+          score: number
+          summary: string
+          topic: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          financial_impact_cents?: number
+          id?: string
+          organization_id: string
+          payload: Json
+          report_id: string
+          score?: number
+          summary?: string
+          topic: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          financial_impact_cents?: number
+          id?: string
+          organization_id?: string
+          payload?: Json
+          report_id?: string
+          score?: number
+          summary?: string
+          topic?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_executive_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_forecasts: {
+        Row: {
+          confidence: number
+          created_at: string
+          horizon: number
+          id: string
+          method: string
+          metric: string
+          organization_id: string
+          series: Json
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          horizon: number
+          id?: string
+          method: string
+          metric: string
+          organization_id: string
+          series: Json
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          horizon?: number
+          id?: string
+          method?: string
+          metric?: string
+          organization_id?: string
+          series?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_forecasts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_memory: {
         Row: {
           confidence: number | null
@@ -722,6 +819,50 @@ export type Database = {
             columns: ["playbook_id"]
             isOneToOne: false
             referencedRelation: "ai_playbooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_scenarios: {
+        Row: {
+          baseline: Json
+          changes: Json
+          created_at: string
+          id: string
+          name: string
+          net_impact: number
+          organization_id: string
+          projected: Json
+          updated_at: string
+        }
+        Insert: {
+          baseline: Json
+          changes: Json
+          created_at?: string
+          id?: string
+          name: string
+          net_impact?: number
+          organization_id: string
+          projected: Json
+          updated_at?: string
+        }
+        Update: {
+          baseline?: Json
+          changes?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          net_impact?: number
+          organization_id?: string
+          projected?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_scenarios_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
