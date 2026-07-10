@@ -25,11 +25,19 @@ type WidgetProps = {
 
 export function WidgetContainer({ title, subtitle, onSettings, onPin, className, children }: WidgetProps) {
   return (
-    <Card className={"overflow-hidden " + (className ?? "")} data-widget="1">
+    <Card
+      className={
+        "group relative overflow-hidden border-border/50 bg-card/70 backdrop-blur-md " +
+        "transition-all duration-200 hover:border-primary/40 hover:shadow-[0_0_28px_-8px_oklch(0.72_0.18_235/0.35)] " +
+        "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/60 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity " +
+        (className ?? "")
+      }
+      data-widget="1"
+    >
       <CardHeader className="flex-row items-start justify-between gap-2 pb-2">
         <div className="min-w-0">
-          <CardTitle className="text-sm font-semibold truncate">{title}</CardTitle>
-          {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
+          <CardTitle className="text-[13px] font-semibold tracking-tight truncate">{title}</CardTitle>
+          {subtitle && <p className="text-[11px] text-muted-foreground truncate mt-0.5">{subtitle}</p>}
         </div>
         <WidgetToolbar onSettings={onSettings} onPin={onPin} />
       </CardHeader>
@@ -70,7 +78,10 @@ export function WidgetLoader({ lines = 4 }: { lines?: number }) {
 
 export function WidgetEmpty({ message = "Sem dados disponíveis." }: { message?: string }) {
   return (
-    <div className="py-6 text-center text-sm text-muted-foreground">{message}</div>
+    <div className="py-8 px-4 text-center rounded-md border border-dashed border-border/50 bg-background/30">
+      <p className="text-sm text-foreground/80">{message}</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">Conecte integrações para que os Experts iniciem as análises.</p>
+    </div>
   );
 }
 
