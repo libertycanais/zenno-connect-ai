@@ -8,16 +8,16 @@ export type PersistedLayout = OrgScoped & {
   workspaceId: string;
   name: string;
   grid: { columns: number };
-  widgets: unknown[];
-  positions: Record<string, unknown>;
-  sizes: Record<string, unknown>;
+  widgets: any[];
+  positions: Record<string, any>;
+  sizes: Record<string, any>;
   visibility: Record<string, boolean>;
   collapsed: Record<string, boolean>;
   theme: string | null;
   density: string | null;
   layoutVersion: number;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   updatedBy: string | null;
   createdAt: string;
@@ -35,9 +35,9 @@ export type PersistedWidget = OrgScoped & {
   position: number;
   visible: boolean;
   collapsed: boolean;
-  props: Record<string, unknown>;
+  props: Record<string, any>;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   updatedBy: string | null;
   createdAt: string;
@@ -49,11 +49,11 @@ export type PersistedPreferences = OrgScoped & {
   userId: string;
   theme: string | null;
   density: string | null;
-  sidebar: Record<string, unknown>;
+  sidebar: Record<string, any>;
   shortcuts: Record<string, string>;
-  preferences: Record<string, unknown>;
+  preferences: Record<string, any>;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 };
@@ -71,7 +71,7 @@ export type PersistedBookmark = OrgScoped & {
   label: string | null;
   position: number;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 };
@@ -79,13 +79,13 @@ export type PersistedBookmark = OrgScoped & {
 export type PersistedSnapshot = OrgScoped & {
   id: string;
   workspaceId: string;
-  snapshot: Record<string, unknown>;   // opaque, IDs only (no sensitive data)
+  snapshot: Record<string, any>;   // opaque, IDs only (no sensitive data)
   integrityHash: string;               // SHA-256
   schemaVersion: number;
   workspaceVersion: number;
   origin: string;                      // manual | auto | share | restore
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   createdAt: string;
   updatedAt: string;
@@ -102,7 +102,7 @@ export type PersistedShareToken = OrgScoped & {
   expiresAt: string;
   revokedAt: string | null;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   createdAt: string;
 };
@@ -115,7 +115,7 @@ export type PersistedFeatureFlag = OrgScoped & {
   scope: string;
   rollout: number;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   updatedBy: string | null;
   createdAt: string;
@@ -134,7 +134,7 @@ export type PersistedRecentItem = OrgScoped & {
   label: string | null;
   visitedAt: string;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 };
@@ -147,7 +147,7 @@ export type PersistedDashboard = OrgScoped & {
   description: string | null;
   isDefault: boolean;
   version: number;
-  metadata: Record<string, unknown>;
+  metadata: Record<string, any>;
   createdBy: string | null;
   updatedBy: string | null;
   createdAt: string;
